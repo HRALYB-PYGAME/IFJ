@@ -19,7 +19,5 @@ int main(int argc, char *argv[])
     }
     Zarovka w;
     w.show();
-
-    Zarovka y;
     return a.exec();
 }
