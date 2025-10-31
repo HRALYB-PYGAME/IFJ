@@ -21,6 +21,13 @@ void Zarovka::on_playButton_clicked()
     ui->stackedWidget->setCurrentIndex(0);
 }
 
+/*void Zarovka::resizeEvent(QResizeEvent *event){
+    int size = qMin(width(), height());
+    ui->stackedWidget->setFixedSize(size, size);
+
+    QMainWindow::resizeEvent(event);
+}*/
+
 void Zarovka::updateUI(int mode){
     ui->playButton->setVisible(true);
     //QBitmap* bitmap = new QBitmap(ui->playButton->width(), ui->playButton->height());

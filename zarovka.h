@@ -24,5 +24,6 @@ private slots:
 
 private:
     Ui::Zarovka *ui;
+
 };
 #endif // ZAROVKA_H
