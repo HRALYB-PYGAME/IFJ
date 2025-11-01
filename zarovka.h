@@ -22,6 +22,8 @@ private slots:
     void on_playButton_clicked();
     void updateUI(int mode);
 
+    void on_easyButton_clicked();
+
 private:
     Ui::Zarovka *ui;
 
