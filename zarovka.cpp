@@ -1,5 +1,7 @@
 #include "zarovka.h"
 #include "./ui_zarovka.h"
+#include "BE/game.h"
+#include "BE/gametypes.h"
 
 Zarovka::Zarovka(QWidget *parent)
     : QMainWindow(parent)
@@ -44,5 +46,12 @@ void Zarovka::updateUI(int mode){
         //this->close();
         break;
     }
+}
+
+
+void Zarovka::on_easyButton_clicked()
+{
+    game newgame(4, 4);
+
 }
 
