@@ -1,6 +1,9 @@
 #include "game.h"
 #include "gametypes.h"
 #include <vector>
+#include <cstdlib>
+#include <array>
+#include <iostream>
 
 game::game(int rows, int cols) {
     this->board = this->gamecreateempty(rows, cols);
@@ -13,37 +16,192 @@ gameboard game::gamecreateempty(int rows, int cols){
 
     newgame.cols = cols;
     newgame.rows = rows;
-    newgame.nodes = std::vector<node>(rows*cols, {bulb, 0, false});
+    newgame.nodes = std::vector<node>(rows*cols, {empty, { false, false, false, false }, 0, false});
 
     return newgame;
 }
 
-// creates a new level configuration
+// creates a new random level configuration
 void game::gamecreate(int difficulty){
+    int powerrow = rand() % this->board.rows;
+    int powercol = rand() % this->board.cols;
+    int rows = this->board.rows;
+    int cols = this->board.cols;
+    this->board.powerrow = powerrow;
+    this->board.powercol = powercol;
 
+    // all types of node configurations
+    std::array<bool, 4> dsides = {true, false, false, false};
+    std::array<bool, 4> isides = {true, false, true, false};
+    std::array<bool, 4> lsides = {true, true, false, false};
+    std::array<bool, 4> tsides = {true, true, true, false};
+    std::array<bool, 4> xsides = {true, true, true, true};
+
+    // create the power node
+    createnode(power, powerrow, powercol, dsides);
+
+    std::vector<position> path;
+    path.insert(path.end(), {powerrow, powercol});
+    std::vector<std::vector<bool>> occupiednodes(rows, std::vector<bool>(cols, false));
+    occupiednodes[powerrow][powercol] = true;
+
+    float probability = 0.02;
+
+    std::cout << "before loop" << std::endl;
+    // path generation
+    while (((double) rand() / (RAND_MAX)) > probability){
+        int direction = rand() % 4;
+
+        if (direction == up && powerrow != 0){
+            if(occupiednodes[powerrow-1][powercol] == false){
+                powerrow -= 1;
+                occupiednodes[powerrow][powercol] = true;
+                path.insert(path.end(), {powerrow, powercol});
+            }
+        }
+
+        if (direction == right && powercol != cols-1){
+            if(occupiednodes[powerrow][powercol+1] == false){
+                powercol += 1;
+                occupiednodes[powerrow][powercol] = true;
+                path.insert(path.end(), {powerrow, powercol});
+            }
+        }
+
+        if (direction == down && powerrow != rows-1){
+            if(occupiednodes[powerrow+1][powercol] == false){
+                powerrow += 1;
+                occupiednodes[powerrow][powercol] = true;
+                path.insert(path.end(), {powerrow, powercol});
+            }
+        }
+
+        if (direction == left && powercol != 0){
+            if(occupiednodes[powerrow][powercol-1] == false){
+                powercol -= 1;
+                occupiednodes[powerrow][powercol] = true;
+                path.insert(path.end(), {powerrow, powercol});
+            }
+        }
+    }
+
+    std::cout << "after loop" << std::endl;
+
+    for(int i=1; i < path.size() - 1; i++){
+        position previous = path[i-1];
+        position current = path[i];
+        position next = path[i+1];
+
+        std::array<bool, 4> sides = {false, false, false, false};
+        if(current.col - previous.col == 1) sides[left] = true;
+        if(current.col - previous.col == -1) sides[right] = true;
+        if(current.row - previous.row == 1) sides[up] = true;
+        if(current.row - previous.row == -1) sides[down] = true;
+        if(next.col - current.col == 1) sides[right] = true;
+        if(next.col - current.col == -1) sides[left] = true;
+        if(next.row - current.row == 1) sides[down] = true;
+        if(next.row - current.row == -1) sides[up] = true;
+        createnode(link, current.row, current.col, sides);
+    }
+
+    std::cout << "after second loop" << std::endl;
+    position current = path[path.size()-1];
+    position previous = path[path.size()-2];
+    std::array<bool, 4> sides = {false, false, false, false};
+    if(current.col - previous.col == 1) sides[left] = true;
+    if(current.col - previous.col == -1) sides[right] = true;
+    if(current.row - previous.row == 1) sides[up] = true;
+    if(current.row - previous.row == -1) sides[down] = true;
+    createnode(bulb, current.row, current.col, sides);
+
+    std::cout << "before random rotate" << std::endl;
+    randomlyrotate();
+    std::cout << "after random rotate" << std::endl;
+}
+
+void game::print(){
+    for(int row=0; row<this->board.rows; row++){
+        for(int col=0; col<this->board.cols; col++){
+            node* currentnode = getnodeat(row, col);
+            if (currentnode->type != empty){
+                std::cout << "row:" << row << "; col:" << col << std::endl;
+                std::cout << "type:" << currentnode->type << std::endl;
+                std::cout << "borders:" << currentnode->sides[0] << currentnode->sides[1] << currentnode->sides[2] << currentnode->sides[3] << std::endl;
+            }
+        }
+    }
+}
+
+void game::createnode(nodetype type, int row, int col, std::array<bool,4> sides){
+    node* currentnode = getnodeat(row, col);
+    currentnode->type = type;
+    for(int i=0; i<4; i++){
+        currentnode->sides[i] = sides[i];
+    }
 }
 
 // randomly rotates every node on the game board
 void game::randomlyrotate(){
-
+    for(int row=0; row<this->board.rows; row++){
+        for(int col=0; col<this->board.cols; col++){
+            node* currentnode = getnodeat(row, col);
+            currentnode->rotation = rand() & 4;
+        }
+    }
 }
 
 // updates the game board by powering only nodes connected to source
 void game::update(){
+    unpowernodes();
+    recursiveupdate(this->board.powerrow, this->board.powercol);
+}
 
+void game::recursiveupdate(int row, int col){
+    if (row < 0 || col < 0 || row >= this->board.rows || col >= this->board.cols)
+        return;
+    if (getnodeat(row, col)->powered)
+        return;
+
+    node* currentnode = getnodeat(row, col);
+    currentnode->powered = true;
+    if (currentnode->sides[up])
+        recursiveupdate(row-1, col);
+    if (currentnode->sides[right])
+        recursiveupdate(row, col+1);
+    if (currentnode->sides[down])
+        recursiveupdate(row+1, col);
+    if (currentnode->sides[left])
+        recursiveupdate(row, col-1);
+}
+
+void game::unpowernodes(){
+    for(int row=0; row<this->board.rows; row++){
+        for(int col=0; col<this->board.cols; col++){
+            node* currentnode = getnodeat(row, col);
+            currentnode->powered = false;
+        }
+    }
 }
 
 // checks if all bulbs are lit
 // returns true when all bulbs are lit, false otherwise
 bool game::arebulbslit(){
-    return false;
+    bool lit = true;
+    for(int row=0; row<this->board.rows; row++){
+        for(int col=0; col<this->board.cols; col++){
+            node* currentnode = getnodeat(row, col);
+            if (currentnode->type == bulb && currentnode->powered == false) lit = false;
+        }
+    }
+    return lit;
 }
 
 // rotates a node on [row, col] coordinates clockwise by 90 degrees
 void game::rotatenode(int row, int col){
-
+    getnodeat(row, col)->rotation += 1;
+    getnodeat(row, col)->rotation %= 4;
 }
 
-node* game::getnode(int row, int col){
-    return nullptr;
+node* game::getnodeat(int row, int col){
+    return &this->board.nodes[col*this->board.cols + row];
 }

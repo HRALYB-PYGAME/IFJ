@@ -2,6 +2,7 @@
 #include "./ui_zarovka.h"
 #include "BE/game.h"
 #include "BE/gametypes.h"
+#include <iostream>
 
 Zarovka::Zarovka(QWidget *parent)
     : QMainWindow(parent)
@@ -51,7 +52,13 @@ void Zarovka::updateUI(int mode){
 
 void Zarovka::on_easyButton_clicked()
 {
-    game newgame(4, 4);
+    game maingame = game(4,4);
+    maingame.gamecreate(0);
+    std::cout << maingame.board.cols;
+    std::cout << maingame.board.rows << std::endl;
+    std::cout << maingame.arebulbslit();
+    std::cout << "done generating" << std::endl;
 
+    maingame.print();
 }
 
