@@ -16,7 +16,6 @@ Zarovka::~Zarovka()
 
 void Zarovka::on_playButton_clicked()
 {
-    ui->playButton->setText("ahoj Karle");
     this->mode = 1;
     ui->stackedWidget->setCurrentIndex(0);
 }

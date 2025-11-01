@@ -24,9 +24,9 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
-      <widget class="QWidget" name="page">
+      <widget class="QWidget" name="DifficultySelector">
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout">
@@ -151,7 +151,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="page_2">
+      <widget class="QWidget" name="MainMenu">
        <widget class="QPushButton" name="settingsButton">
         <property name="geometry">
          <rect>
