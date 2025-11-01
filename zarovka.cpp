@@ -51,7 +51,7 @@ void Zarovka::updateUI(int mode){
 
 void Zarovka::on_easyButton_clicked()
 {
-    //game newgame(4, 4);
+    game newgame(4, 4);
 
 }
 
