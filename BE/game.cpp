@@ -18,18 +18,32 @@ gameboard game::gamecreateempty(int rows, int cols){
     return newgame;
 }
 
+// creates a new level configuration
 void game::gamecreate(int difficulty){
 
 }
 
+// randomly rotates every node on the game board
 void game::randomlyrotate(){
 
 }
 
+// updates the game board by powering only nodes connected to source
 void game::update(){
 
 }
 
+// checks if all bulbs are lit
+// returns true when all bulbs are lit, false otherwise
 bool game::arebulbslit(){
     return false;
+}
+
+// rotates a node on [row, col] coordinates clockwise by 90 degrees
+void game::rotatenode(int row, int col){
+
+}
+
+node* game::getnode(int row, int col){
+    return nullptr;
 }

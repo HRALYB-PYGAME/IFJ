@@ -9,10 +9,12 @@ public:
     void randomlyrotate();
     void update();
     bool arebulbslit();
+    void rotatenode(int row, int col);
 
 private:
     gameboard board;
     gameboard gamecreateempty(int, int);
+    node* getnode(int row, int col);
 };
 
 #endif // GAME_H
