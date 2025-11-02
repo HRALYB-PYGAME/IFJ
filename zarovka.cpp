@@ -60,29 +60,6 @@ void Zarovka::on_easyButton_clicked()
 void Zarovka::turn(QPushButton *btn, int row, int col)
 {
     activegame.getnodeat(row, col)->rotation = (activegame.getnodeat(row, col)->rotation+1)%4;
-    /*nodetype buttontype = activegame.getnodeat(row, col)->type;
-    int buttonrotation = activegame.getnodeat(row, col)->rotation;
-    std::cout << buttonrotation << std::endl;
-    QPixmap pix;
-    /*switch(buttontype){
-        case empty:
-            pix = QPixmap(":/img.png");
-            break;
-        case bulb:
-            pix = QPixmap(":/zarovka.jpg");
-            break;
-        case link:
-            pix = QPixmap(":/drat.jpg");
-            break;
-        case power:
-            pix = QPixmap(":/zdroj.png");
-            break;
-    }
-    pix = QPixmap((activegame.getimage(row, col)));
-
-    //QPixmap pix(":/img.png");
-    QTransform transform;
-    transform.rotate(90*buttonrotation);*/
     QPixmap rotated = activegame.getimage(row, col);
     btn->setIcon(QIcon(rotated));
     btn->setIconSize(btn->size());
