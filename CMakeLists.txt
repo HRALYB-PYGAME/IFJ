@@ -11,11 +11,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # --- BE/CMakeLists.txt ---
 
-add_subdirectory(BE)
-
-
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
+
+add_subdirectory(BE)
 
 set(TS_FILES Zarovicky_en_GB.ts)
 
@@ -24,13 +23,19 @@ set(PROJECT_SOURCES
         zarovka.cpp
         zarovka.h
         zarovka.ui
+        resources.qrc
         ${TS_FILES}
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(Zarovicky
+
+
+qt_add_executable(Zarovicky
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+
+
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET Zarovicky APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

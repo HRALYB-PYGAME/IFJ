@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <array>
 #include <iostream>
+#include <QWidget>
 
 game::game(int rows, int cols) {
     this->board = this->gamecreateempty(rows, cols);
@@ -16,7 +17,7 @@ gameboard game::gamecreateempty(int rows, int cols){
 
     newgame.cols = cols;
     newgame.rows = rows;
-    newgame.nodes = std::vector<node>(rows*cols, {empty, { false, false, false, false }, 0, false});
+    newgame.nodes = std::vector<node>(rows*cols, {empty, { false, false, false, false }, o, 0, false});
 
     return newgame;
 }
@@ -138,6 +139,37 @@ void game::createnode(nodetype type, int row, int col, std::array<bool,4> sides)
     for(int i=0; i<4; i++){
         currentnode->sides[i] = sides[i];
     }
+
+    int sidescount = sides[0] + sides[1] + sides[2] + sides[3];
+
+    if (sidescount == 0) currentnode->shape = o;
+    if (sidescount == 1){
+        currentnode->shape = d;
+        for(int i=0; i<4; i++) currentnode->sides[i] = false;
+        currentnode->sides[up] = true;
+    }
+    if (sidescount == 2){
+        if (sides[0] == sides[2] || sides[1] == sides[3]){
+            currentnode->shape = i;
+            for(int i=0; i<4; i++) currentnode->sides[i] = false;
+            currentnode->sides[up] = true;
+            currentnode->sides[down] = true;
+        }
+        else{
+            currentnode->shape = l;
+            for(int i=0; i<4; i++) currentnode->sides[i] = false;
+            currentnode->sides[up] = true;
+            currentnode->sides[right] = true;
+        }
+    }
+    if (sidescount == 3){
+        currentnode->shape = t;
+        for(int i=0; i<4; i++) currentnode->sides[i] = true;
+        currentnode->sides[left] = false;
+    }
+    if (sidescount == 4) currentnode->shape = x;
+
+    currentnode->rotation = 0;
 }
 
 // randomly rotates every node on the game board
@@ -145,9 +177,39 @@ void game::randomlyrotate(){
     for(int row=0; row<this->board.rows; row++){
         for(int col=0; col<this->board.cols; col++){
             node* currentnode = getnodeat(row, col);
-            currentnode->rotation = rand() & 4;
+            currentnode->rotation = rand() % 4;
+            std::array<bool, 4> newsides;
+            for(int i=0; i<4; i++) newsides[i] = currentnode->sides[i-currentnode->rotation]%4;
+            for(int i=0; i<4; i++) currentnode->sides[i] = newsides[i];
         }
     }
+}
+
+QPixmap game::getimage(int row, int col){
+    node* currentnode = getnodeat(row, col);
+    nodetype buttontype = currentnode->type;
+    int buttonrotation = currentnode->rotation;
+    QPixmap pix;
+    switch(buttontype){
+        case empty:
+            pix = QPixmap(":/img.png");
+            break;
+        case bulb:
+            pix = QPixmap(":/zarovka.jpg");
+            break;
+        case link:
+            pix = QPixmap(":/drat.jpg");
+            break;
+        case power:
+            pix = QPixmap(":/zdroj.png");
+            break;
+    }
+
+    //QPixmap pix(":/img.png");
+    QTransform transform;
+    transform.rotate(90*buttonrotation);
+    QPixmap rotated = pix.transformed(transform, Qt::SmoothTransformation);
+    return rotated;
 }
 
 // updates the game board by powering only nodes connected to source

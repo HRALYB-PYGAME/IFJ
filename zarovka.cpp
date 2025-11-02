@@ -3,6 +3,11 @@
 #include "BE/game.h"
 #include "BE/gametypes.h"
 #include <iostream>
+#include "squarebutton.h"
+#include <QWidget>
+#include <QResizeEvent>
+#include <QDebug>
+#include <QFile>
 
 Zarovka::Zarovka(QWidget *parent)
     : QMainWindow(parent)
@@ -22,13 +27,6 @@ void Zarovka::on_playButton_clicked()
     this->mode = 1;
     ui->stackedWidget->setCurrentIndex(0);
 }
-
-/*void Zarovka::resizeEvent(QResizeEvent *event){
-    int size = qMin(width(), height());
-    ui->stackedWidget->setFixedSize(size, size);
-
-    QMainWindow::resizeEvent(event);
-}*/
 
 void Zarovka::updateUI(int mode){
     ui->playButton->setVisible(true);
@@ -52,13 +50,99 @@ void Zarovka::updateUI(int mode){
 
 void Zarovka::on_easyButton_clicked()
 {
-    game maingame = game(4,4);
-    maingame.gamecreate(0);
-    std::cout << maingame.board.cols;
-    std::cout << maingame.board.rows << std::endl;
-    std::cout << maingame.arebulbslit();
-    std::cout << "done generating" << std::endl;
+    ui->stackedWidget->setCurrentIndex(1);
+    QWidget *page = ui->stackedWidget->widget(1);
 
-    maingame.print();
+    activegame = game(5,5);
+    activegame.gamecreate(0);
+}
+
+void Zarovka::turn(QPushButton *btn, int row, int col)
+{
+    activegame.getnodeat(row, col)->rotation = (activegame.getnodeat(row, col)->rotation+1)%4;
+    /*nodetype buttontype = activegame.getnodeat(row, col)->type;
+    int buttonrotation = activegame.getnodeat(row, col)->rotation;
+    std::cout << buttonrotation << std::endl;
+    QPixmap pix;
+    /*switch(buttontype){
+        case empty:
+            pix = QPixmap(":/img.png");
+            break;
+        case bulb:
+            pix = QPixmap(":/zarovka.jpg");
+            break;
+        case link:
+            pix = QPixmap(":/drat.jpg");
+            break;
+        case power:
+            pix = QPixmap(":/zdroj.png");
+            break;
+    }
+    pix = QPixmap((activegame.getimage(row, col)));
+
+    //QPixmap pix(":/img.png");
+    QTransform transform;
+    transform.rotate(90*buttonrotation);*/
+    QPixmap rotated = activegame.getimage(row, col);
+    btn->setIcon(QIcon(rotated));
+    btn->setIconSize(btn->size());
+    btn->setText("");
+}
+
+void Zarovka::resizeEvent(QResizeEvent *event)
+{
+    ui->gameboard->setSpacing(0);
+    ui->gameboard->setContentsMargins(0, 0, 0, 0);
+    ui->gameboard->setAlignment(Qt::AlignLeft);
+    const int rows = 5;
+    const int cols = 5;
+
+    QWidget::resizeEvent(event);
+    QSize newsize = event->size();
+
+    int sidesize = (qMin(newsize.height(), newsize.width())/rows)*0.8;
+
+    if (ui->gameboard->isEmpty()){
+        buttons = std::vector<QPushButton*>();
+        for (int row = 0; row < rows; ++row) {
+            for (int col = 0; col < cols; ++col) {
+                QPushButton *btn = new QPushButton(QString(""));
+                btn->setFixedHeight(sidesize);
+                btn->setFixedWidth(sidesize);
+                btn->setStyleSheet(
+                    "QPushButton {"
+                    "    border: none;"
+                    "    border-radius: 0;"
+                    "    background-color: #ff0000;"
+                    "    outline: none;"
+                    "}"
+                    "QPushButton:pressed {"
+                    "    padding-left: 1px;"
+                    "    padding-top: 1px;"
+                    "}"
+                    );
+                connect(btn, &QPushButton::clicked, this, [this, row, col]() {
+                    turn(qobject_cast<QPushButton*>(sender()), row, col);
+                });
+                ui->gameboard->addWidget(btn, row, col);
+                buttons.insert(buttons.end(), btn);
+            }
+        }
+    }
+
+    for (int i = 0; i < buttons.size(); i++){
+        //QLayoutItem *item = ui->gameboard->itemAt(i);
+        QPushButton *button = buttons[i];
+        /*if (QWidget *widget = item->widget()) {
+            widget->setFixedHeight(sidesize);
+            widget->setFixedWidth(sidesize);
+            widget->setIcon(QIcon(":img.png"));
+            widget->setIconSize(widget->size());
+        }*/
+        button->setFixedHeight(sidesize);
+        button->setFixedWidth(sidesize);
+        button->setIcon(QIcon(":img.png"));
+        button->setIconSize(button->size());
+    }
 }
 

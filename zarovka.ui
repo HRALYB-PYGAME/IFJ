@@ -26,7 +26,7 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="DifficultySelector">
+      <widget class="QWidget" name="P01DifficultySelector">
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout">
@@ -151,7 +151,14 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="MainMenu">
+      <widget class="QWidget" name="P02GameBoard">
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="gameboard"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="P00MainMenu">
        <widget class="QPushButton" name="settingsButton">
         <property name="geometry">
          <rect>

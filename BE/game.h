@@ -2,6 +2,8 @@
 #define GAME_H
 #include "gametypes.h"
 #include <array>
+#include <string>
+#include <QWidget>
 class game
 {
 public:
@@ -13,10 +15,11 @@ public:
     bool arebulbslit();
     void rotatenode(int row, int col);
     void print();
+    node* getnodeat(int row, int col);
+    QPixmap getimage(int row, int col);
 
 private:
     gameboard gamecreateempty(int, int);
-    node* getnodeat(int row, int col);
     void unpowernodes();
     void recursiveupdate(int row, int col);
     void createnode(nodetype type, int row, int col, std::array<bool,4> sides);

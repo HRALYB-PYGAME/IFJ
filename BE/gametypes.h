@@ -17,6 +17,15 @@ enum side {
     left
 };
 
+enum nodeshape {
+    o, // bez zadnych dratu
+    d, // s jednim dratem nahoru
+    i, // s dratem nahoru a dolu
+    l, // s draty nahoru a doprava
+    t, // s draty nahoru, doprava a dolu
+    x  // vsude
+};
+
 struct position {
     int row;
     int col;
@@ -25,6 +34,7 @@ struct position {
 struct node {
     nodetype type;
     bool sides[4];
+    nodeshape shape;
     int rotation; // number from 0-3
     bool powered;
 };

@@ -9,6 +9,9 @@ class Zarovka;
 }
 QT_END_NAMESPACE
 
+#include <QPushButton>
+#include "BE/game.h"
+
 class Zarovka : public QMainWindow
 {
     Q_OBJECT
@@ -17,6 +20,9 @@ public:
     Zarovka(QWidget *parent = nullptr);
     ~Zarovka();
     int mode;
+    void turn(QPushButton *btn, int row, int col);
+    game activegame = game(0,0);
+    std::vector<QPushButton*> buttons;
 
 private slots:
     void on_playButton_clicked();
@@ -26,6 +32,9 @@ private slots:
 
 private:
     Ui::Zarovka *ui;
+
+protected:
+    void resizeEvent(QResizeEvent *event) override;
 
 };
 #endif // ZAROVKA_H

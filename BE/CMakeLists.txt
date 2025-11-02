@@ -1,8 +1,11 @@
 add_library(BE_lib
-    be.cpp
+    game.cpp
     game.h
-    game.h game.cpp
-    gametypes.h
+    # other BE sources
 )
 
-target_include_directories(BE_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+# If QWidget is used only in .cpp files:
+target_link_libraries(BE_lib PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+
+# If QWidget appears in BE public headers (included by other targets):
+# target_link_libraries(BE_lib PUBLIC Qt${QT_VERSION_MAJOR}::Widgets)
