@@ -50,11 +50,11 @@ void Zarovka::updateUI(int mode){
 
 void Zarovka::on_easyButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(1);
-    QWidget *page = ui->stackedWidget->widget(1);
-
     activegame = game(5,5);
     activegame.gamecreate(0);
+
+    ui->stackedWidget->setCurrentIndex(1);
+    QWidget *page = ui->stackedWidget->widget(1);
 }
 
 void Zarovka::turn(QPushButton *btn, int row, int col)
@@ -108,18 +108,14 @@ void Zarovka::resizeEvent(QResizeEvent *event)
     }
 
     for (int i = 0; i < buttons.size(); i++){
-        //QLayoutItem *item = ui->gameboard->itemAt(i);
+        std::cout << i/cols << " " << i%cols << std::endl;
         QPushButton *button = buttons[i];
-        /*if (QWidget *widget = item->widget()) {
-            widget->setFixedHeight(sidesize);
-            widget->setFixedWidth(sidesize);
-            widget->setIcon(QIcon(":img.png"));
-            widget->setIconSize(widget->size());
-        }*/
         button->setFixedHeight(sidesize);
         button->setFixedWidth(sidesize);
-        button->setIcon(QIcon(":img.png"));
+        if (ui->stackedWidget->currentIndex() == 1)
+            button->setIcon(QIcon(activegame.getimage(i/cols, i%cols)));
+        else
+            button->setIcon(QIcon(":img.png"));
         button->setIconSize(button->size());
     }
 }
-

@@ -8,6 +8,20 @@
 
 game::game(int rows, int cols) {
     this->board = this->gamecreateempty(rows, cols);
+    rebuildCache();
+}
+
+
+void game::rebuildCache() {
+    std::array<std::string, 14> imagenames = {":/Empty.png", ":/linkD.png", ":/linkDpowered.png", ":/linkI.png", ":/linkIpowered.png", ":/linkL.png", ":/linkLpowered.png", ":/linkT.png", ":/linkTpowered.png", ":/linkX.png", ":/linkXpowered.png", ":/bulb.png", ":/bulbpowered.png", ":/power.png"};
+    for (int image = 0; image < 14; image++) {
+        QPixmap baseimage(imagenames[image].c_str());
+        for (int rot = 0; rot < 4; ++rot) {
+            QTransform t;
+            t.rotate(90 * rot);
+            cachedImages[image][rot] = baseimage.transformed(t, Qt::FastTransformation);
+        }
+    }
 }
 
 gameboard game::gamecreateempty(int rows, int cols){
@@ -174,6 +188,7 @@ void game::createnode(nodetype type, int row, int col, std::array<bool,4> sides)
 
 // randomly rotates every node on the game board
 void game::randomlyrotate(){
+    return;
     for(int row=0; row<this->board.rows; row++){
         for(int col=0; col<this->board.cols; col++){
             node* currentnode = getnodeat(row, col);
@@ -189,27 +204,27 @@ QPixmap game::getimage(int row, int col){
     node* currentnode = getnodeat(row, col);
     nodetype buttontype = currentnode->type;
     int buttonrotation = currentnode->rotation;
-    QPixmap pix;
+    bool powered = currentnode->powered;
+
+    int idx = 0;  // Empty
+
     switch(buttontype){
-        case empty:
-            pix = QPixmap(":/img.png");
-            break;
-        case bulb:
-            pix = QPixmap(":/zarovka.jpg");
-            break;
-        case link:
-            pix = QPixmap(":/drat.jpg");
-            break;
-        case power:
-            pix = QPixmap(":/zdroj.png");
-            break;
+    case empty:  idx = 0;  break;
+    case power:  idx = 13; break;
+    case bulb:   idx = powered ? 12 : 11; break;
+    case link:
+        switch(currentnode->shape){
+        case d: idx = powered ? 2 : 1; break;
+        case i: idx = powered ? 4 : 3; break;
+        case l: idx = powered ? 6 : 5; break;
+        case t: idx = powered ? 8 : 7; break;
+        case x: idx = powered ? 10 : 9; break;
+        default: idx = 0;
+        }
+        break;
     }
 
-    //QPixmap pix(":/img.png");
-    QTransform transform;
-    transform.rotate(90*buttonrotation);
-    QPixmap rotated = pix.transformed(transform, Qt::SmoothTransformation);
-    return rotated;
+    return cachedImages[idx][buttonrotation];  // ← ALREADY ROTATED!
 }
 
 // updates the game board by powering only nodes connected to source
@@ -218,11 +233,26 @@ void game::update(){
     recursiveupdate(this->board.powerrow, this->board.powercol);
 }
 
+void game::rotate(int row, int col){
+    node* activenode = getnodeat(row, col);
+    activenode->rotation = (activenode->rotation + 1)%4;
+    std::array<bool, 4> updated = {false, false, false, false};
+    updated[0] = activenode->sides[3];
+    updated[1] = activenode->sides[0];
+    updated[2] = activenode->sides[1];
+    updated[3] = activenode->sides[2];
+    for(int i=0; i<4; i++){
+        activenode->sides[i] = updated[i];
+    }
+}
+
 void game::recursiveupdate(int row, int col){
     if (row < 0 || col < 0 || row >= this->board.rows || col >= this->board.cols)
         return;
     if (getnodeat(row, col)->powered)
         return;
+
+    std::cout << "powering node" << row << col << std::endl;
 
     node* currentnode = getnodeat(row, col);
     currentnode->powered = true;

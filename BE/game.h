@@ -17,12 +17,15 @@ public:
     void print();
     node* getnodeat(int row, int col);
     QPixmap getimage(int row, int col);
+    void rotate(int row, int col);
 
 private:
     gameboard gamecreateempty(int, int);
     void unpowernodes();
     void recursiveupdate(int row, int col);
     void createnode(nodetype type, int row, int col, std::array<bool,4> sides);
+    QPixmap cachedImages[14][4];
+    void rebuildCache();
 };
 
 #endif // GAME_H

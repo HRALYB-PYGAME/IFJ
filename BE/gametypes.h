@@ -26,6 +26,23 @@ enum nodeshape {
     x  // vsude
 };
 
+enum imagename {
+    Empty,
+    LinkD,
+    LinkDpowered,
+    LinkI,
+    LinkIpowered,
+    LinkL,
+    LinkLpowered,
+    LinkT,
+    LinkTpowered,
+    LinkX,
+    LinkXpowered,
+    Bulb,
+    Bulbpowered,
+    Source
+};
+
 struct position {
     int row;
     int col;

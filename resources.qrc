@@ -8,5 +8,19 @@
         <file>drat.jpg</file>
         <file>zarovka.jpg</file>
         <file>zdroj.png</file>
+        <file>bulb.png</file>
+        <file>bulbpowered.png</file>
+        <file>linkD.png</file>
+        <file>linkDpowered.png</file>
+        <file>linkI.png</file>
+        <file>linkIpowered.png</file>
+        <file>linkL.png</file>
+        <file>linkLpowered.png</file>
+        <file>linkT.png</file>
+        <file>linkTpowered.png</file>
+        <file>linkX.png</file>
+        <file>linkXpowered.png</file>
+        <file>power.png</file>
+        <file>Empty.png</file>
     </qresource>
 </RCC>
