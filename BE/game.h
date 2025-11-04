@@ -22,7 +22,7 @@ public:
 private:
     gameboard gamecreateempty(int, int);
     void unpowernodes();
-    void recursiveupdate(int row, int col);
+    void recursiveupdate(int row, int col, side mustbe);
     void createnode(nodetype type, int row, int col, std::array<bool,4> sides);
     QPixmap cachedImages[14][4];
     void rebuildCache();

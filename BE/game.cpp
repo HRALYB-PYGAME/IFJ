@@ -62,7 +62,6 @@ void game::gamecreate(int difficulty){
 
     float probability = 0.02;
 
-    std::cout << "before loop" << std::endl;
     // path generation
     while (((double) rand() / (RAND_MAX)) > probability){
         int direction = rand() % 4;
@@ -107,6 +106,8 @@ void game::gamecreate(int difficulty){
         position current = path[i];
         position next = path[i+1];
 
+        std::cout << previous.row << previous.col << current.row << current.col << next.row << next.col << std::endl;
+
         std::array<bool, 4> sides = {false, false, false, false};
         if(current.col - previous.col == 1) sides[left] = true;
         if(current.col - previous.col == -1) sides[right] = true;
@@ -117,6 +118,8 @@ void game::gamecreate(int difficulty){
         if(next.row - current.row == 1) sides[down] = true;
         if(next.row - current.row == -1) sides[up] = true;
         createnode(link, current.row, current.col, sides);
+        std::cout << sides[0] << sides[1] << sides[2] << sides[3] << std::endl;
+        std::cout << "----" << std::endl;
     }
 
     std::cout << "after second loop" << std::endl;
@@ -230,7 +233,7 @@ QPixmap game::getimage(int row, int col){
 // updates the game board by powering only nodes connected to source
 void game::update(){
     unpowernodes();
-    recursiveupdate(this->board.powerrow, this->board.powercol);
+    recursiveupdate(this->board.powerrow, this->board.powercol, none);
 }
 
 void game::rotate(int row, int col){
@@ -246,24 +249,31 @@ void game::rotate(int row, int col){
     }
 }
 
-void game::recursiveupdate(int row, int col){
+void game::recursiveupdate(int row, int col, side mustbe){
     if (row < 0 || col < 0 || row >= this->board.rows || col >= this->board.cols)
         return;
-    if (getnodeat(row, col)->powered)
+    if (mustbe != none && !getnodeat(row, col)->sides[mustbe])
         return;
-
-    std::cout << "powering node" << row << col << std::endl;
+    if (getnodeat(row, col)->powered){
+        std::cout << "node" << row << col << "already powered" << std::endl;
+        return;
+    }
 
     node* currentnode = getnodeat(row, col);
+
+    std::cout << "powering node" << row << col << std::endl;
+    std::cout << "node have links at" << currentnode->sides[up] << currentnode->sides[1] <<currentnode->sides[2] <<currentnode->sides[3] << std::endl;
+
+
     currentnode->powered = true;
     if (currentnode->sides[up])
-        recursiveupdate(row-1, col);
+        recursiveupdate(row-1, col, down);
     if (currentnode->sides[right])
-        recursiveupdate(row, col+1);
+        recursiveupdate(row, col+1, left);
     if (currentnode->sides[down])
-        recursiveupdate(row+1, col);
+        recursiveupdate(row+1, col, up);
     if (currentnode->sides[left])
-        recursiveupdate(row, col-1);
+        recursiveupdate(row, col-1, right);
 }
 
 void game::unpowernodes(){

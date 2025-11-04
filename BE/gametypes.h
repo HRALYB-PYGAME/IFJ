@@ -14,7 +14,8 @@ enum side {
     up,
     right,
     down,
-    left
+    left,
+    none
 };
 
 enum nodeshape {

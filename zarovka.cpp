@@ -59,11 +59,28 @@ void Zarovka::on_easyButton_clicked()
 
 void Zarovka::turn(QPushButton *btn, int row, int col)
 {
-    activegame.getnodeat(row, col)->rotation = (activegame.getnodeat(row, col)->rotation+1)%4;
+    //activegame.getnodeat(row, col)->rotation = (activegame.getnodeat(row, col)->rotation+1)%4;
+    std::cout << "sides before rotate" << activegame.getnodeat(row, col)->sides[0] << activegame.getnodeat(row, col)->sides[1] << activegame.getnodeat(row, col)->sides[2] << activegame.getnodeat(row, col)->sides[3] << std::endl;
+    activegame.rotate(row, col);
     QPixmap rotated = activegame.getimage(row, col);
     btn->setIcon(QIcon(rotated));
     btn->setIconSize(btn->size());
     btn->setText("");
+    activegame.update();
+    updateboard(buttons[0]->width(), 5);
+}
+
+void Zarovka::updateboard(int sidesize, int cols){
+    for (int i = 0; i < buttons.size(); i++){
+        QPushButton *button = buttons[i];
+        button->setFixedHeight(sidesize);
+        button->setFixedWidth(sidesize);
+        if (ui->stackedWidget->currentIndex() == 1)
+            button->setIcon(QIcon(activegame.getimage(i/cols, i%cols)));
+        else
+            button->setIcon(QIcon(":img.png"));
+        button->setIconSize(button->size());
+    }
 }
 
 void Zarovka::resizeEvent(QResizeEvent *event)
@@ -107,15 +124,5 @@ void Zarovka::resizeEvent(QResizeEvent *event)
         }
     }
 
-    for (int i = 0; i < buttons.size(); i++){
-        std::cout << i/cols << " " << i%cols << std::endl;
-        QPushButton *button = buttons[i];
-        button->setFixedHeight(sidesize);
-        button->setFixedWidth(sidesize);
-        if (ui->stackedWidget->currentIndex() == 1)
-            button->setIcon(QIcon(activegame.getimage(i/cols, i%cols)));
-        else
-            button->setIcon(QIcon(":img.png"));
-        button->setIconSize(button->size());
-    }
+    updateboard(sidesize, cols);
 }

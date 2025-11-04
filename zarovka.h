@@ -24,6 +24,8 @@ public:
     game activegame = game(0,0);
     std::vector<QPushButton*> buttons;
 
+    void updateboard(int sidesize);
+    void updateboard(int sidesize, int cols);
 private slots:
     void on_playButton_clicked();
     void updateUI(int mode);
