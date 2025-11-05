@@ -36,6 +36,7 @@ qt_add_executable(Zarovicky
 
 
 
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET Zarovicky APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

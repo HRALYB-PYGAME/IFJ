@@ -8,6 +8,7 @@
 #include <QResizeEvent>
 #include <QDebug>
 #include <QFile>
+#include <QResizeEvent>
 
 Zarovka::Zarovka(QWidget *parent)
     : QMainWindow(parent)
@@ -55,12 +56,13 @@ void Zarovka::on_easyButton_clicked()
 
     ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);
+
+    QResizeEvent event(this->size(), this->size());
+    QCoreApplication::sendEvent(this, &event);
 }
 
 void Zarovka::turn(QPushButton *btn, int row, int col)
 {
-    //activegame.getnodeat(row, col)->rotation = (activegame.getnodeat(row, col)->rotation+1)%4;
-    std::cout << "sides before rotate" << activegame.getnodeat(row, col)->sides[0] << activegame.getnodeat(row, col)->sides[1] << activegame.getnodeat(row, col)->sides[2] << activegame.getnodeat(row, col)->sides[3] << std::endl;
     activegame.rotate(row, col);
     QPixmap rotated = activegame.getimage(row, col);
     btn->setIcon(QIcon(rotated));
@@ -68,6 +70,9 @@ void Zarovka::turn(QPushButton *btn, int row, int col)
     btn->setText("");
     activegame.update();
     updateboard(buttons[0]->width(), 5);
+    if (activegame.arebulbslit()){
+        ui->stackedWidget->setCurrentIndex(2);
+    }
 }
 
 void Zarovka::updateboard(int sidesize, int cols){
@@ -122,6 +127,7 @@ void Zarovka::resizeEvent(QResizeEvent *event)
                 buttons.insert(buttons.end(), btn);
             }
         }
+        updateboard(sidesize, cols);
     }
 
     updateboard(sidesize, cols);

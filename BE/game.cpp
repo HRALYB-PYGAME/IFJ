@@ -99,14 +99,11 @@ void game::gamecreate(int difficulty){
         }
     }
 
-    std::cout << "after loop" << std::endl;
 
     for(int i=1; i < path.size() - 1; i++){
         position previous = path[i-1];
         position current = path[i];
         position next = path[i+1];
-
-        std::cout << previous.row << previous.col << current.row << current.col << next.row << next.col << std::endl;
 
         std::array<bool, 4> sides = {false, false, false, false};
         if(current.col - previous.col == 1) sides[left] = true;
@@ -118,11 +115,8 @@ void game::gamecreate(int difficulty){
         if(next.row - current.row == 1) sides[down] = true;
         if(next.row - current.row == -1) sides[up] = true;
         createnode(link, current.row, current.col, sides);
-        std::cout << sides[0] << sides[1] << sides[2] << sides[3] << std::endl;
-        std::cout << "----" << std::endl;
     }
 
-    std::cout << "after second loop" << std::endl;
     position current = path[path.size()-1];
     position previous = path[path.size()-2];
     std::array<bool, 4> sides = {false, false, false, false};
@@ -132,9 +126,9 @@ void game::gamecreate(int difficulty){
     if(current.row - previous.row == -1) sides[down] = true;
     createnode(bulb, current.row, current.col, sides);
 
-    std::cout << "before random rotate" << std::endl;
     randomlyrotate();
-    std::cout << "after random rotate" << std::endl;
+
+    update();
 }
 
 void game::print(){
