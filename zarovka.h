@@ -44,6 +44,7 @@ private:
 
     void loadSettings();
     void applySettings();
+    void saveSettings();
     void updateColorButtons();
 
 protected:

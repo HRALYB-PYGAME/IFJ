@@ -10,6 +10,8 @@
 #include <QFile>
 #include <QResizeEvent>
 #include <QSettings>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 
 Zarovka::Zarovka(QWidget *parent)
@@ -150,20 +152,50 @@ void Zarovka::resizeEvent(QResizeEvent *event)
     updateboard(sidesize, cols);
 }
 
+#include <QJsonDocument>
+#include <QJsonObject>
+
 void Zarovka::loadSettings()
 {
-    QSettings settings("settings.ini", QSettings::IniFormat);
+    QFile file("settings.json");
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QByteArray data = file.readAll();
+        file.close();
 
-    selectedBgColor = settings.value("backgroundColor", QColor(0, 0, 0)).value<QColor>();
+        QJsonDocument doc = QJsonDocument::fromJson(data);
+        QJsonObject obj = doc.object();
+
+        if (obj.contains("backgroundColor")) {
+            QString colorStr = obj["backgroundColor"].toString();
+            selectedBgColor = QColor(colorStr);
+        } else {
+            selectedBgColor = QColor(0, 0, 0);
+        }
+    } else {
+        selectedBgColor = QColor(0, 0, 0);
+    }
 
     updateColorButtons();
+}
+
+void Zarovka::saveSettings()
+{
+    QJsonObject obj;
+    obj["backgroundColor"] = selectedBgColor.name();
+
+    QJsonDocument doc(obj);
+
+    QFile file("settings.json");
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        file.write(doc.toJson());
+        file.close();
+    }
 }
 
 void Zarovka::applySettings()
 {
     QString style = QString("QMainWindow { background-color: %1; }").arg(selectedBgColor.name());
     this->setStyleSheet(style);
-
     updateColorButtons();
 }
 
@@ -172,21 +204,18 @@ void Zarovka::updateColorButtons()
     ui->colorWhiteButton->setStyleSheet(
         "background-color: #969696; "
         "min-width: 20px; min-height: 20px; "
-
         "border-radius: 5px;"
         );
 
     ui->colorBlackButton->setStyleSheet(
         "background-color: black; "
         "min-width: 20px; min-height: 20px; "
-
         "border-radius: 5px;"
         );
 
     ui->colorBlueButton->setStyleSheet(
         "background-color: #003366; "
         "min-width: 20px; min-height: 20px; "
-
         "border-radius: 5px;"
         );
 
@@ -220,25 +249,19 @@ void Zarovka::on_colorWhiteButton_clicked()
 {
     selectedBgColor = QColor(150, 150, 150);
     applySettings();
-
-    QSettings settings("settings.ini", QSettings::IniFormat);
-    settings.setValue("backgroundColor", selectedBgColor);
+    saveSettings();
 }
 
 void Zarovka::on_colorBlackButton_clicked()
 {
     selectedBgColor = QColor(0, 0, 0);
     applySettings();
-
-    QSettings settings("settings.ini", QSettings::IniFormat);
-    settings.setValue("backgroundColor", selectedBgColor);
+    saveSettings();
 }
 
 void Zarovka::on_colorBlueButton_clicked()
 {
     selectedBgColor = QColor(0, 51, 102);
     applySettings();
-
-    QSettings settings("settings.ini", QSettings::IniFormat);
-    settings.setValue("backgroundColor", selectedBgColor);
+    saveSettings();
 }
