@@ -152,9 +152,6 @@ void Zarovka::resizeEvent(QResizeEvent *event)
     updateboard(sidesize, cols);
 }
 
-#include <QJsonDocument>
-#include <QJsonObject>
-
 void Zarovka::loadSettings()
 {
     QFile file("settings.json");
