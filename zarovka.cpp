@@ -9,6 +9,8 @@
 #include <QDebug>
 #include <QFile>
 #include <QResizeEvent>
+#include <QSettings>
+
 
 Zarovka::Zarovka(QWidget *parent)
     : QMainWindow(parent)
@@ -16,6 +18,11 @@ Zarovka::Zarovka(QWidget *parent)
 {
     ui->setupUi(this);
     this->mode = 0;
+
+    selectedBgColor = QColor(0, 0, 0);  // default background color
+    ui->stackedWidget->setCurrentIndex(3);
+    loadSettings();
+    applySettings();
 }
 
 Zarovka::~Zarovka()
@@ -141,4 +148,97 @@ void Zarovka::resizeEvent(QResizeEvent *event)
     }
 
     updateboard(sidesize, cols);
+}
+
+void Zarovka::loadSettings()
+{
+    QSettings settings("settings.ini", QSettings::IniFormat);
+
+    selectedBgColor = settings.value("backgroundColor", QColor(0, 0, 0)).value<QColor>();
+
+    updateColorButtons();
+}
+
+void Zarovka::applySettings()
+{
+    QString style = QString("QMainWindow { background-color: %1; }").arg(selectedBgColor.name());
+    this->setStyleSheet(style);
+
+    updateColorButtons();
+}
+
+void Zarovka::updateColorButtons()
+{
+    ui->colorWhiteButton->setStyleSheet(
+        "background-color: #969696; "
+        "min-width: 20px; min-height: 20px; "
+
+        "border-radius: 5px;"
+        );
+
+    ui->colorBlackButton->setStyleSheet(
+        "background-color: black; "
+        "min-width: 20px; min-height: 20px; "
+
+        "border-radius: 5px;"
+        );
+
+    ui->colorBlueButton->setStyleSheet(
+        "background-color: #003366; "
+        "min-width: 20px; min-height: 20px; "
+
+        "border-radius: 5px;"
+        );
+
+    if (selectedBgColor == QColor(150, 150, 150)) {
+        ui->colorWhiteButton->setStyleSheet(
+            "background-color: #969696; "
+            "min-width: 20px; min-height: 20px; "
+            "border: 4px solid red;"
+            "border-radius: 5px;"
+            );
+    }
+    else if (selectedBgColor == QColor(0, 0, 0)) {
+        ui->colorBlackButton->setStyleSheet(
+            "background-color: black; "
+            "min-width: 20px; min-height: 20px; "
+            "border: 4px solid red;"
+            "border-radius: 5px;"
+            );
+    }
+    else if (selectedBgColor == QColor(0, 51, 102)) {
+        ui->colorBlueButton->setStyleSheet(
+            "background-color: #003366; "
+            "min-width: 20px; min-height: 20px; "
+            "border: 4px solid red;"
+            "border-radius: 5px;"
+            );
+    }
+}
+
+void Zarovka::on_colorWhiteButton_clicked()
+{
+    selectedBgColor = QColor(150, 150, 150);
+    applySettings();
+
+    QSettings settings("settings.ini", QSettings::IniFormat);
+    settings.setValue("backgroundColor", selectedBgColor);
+}
+
+void Zarovka::on_colorBlackButton_clicked()
+{
+    selectedBgColor = QColor(0, 0, 0);
+    applySettings();
+
+    QSettings settings("settings.ini", QSettings::IniFormat);
+    settings.setValue("backgroundColor", selectedBgColor);
+}
+
+void Zarovka::on_colorBlueButton_clicked()
+{
+    selectedBgColor = QColor(0, 51, 102);
+    applySettings();
+
+    QSettings settings("settings.ini", QSettings::IniFormat);
+    settings.setValue("backgroundColor", selectedBgColor);
 }

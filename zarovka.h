@@ -34,8 +34,17 @@ private slots:
 
     void on_easyButton_clicked();
 
+    void on_colorWhiteButton_clicked();
+    void on_colorBlackButton_clicked();
+    void on_colorBlueButton_clicked();
+
 private:
     Ui::Zarovka *ui;
+    QColor selectedBgColor;  // current bg color
+
+    void loadSettings();
+    void applySettings();
+    void updateColorButtons();
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
