@@ -29,6 +29,16 @@ void Zarovka::on_playButton_clicked()
     ui->stackedWidget->setCurrentIndex(0);
 }
 
+void Zarovka::on_settingsButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(4);
+}
+
+void Zarovka::on_backButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(3);
+}
+
 void Zarovka::updateUI(int mode){
     ui->playButton->setVisible(true);
     //QBitmap* bitmap = new QBitmap(ui->playButton->width(), ui->playButton->height());

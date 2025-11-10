@@ -28,6 +28,8 @@ public:
     void updateboard(int sidesize, int cols);
 private slots:
     void on_playButton_clicked();
+    void on_settingsButton_clicked();
+    void on_backButton_clicked();
     void updateUI(int mode);
 
     void on_easyButton_clicked();
