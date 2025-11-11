@@ -19,6 +19,7 @@ public:
     QPixmap getimage(int row, int col);
     void rotate(int row, int col);
 
+    void savegame();
 private:
     gameboard gamecreateempty(int, int);
     void unpowernodes();

@@ -5,12 +5,53 @@
 #include <array>
 #include <iostream>
 #include <QWidget>
+#include <QFile>
+#include <QDataStream>
 
 game::game(int rows, int cols) {
     this->board = this->gamecreateempty(rows, cols);
+    savegame();
     rebuildCache();
 }
 
+void game::savegame(){
+    // soubor .szgf
+    // 1. radek [(int)x, (int)y] - x je sirka a y je vyska herniho pole
+    // nasleduje y radku v kazdem bude 3x cisel
+    // kazda trojice cisel bude slozena z [(int)typ, (int)tvar, (int)rotace]
+    // typ:
+    /*
+    empty,= 0
+    bulb, = 1
+    link, = 2
+    power = 3
+    */
+    /*
+    o = 0, // bez zadnych dratu
+    d = 1, // s jednim dratem nahoru
+    i = 2, // s dratem nahoru a dolu
+    l = 3, // s draty nahoru a doprava
+    t = 4, // s draty nahoru, doprava a dolu
+    x = 5  // vsude
+    */
+    QFile file("hra.zvaz");
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QDataStream out(&file);
+        out << 5;
+        out << 5;
+        file.close();
+    }
+
+    if (file.open(QIODevice::ReadOnly)) {
+        QDataStream in(&file);
+        int nactene;
+        in >> nactene;
+        std::cout << nactene << "1. hodnota" << std::endl;
+        in >> nactene;
+        std::cout << nactene << "2. hodnota" << std::endl;
+        file.close();
+    }
+}
 
 void game::rebuildCache() {
     std::array<std::string, 14> imagenames = {":/Empty.png", ":/linkD.png", ":/linkDpowered.png", ":/linkI.png", ":/linkIpowered.png", ":/linkL.png", ":/linkLpowered.png", ":/linkT.png", ":/linkTpowered.png", ":/linkX.png", ":/linkXpowered.png", ":/bulb.png", ":/bulbpowered.png", ":/power.png"};
