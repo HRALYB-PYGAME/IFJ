@@ -131,7 +131,7 @@ void Zarovka::resizeEvent(QResizeEvent *event)
                     "QPushButton {"
                     "    border: none;"
                     "    border-radius: 0;"
-                    "    background-color: #ff0000;"
+                    "    background-color: #abcdef;"
                     "    outline: none;"
                     "}"
                     "QPushButton:pressed {"
@@ -148,6 +148,8 @@ void Zarovka::resizeEvent(QResizeEvent *event)
         }
         updateboard(sidesize, cols);
     }
+
+    //applySettings();
 
     updateboard(sidesize, cols);
 }
@@ -193,6 +195,9 @@ void Zarovka::applySettings()
 {
     QString style = QString("QMainWindow { background-color: %1; }").arg(selectedBgColor.name());
     this->setStyleSheet(style);
+    //for(QPushButton* button : buttons){
+    //    button->setStyleSheet(style);
+    //}
     updateColorButtons();
 }
 
@@ -262,3 +267,9 @@ void Zarovka::on_colorBlueButton_clicked()
     applySettings();
     saveSettings();
 }
+
+void Zarovka::on_pushButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(3);
+}
+

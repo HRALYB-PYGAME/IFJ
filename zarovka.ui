@@ -24,7 +24,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="P01DifficultySelector">
        <layout class="QGridLayout" name="gridLayout_3">
@@ -453,8 +453,7 @@
           <string notr="true">background-color: red;</string>
          </property>
          <property name="text">
-          <string>
-</string>
+          <string/>
          </property>
         </widget>
        </widget>
@@ -591,7 +590,7 @@
      <x>0</x>
      <y>0</y>
      <width>804</width>
-     <height>17</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

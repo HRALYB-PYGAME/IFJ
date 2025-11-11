@@ -38,6 +38,8 @@ private slots:
     void on_colorBlackButton_clicked();
     void on_colorBlueButton_clicked();
 
+    void on_pushButton_clicked();
+
 private:
     Ui::Zarovka *ui;
     QColor selectedBgColor;  // current bg color
