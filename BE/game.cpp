@@ -10,7 +10,6 @@
 
 game::game(int rows, int cols) {
     this->board = this->gamecreateempty(rows, cols);
-    savegame();
     rebuildCache();
 }
 
@@ -37,8 +36,13 @@ void game::savegame(){
     QFile file("hra.zvaz");
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QDataStream out(&file);
-        out << 5;
-        out << 5;
+        out << board.rows;
+        out << board.cols;
+        for(int i=0; i<board.rows*board.cols; i++){
+            out << board.nodes[i].type;
+            out << board.nodes[i].shape;
+            out << board.nodes[i].rotation;
+        }
         file.close();
     }
 
@@ -226,14 +230,16 @@ void game::createnode(nodetype type, int row, int col, std::array<bool,4> sides)
 
 // randomly rotates every node on the game board
 void game::randomlyrotate(){
-    return;
     for(int row=0; row<this->board.rows; row++){
         for(int col=0; col<this->board.cols; col++){
             node* currentnode = getnodeat(row, col);
+            std::cout << currentnode->sides[0] << currentnode->sides[1] << currentnode->sides[2] << currentnode->sides[3] << "bef" << std::endl;
             currentnode->rotation = rand() % 4;
             std::array<bool, 4> newsides;
-            for(int i=0; i<4; i++) newsides[i] = currentnode->sides[i-currentnode->rotation]%4;
+            for(int i=0; i<4; i++) newsides[i] = currentnode->sides[(i-currentnode->rotation+4)%4];
             for(int i=0; i<4; i++) currentnode->sides[i] = newsides[i];
+
+            std::cout << currentnode->sides[0] << currentnode->sides[1] << currentnode->sides[2] << currentnode->sides[3] << "aft" << std::endl;
         }
     }
 }
