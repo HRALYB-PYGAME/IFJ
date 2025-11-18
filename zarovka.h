@@ -42,6 +42,14 @@ private slots:
 
     void on_pushButton_3_clicked();
 
+    void on_widthplus_clicked();
+
+    void on_widthminus_clicked();
+
+    void on_heightplus_clicked();
+
+    void on_heightminus_clicked();
+
 private:
     Ui::Zarovka *ui;
     QColor selectedBgColor;  // current bg color

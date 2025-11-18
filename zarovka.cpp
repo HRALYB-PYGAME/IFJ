@@ -279,3 +279,39 @@ void Zarovka::on_pushButton_3_clicked()
     ui->stackedWidget->setCurrentIndex(5);
 }
 
+
+void Zarovka::on_widthplus_clicked()
+{
+    auto current = ui->widthlabel->text().toInt();
+    current++;
+    if (current > 20) current = 20;
+    ui->widthlabel->setText(QString::number(current));
+}
+
+
+void Zarovka::on_widthminus_clicked()
+{
+    auto current = ui->widthlabel->text().toInt();
+    current--;
+    if (current < 1) current = 1;
+    ui->widthlabel->setText(QString::number(current));
+}
+
+
+void Zarovka::on_heightplus_clicked()
+{
+    auto current = ui->heightlabel->text().toInt();
+    current++;
+    if (current > 20) current = 20;
+    ui->heightlabel->setText(QString::number(current));
+}
+
+
+void Zarovka::on_heightminus_clicked()
+{
+    auto current = ui->heightlabel->text().toInt();
+    current--;
+    if (current < 1) current = 1;
+    ui->heightlabel->setText(QString::number(current));
+}
+
