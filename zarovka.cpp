@@ -273,3 +273,9 @@ void Zarovka::on_pushButton_clicked()
     ui->stackedWidget->setCurrentIndex(3);
 }
 
+
+void Zarovka::on_pushButton_3_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(5);
+}
+
