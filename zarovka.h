@@ -26,7 +26,7 @@ public:
 
     void updateboard(int sidesize);
     void updateboard(int sidesize, int cols);
-    void createGame(int w, int h);
+    void createGame(int w, int h, bool empty = false);
 private slots:
     void on_playButton_clicked();
     void on_settingsButton_clicked();

@@ -70,7 +70,7 @@ void Zarovka::updateUI(int mode){
 
 void Zarovka::on_easyButton_clicked()
 {
-    createGame(5,3);
+    createGame(50,50);
 
     ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);
@@ -79,9 +79,9 @@ void Zarovka::on_easyButton_clicked()
     QCoreApplication::sendEvent(this, &event);
 }
 
-void Zarovka::createGame(int w, int h){
+void Zarovka::createGame(int w, int h, bool empty){
     activegame = game(w, h);
-    activegame.gamecreate(0);
+    if (!empty) activegame.gamecreate(0);
 }
 
 void Zarovka::turn(QPushButton *btn, int row, int col)
@@ -103,13 +103,12 @@ void Zarovka::updateboard(int sidesize, int cols){
         QPushButton *button = buttons[i];
         button->setFixedHeight(sidesize);
         button->setFixedWidth(sidesize);
-        std::cout << "getting img for" << i/cols << " " << i%cols << std::endl;
+        //std::cout << "getting img for" << i/cols << " " << i%cols << std::endl;
         if (ui->stackedWidget->currentIndex() == 1)
             button->setIcon(QIcon(activegame.getimage(i/cols, i%cols)));
         else
             button->setIcon(QIcon(":img.png"));
         button->setIconSize(button->size());
-        activegame.print();
     }
 }
 
@@ -299,7 +298,9 @@ void Zarovka::on_widthminus_clicked()
 {
     auto current = ui->widthlabel->text().toInt();
     current--;
-    if (current < 1) current = 1;
+    if (current < 2) current = 2;
+    if (ui->heightlabel->text().toInt() > current)
+        ui->heightlabel->setText(QString::number(current));
     ui->widthlabel->setText(QString::number(current));
 }
 
@@ -309,6 +310,8 @@ void Zarovka::on_heightplus_clicked()
     auto current = ui->heightlabel->text().toInt();
     current++;
     if (current > 20) current = 20;
+    if (ui->widthlabel->text().toInt() < current)
+        ui->widthlabel->setText(QString::number(current));
     ui->heightlabel->setText(QString::number(current));
 }
 
@@ -317,14 +320,14 @@ void Zarovka::on_heightminus_clicked()
 {
     auto current = ui->heightlabel->text().toInt();
     current--;
-    if (current < 1) current = 1;
+    if (current < 2) current = 2;
     ui->heightlabel->setText(QString::number(current));
 }
 
 
 void Zarovka::on_pushButton_4_clicked()
 {
-    createGame(ui->widthlabel->text().toInt(),ui->heightlabel->text().toInt());
+    createGame(ui->widthlabel->text().toInt(),ui->heightlabel->text().toInt(), true);
 
     ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);

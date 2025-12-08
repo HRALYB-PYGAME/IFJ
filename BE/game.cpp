@@ -50,9 +50,9 @@ void game::savegame(){
         QDataStream in(&file);
         int nactene;
         in >> nactene;
-        std::cout << nactene << "1. hodnota" << std::endl;
+        //std::cout << nactene << "1. hodnota" << std::endl;
         in >> nactene;
-        std::cout << nactene << "2. hodnota" << std::endl;
+        //std::cout << nactene << "2. hodnota" << std::endl;
         file.close();
     }
 }
@@ -78,7 +78,7 @@ gameboard game::gamecreateempty(int rows, int cols){
     newgame.rows = rows;
     newgame.nodes = std::vector<node>(rows*cols, {empty, { false, false, false, false }, o, 0, false});
 
-    std::cout << "created a emtpy game" << std::endl;
+    //std::cout << "created a emtpy game" << std::endl;
     return newgame;
 }
 
@@ -107,7 +107,7 @@ void game::gamecreate(int difficulty){
     occupiednodes[powerrow][powercol] = true;
 
     float probability = 0.02;
-    std::cout << "creating game" << std::endl;
+    //std::cout << "creating game" << std::endl;
     // path generation
     while (((double) rand() / (RAND_MAX)) > probability){
         int direction = rand() % 4;
@@ -143,9 +143,9 @@ void game::gamecreate(int difficulty){
                 path.insert(path.end(), {powerrow, powercol});
             }
         }
-        std::cout << "while looping" << std::endl;
+        //std::cout << "while looping" << std::endl;
     }
-    std::cout << "done" << std::endl;
+    //std::cout << "done" << std::endl;
 
 
     for(int i=1; i < path.size() - 1; i++){
@@ -165,7 +165,7 @@ void game::gamecreate(int difficulty){
         createnode(link, current.row, current.col, sides);
     }
 
-    std::cout << "done creating nodes" << std::endl;
+    //std::cout << "done creating nodes" << std::endl;
 
     position current = path[path.size()-1];
     position previous = path[path.size()-2];
@@ -176,15 +176,15 @@ void game::gamecreate(int difficulty){
     if(current.row - previous.row == -1) sides[down] = true;
     createnode(bulb, current.row, current.col, sides);
 
-    std::cout << "done credting walls" << std::endl;
+    //std::cout << "done credting walls" << std::endl;
 
     randomlyrotate();
 
-    std::cout << "done randomly rotating" << std::endl;
+    //std::cout << "done randomly rotating" << std::endl;
 
     update();
 
-    std::cout << "done update" << std::endl;
+    //std::cout << "done update" << std::endl;
 }
 
 void game::print(){
@@ -244,20 +244,20 @@ void game::randomlyrotate(){
     for(int row=0; row<this->board.rows; row++){
         for(int col=0; col<this->board.cols; col++){
             node* currentnode = getnodeat(row, col);
-            std::cout << currentnode->sides[0] << currentnode->sides[1] << currentnode->sides[2] << currentnode->sides[3] << "bef" << std::endl;
+            //std::cout << currentnode->sides[0] << currentnode->sides[1] << currentnode->sides[2] << currentnode->sides[3] << "bef" << std::endl;
             currentnode->rotation = rand() % 4;
             std::array<bool, 4> newsides;
             for(int i=0; i<4; i++) newsides[i] = currentnode->sides[(i-currentnode->rotation+4)%4];
             for(int i=0; i<4; i++) currentnode->sides[i] = newsides[i];
 
-            std::cout << currentnode->sides[0] << currentnode->sides[1] << currentnode->sides[2] << currentnode->sides[3] << "aft" << std::endl;
+            //std::cout << currentnode->sides[0] << currentnode->sides[1] << currentnode->sides[2] << currentnode->sides[3] << "aft" << std::endl;
         }
     }
 }
 
 QPixmap game::getimage(int row, int col){
     node* currentnode = getnodeat(row, col);
-    std::cout << row << " " << col << " is " << currentnode->type << std::endl;
+    //std::cout << row << " " << col << " is " << currentnode->type << std::endl;
     nodetype buttontype = currentnode->type;
     int buttonrotation = currentnode->rotation;
     bool powered = currentnode->powered;
@@ -303,48 +303,48 @@ void game::rotate(int row, int col){
 }
 
 void game::recursiveupdate(int row, int col, side mustbe){
-    std::cout << row << col << std::endl;
+    //std::cout << row << col << std::endl;
     if (row < 0 || col < 0 || row >= this->board.rows || col >= this->board.cols){
-        std::cout << "out fo bounds" << std::endl;
+        //std::cout << "out fo bounds" << std::endl;
         return;
     }
     if (mustbe != none && !getnodeat(row, col)->sides[mustbe]){
-        std::cout << "mustbe none" << std::endl;
+        //std::cout << "mustbe none" << std::endl;
         return;
     }
     if (getnodeat(row, col)->powered){
-        std::cout << "node" << row << col << "already powered" << std::endl;
+        //std::cout << "node" << row << col << "already powered" << std::endl;
         return;
     }
 
-    std::cout << "accessing node" << row << " " << col << std::endl;
+    //std::cout << "accessing node" << row << " " << col << std::endl;
     node* currentnode = getnodeat(row, col);
 
-    std::cout << "powering node" << row << col << std::endl;
-    std::cout << "node have links at" << currentnode->sides[up] << currentnode->sides[1] <<currentnode->sides[2] <<currentnode->sides[3] << std::endl;
+    //std::cout << "powering node" << row << col << std::endl;
+    //std::cout << "node have links at" << currentnode->sides[up] << currentnode->sides[1] <<currentnode->sides[2] <<currentnode->sides[3] << std::endl;
 
 
     currentnode->powered = true;
-    std::cout << "powering done" << std::endl;
+    //std::cout << "powering done" << std::endl;
     if (currentnode->sides[up]){
-        std::cout << "up" << std::endl;
+        //std::cout << "up" << std::endl;
         recursiveupdate(row-1, col, down);
-        std::cout << "success" << std::endl;
+        //std::cout << "success" << std::endl;
     }
     if (currentnode->sides[right]){
-        std::cout << "up" << std::endl;
+        //std::cout << "up" << std::endl;
         recursiveupdate(row, col+1, left);
-        std::cout << "success" << std::endl;
+        //std::cout << "success" << std::endl;
     }
     if (currentnode->sides[down]){
-        std::cout << "up" << std::endl;
+        //std::cout << "up" << std::endl;
         recursiveupdate(row+1, col, up);
-        std::cout << "success" << std::endl;
+        //std::cout << "success" << std::endl;
     }
     if (currentnode->sides[left]){
-        std::cout << "up" << std::endl;
+        //std::cout << "up" << std::endl;
         recursiveupdate(row, col-1, right);
-        std::cout << "success" << std::endl;
+        //std::cout << "success" << std::endl;
     }
 }
 
