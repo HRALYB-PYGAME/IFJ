@@ -70,14 +70,18 @@ void Zarovka::updateUI(int mode){
 
 void Zarovka::on_easyButton_clicked()
 {
-    activegame = game(5,5);
-    activegame.gamecreate(0);
+    createGame(5,3);
 
     ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);
 
     QResizeEvent event(this->size(), this->size());
     QCoreApplication::sendEvent(this, &event);
+}
+
+void Zarovka::createGame(int w, int h){
+    activegame = game(w, h);
+    activegame.gamecreate(0);
 }
 
 void Zarovka::turn(QPushButton *btn, int row, int col)
@@ -88,7 +92,7 @@ void Zarovka::turn(QPushButton *btn, int row, int col)
     btn->setIconSize(btn->size());
     btn->setText("");
     activegame.update();
-    updateboard(buttons[0]->width(), 5);
+    updateboard(buttons[0]->width(), activegame.board.cols);
     if (activegame.arebulbslit()){
         ui->stackedWidget->setCurrentIndex(2);
     }
@@ -99,11 +103,13 @@ void Zarovka::updateboard(int sidesize, int cols){
         QPushButton *button = buttons[i];
         button->setFixedHeight(sidesize);
         button->setFixedWidth(sidesize);
+        std::cout << "getting img for" << i/cols << " " << i%cols << std::endl;
         if (ui->stackedWidget->currentIndex() == 1)
             button->setIcon(QIcon(activegame.getimage(i/cols, i%cols)));
         else
             button->setIcon(QIcon(":img.png"));
         button->setIconSize(button->size());
+        activegame.print();
     }
 }
 
@@ -112,8 +118,8 @@ void Zarovka::resizeEvent(QResizeEvent *event)
     ui->gameboard->setSpacing(0);
     ui->gameboard->setContentsMargins(0, 0, 0, 0);
     ui->gameboard->setAlignment(Qt::AlignLeft);
-    const int rows = 5;
-    const int cols = 5;
+    const int rows = activegame.board.rows;
+    const int cols = activegame.board.cols;
 
     QWidget::resizeEvent(event);
     QSize newsize = event->size();
@@ -313,5 +319,17 @@ void Zarovka::on_heightminus_clicked()
     current--;
     if (current < 1) current = 1;
     ui->heightlabel->setText(QString::number(current));
+}
+
+
+void Zarovka::on_pushButton_4_clicked()
+{
+    createGame(ui->widthlabel->text().toInt(),ui->heightlabel->text().toInt());
+
+    ui->stackedWidget->setCurrentIndex(1);
+    QWidget *page = ui->stackedWidget->widget(1);
+
+    QResizeEvent event(this->size(), this->size());
+    QCoreApplication::sendEvent(this, &event);
 }
 

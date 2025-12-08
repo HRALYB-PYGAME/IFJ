@@ -26,6 +26,7 @@ public:
 
     void updateboard(int sidesize);
     void updateboard(int sidesize, int cols);
+    void createGame(int w, int h);
 private slots:
     void on_playButton_clicked();
     void on_settingsButton_clicked();
@@ -49,6 +50,8 @@ private slots:
     void on_heightplus_clicked();
 
     void on_heightminus_clicked();
+
+    void on_pushButton_4_clicked();
 
 private:
     Ui::Zarovka *ui;

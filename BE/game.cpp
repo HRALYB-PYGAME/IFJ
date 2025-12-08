@@ -78,6 +78,7 @@ gameboard game::gamecreateempty(int rows, int cols){
     newgame.rows = rows;
     newgame.nodes = std::vector<node>(rows*cols, {empty, { false, false, false, false }, o, 0, false});
 
+    std::cout << "created a emtpy game" << std::endl;
     return newgame;
 }
 
@@ -106,7 +107,7 @@ void game::gamecreate(int difficulty){
     occupiednodes[powerrow][powercol] = true;
 
     float probability = 0.02;
-
+    std::cout << "creating game" << std::endl;
     // path generation
     while (((double) rand() / (RAND_MAX)) > probability){
         int direction = rand() % 4;
@@ -142,7 +143,9 @@ void game::gamecreate(int difficulty){
                 path.insert(path.end(), {powerrow, powercol});
             }
         }
+        std::cout << "while looping" << std::endl;
     }
+    std::cout << "done" << std::endl;
 
 
     for(int i=1; i < path.size() - 1; i++){
@@ -162,6 +165,8 @@ void game::gamecreate(int difficulty){
         createnode(link, current.row, current.col, sides);
     }
 
+    std::cout << "done creating nodes" << std::endl;
+
     position current = path[path.size()-1];
     position previous = path[path.size()-2];
     std::array<bool, 4> sides = {false, false, false, false};
@@ -171,9 +176,15 @@ void game::gamecreate(int difficulty){
     if(current.row - previous.row == -1) sides[down] = true;
     createnode(bulb, current.row, current.col, sides);
 
+    std::cout << "done credting walls" << std::endl;
+
     randomlyrotate();
 
+    std::cout << "done randomly rotating" << std::endl;
+
     update();
+
+    std::cout << "done update" << std::endl;
 }
 
 void game::print(){
@@ -246,6 +257,7 @@ void game::randomlyrotate(){
 
 QPixmap game::getimage(int row, int col){
     node* currentnode = getnodeat(row, col);
+    std::cout << row << " " << col << " is " << currentnode->type << std::endl;
     nodetype buttontype = currentnode->type;
     int buttonrotation = currentnode->rotation;
     bool powered = currentnode->powered;
@@ -291,15 +303,21 @@ void game::rotate(int row, int col){
 }
 
 void game::recursiveupdate(int row, int col, side mustbe){
-    if (row < 0 || col < 0 || row >= this->board.rows || col >= this->board.cols)
+    std::cout << row << col << std::endl;
+    if (row < 0 || col < 0 || row >= this->board.rows || col >= this->board.cols){
+        std::cout << "out fo bounds" << std::endl;
         return;
-    if (mustbe != none && !getnodeat(row, col)->sides[mustbe])
+    }
+    if (mustbe != none && !getnodeat(row, col)->sides[mustbe]){
+        std::cout << "mustbe none" << std::endl;
         return;
+    }
     if (getnodeat(row, col)->powered){
         std::cout << "node" << row << col << "already powered" << std::endl;
         return;
     }
 
+    std::cout << "accessing node" << row << " " << col << std::endl;
     node* currentnode = getnodeat(row, col);
 
     std::cout << "powering node" << row << col << std::endl;
@@ -307,14 +325,27 @@ void game::recursiveupdate(int row, int col, side mustbe){
 
 
     currentnode->powered = true;
-    if (currentnode->sides[up])
+    std::cout << "powering done" << std::endl;
+    if (currentnode->sides[up]){
+        std::cout << "up" << std::endl;
         recursiveupdate(row-1, col, down);
-    if (currentnode->sides[right])
+        std::cout << "success" << std::endl;
+    }
+    if (currentnode->sides[right]){
+        std::cout << "up" << std::endl;
         recursiveupdate(row, col+1, left);
-    if (currentnode->sides[down])
+        std::cout << "success" << std::endl;
+    }
+    if (currentnode->sides[down]){
+        std::cout << "up" << std::endl;
         recursiveupdate(row+1, col, up);
-    if (currentnode->sides[left])
+        std::cout << "success" << std::endl;
+    }
+    if (currentnode->sides[left]){
+        std::cout << "up" << std::endl;
         recursiveupdate(row, col-1, right);
+        std::cout << "success" << std::endl;
+    }
 }
 
 void game::unpowernodes(){
@@ -346,5 +377,5 @@ void game::rotatenode(int row, int col){
 }
 
 node* game::getnodeat(int row, int col){
-    return &this->board.nodes[col*this->board.cols + row];
+    return &this->board.nodes[row*this->board.cols + col];
 }
