@@ -652,6 +652,13 @@
       <widget class="QWidget" name="page">
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
+         <widget class="QPushButton" name="pushButton_5">
+          <property name="text">
+           <string>Menu</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QWidget" name="widget_5" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
