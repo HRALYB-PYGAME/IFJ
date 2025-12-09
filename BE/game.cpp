@@ -13,7 +13,7 @@ game::game(int rows, int cols) {
     rebuildCache();
 }
 
-void game::savegame(){
+void game::savegame(std::string filename){
     // soubor .szgf
     // 1. radek [(int)x, (int)y] - x je sirka a y je vyska herniho pole
     // nasleduje y radku v kazdem bude 3x cisel
@@ -33,7 +33,7 @@ void game::savegame(){
     t = 4, // s draty nahoru, doprava a dolu
     x = 5  // vsude
     */
-    QFile file("hra.zvaz");
+    QFile file(QString("%1.zvaz").arg(filename));
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QDataStream out(&file);
         out << board.rows;

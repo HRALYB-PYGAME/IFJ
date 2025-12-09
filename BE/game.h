@@ -19,7 +19,7 @@ public:
     QPixmap getimage(int row, int col);
     void rotate(int row, int col);
 
-    void savegame();
+    void savegame(std::string filename = "hra");
 private:
     gameboard gamecreateempty(int, int);
     void unpowernodes();
