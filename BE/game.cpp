@@ -13,6 +13,34 @@ game::game(int rows, int cols) {
     rebuildCache();
 }
 
+void game::loadgame(std::string filename){
+    QFile file(QString("%1.zvaz").arg(filename));
+    if (file.open(QIODevice::ReadOnly)) {
+        QDataStream in(&file);
+        in >> board.rows;
+        in >> board.cols;
+        for(int i=0; i<board.rows*board.cols; i++){
+            in >> board.nodes[i].type;
+            in >> board.nodes[i].shape;
+            in >> board.nodes[i].rotation;
+        }
+        file.close();
+    }
+}
+
+bool game::deletegame(std::string filename){
+    bool success = QFile::remove(QString::fromStdString(filename));
+    return success;
+}
+
+bool game::renamegame(std::string filenamebefore, std::string filenameafter){
+    bool success = deletegame(filenamebefore);
+    if (success == false) return false;
+    if (!QFile::exists(QString("%1.zvaz").arg(filenameafter))) return false;
+    savegame(filenameafter);
+    return true;
+}
+
 void game::savegame(std::string filename){
     // soubor .szgf
     // 1. radek [(int)x, (int)y] - x je sirka a y je vyska herniho pole
@@ -43,16 +71,6 @@ void game::savegame(std::string filename){
             out << board.nodes[i].shape;
             out << board.nodes[i].rotation;
         }
-        file.close();
-    }
-
-    if (file.open(QIODevice::ReadOnly)) {
-        QDataStream in(&file);
-        int nactene;
-        in >> nactene;
-        //std::cout << nactene << "1. hodnota" << std::endl;
-        in >> nactene;
-        //std::cout << nactene << "2. hodnota" << std::endl;
         file.close();
     }
 }

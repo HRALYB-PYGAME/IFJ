@@ -20,6 +20,9 @@ public:
     void rotate(int row, int col);
 
     void savegame(std::string filename = "hra");
+    void loadgame(std::string filename);
+    bool deletegame(std::string filename);
+    bool renamegame(std::string filenamebefore, std::string filenameafter);
 private:
     gameboard gamecreateempty(int, int);
     void unpowernodes();
