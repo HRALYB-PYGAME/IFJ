@@ -33,9 +33,12 @@ bool game::deletegame(std::string filename){
     return success;
 }
 
-void game::renamegame(std::string filename){
-    deletegame(gamename);
-    savegame(filename);
+bool game::renamegame(std::string filenamebefore, std::string filenameafter){
+    bool success = deletegame(filenamebefore);
+    if (success == false) return false;
+    if (!QFile::exists(QString("%1.zvaz").arg(filenameafter))) return false;
+    savegame(filenameafter);
+    return true;
 }
 
 void game::savegame(std::string filename){
@@ -58,7 +61,6 @@ void game::savegame(std::string filename){
     t = 4, // s draty nahoru, doprava a dolu
     x = 5  // vsude
     */
-    gamename = filename;
     QFile file(QString("%1.zvaz").arg(filename));
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QDataStream out(&file);
