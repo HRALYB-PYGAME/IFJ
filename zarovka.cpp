@@ -72,7 +72,7 @@ void Zarovka::updateUI(int mode){
 
 void Zarovka::on_easyButton_clicked()
 {
-    createGame(50,50);
+    createGame(5,5);
 
     ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);
@@ -106,9 +106,10 @@ void Zarovka::updateboard(int sidesize, int cols){
         button->setFixedHeight(sidesize);
         button->setFixedWidth(sidesize);
         //std::cout << "getting img for" << i/cols << " " << i%cols << std::endl;
-        if (ui->stackedWidget->currentIndex() == 1)
+        int row = i/cols;
+        if (ui->stackedWidget->currentIndex() == 1 && row < activegame.board.rows)
             button->setIcon(QIcon(activegame.getimage(i/cols, i%cols)));
-        else
+        else if (row < activegame.board.rows)
             button->setIcon(QIcon(":img.png"));
         button->setIconSize(button->size());
     }
@@ -120,20 +121,19 @@ void Zarovka::resizeEvent(QResizeEvent *event)
     ui->gameboard->setContentsMargins(0, 0, 0, 0);
     ui->gameboard->setAlignment(boardAlignment);
     const int rows = activegame.board.rows;
-    int extracols = (9/rows)+1;
-    const int cols = activegame.board.cols + extracols;
+    const int cols = activegame.board.cols;
 
     QWidget::resizeEvent(event);
     QSize newsize = event->size();
 
     // 4x draty, 4x zdroje, 1x zarovka
 
-    int sidesize = (qMin(newsize.height(), newsize.width())/rows)*0.8;
+    int sidesize = (qMin(newsize.height(), newsize.width())/(rows+1))*0.8;
 
     if (ui->gameboard->isEmpty()){
         buttons = std::vector<QPushButton*>();
         for (int row = 0; row < rows; ++row) {
-            for (int col = 0; col < cols-extracols; ++col) {
+            for (int col = 0; col < cols; ++col) {
                 QPushButton *btn = new QPushButton(QString(""));
                 btn->setFixedHeight(sidesize);
                 btn->setFixedWidth(sidesize);
@@ -155,48 +155,31 @@ void Zarovka::resizeEvent(QResizeEvent *event)
                 ui->gameboard->addWidget(btn, row, col);
                 buttons.insert(buttons.end(), btn);
             }
-            /*for (int row = 0; row < rows; row++){
-                for (int col = cols; col < cols+extracols; col++){
-                    QPushButton *btn = new QPushButton(QString("OPT"));
-                    btn->setFixedHeight(sidesize);
-                    btn->setFixedWidth(sidesize);
-                    btn->setStyleSheet(
-                        "QPushButton {"
-                        "    border: none;"
-                        "    border-radius: 0;"
-                        "    background-color: #abcdef;"
-                        "    outline: none;"
-                        "}"
-                        "QPushButton:pressed {"
-                        "    padding-left: 1px;"
-                        "    padding-top: 1px;"
-                        "}"
-                        );
-                    connect(btn, &QPushButton::clicked, this, [this, row, col]() {
-                        turn(qobject_cast<QPushButton*>(sender()), row, col);
-                    });
-                    ui->gameboard->addWidget(btn, row, col);
-                    buttons.insert(buttons.end(), btn);
-                }
-            }*/
         }
-        // QPushButton *btn = new QPushButton("zar.");
-        // btn->setFixedHeight(sidesize);
-        // btn->setFixedWidth(sidesize);
-        // btn->setStyleSheet(
-        //     "QPushButton {"
-        //     "    border: none;"
-        //     "    border-radius: 0;"
-        //     "    background-color: #abcdef;"
-        //     "    outline: none;"
-        //     "}"
-        //     "QPushButton:pressed {"
-        //     "    padding-left: 1px;"
-        //     "    padding-top: 1px;"
-        //     "}"
-        //     );
-        // ui->gameboard->addWidget(btn, 0, cols);
-        //updateboard(sidesize, cols);
+    }
+
+    if (activegame.editing && ui->editoroptions->isEmpty()){
+        std::vector<std::string> icons = {":linkI.png", ":linkL.png", ":linkT.png", ":linkX.png", ":bulb.png", ":power.png"};
+        for(int i=0; i<icons.size(); i++){
+            QPushButton *btn = new QPushButton(QString(""));
+            btn->setFixedHeight(sidesize);
+            btn->setFixedWidth(sidesize);
+            btn->setStyleSheet(
+                "QPushButton {"
+                "    border: none;"
+                "    border-radius: 0;"
+                "    background-color: #abcdef;"
+                "    outline: none;"
+                "}"
+                "QPushButton:pressed {"
+                "    padding-left: 1px;"
+                "    padding-top: 1px;"
+                "}"
+                );
+            btn->setIcon(QIcon(QString::fromStdString(icons[i])));
+            ui->editoroptions->addWidget(btn);
+            buttons.insert(buttons.end(), btn);
+        }
     }
 
     //applySettings();

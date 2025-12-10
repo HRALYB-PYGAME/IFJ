@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>804</width>
-    <height>623</height>
+    <height>649</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="P01DifficultySelector">
        <layout class="QGridLayout" name="gridLayout_3">
@@ -154,7 +154,16 @@
       <widget class="QWidget" name="P02GameBoard">
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="0">
-         <layout class="QGridLayout" name="gameboard"/>
+         <widget class="QWidget" name="gameboardlayout" native="true">
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <item>
+            <layout class="QGridLayout" name="gameboard"/>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="editoroptions"/>
+           </item>
+          </layout>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -978,7 +987,7 @@
      <x>0</x>
      <y>0</y>
      <width>804</width>
-     <height>17</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
