@@ -22,6 +22,8 @@ Zarovka::Zarovka(QWidget *parent)
     this->mode = 0;
 
     selectedBgColor = QColor(0, 0, 0);  // default background color
+    selectedBoardColor = QColor(171, 205, 239);
+    boardAlignment = Qt::AlignLeft;
     ui->stackedWidget->setCurrentIndex(3);
     loadSettings();
     applySettings();
@@ -116,7 +118,7 @@ void Zarovka::resizeEvent(QResizeEvent *event)
 {
     ui->gameboard->setSpacing(0);
     ui->gameboard->setContentsMargins(0, 0, 0, 0);
-    ui->gameboard->setAlignment(Qt::AlignLeft);
+    ui->gameboard->setAlignment(boardAlignment);
     const int rows = activegame.board.rows;
     const int cols = activegame.board.cols;
 
@@ -175,8 +177,24 @@ void Zarovka::loadSettings()
         } else {
             selectedBgColor = QColor(0, 0, 0);
         }
+
+        if (obj.contains("boardColor")) {
+            QString colorStr = obj["boardColor"].toString();
+            selectedBoardColor = QColor(colorStr);
+        } else {
+            selectedBoardColor = QColor(171, 205, 239);
+        }
+
+        if (obj.contains("boardAlignment")) {
+            QString alignment = obj["boardAlignment"].toString();
+            boardAlignment = (alignment == "right") ? Qt::AlignRight : Qt::AlignLeft;
+        } else {
+            boardAlignment = Qt::AlignLeft;
+        }
     } else {
         selectedBgColor = QColor(0, 0, 0);
+        selectedBoardColor = QColor(171, 205, 239);
+        boardAlignment = Qt::AlignLeft;
     }
 
     updateColorButtons();
@@ -186,6 +204,8 @@ void Zarovka::saveSettings()
 {
     QJsonObject obj;
     obj["backgroundColor"] = selectedBgColor.name();
+    obj["boardColor"] = selectedBoardColor.name();
+    obj["boardAlignment"] = (boardAlignment == Qt::AlignRight) ? "right" : "left";
 
     QJsonDocument doc(obj);
 
@@ -203,6 +223,13 @@ void Zarovka::applySettings()
     //for(QPushButton* button : buttons){
     //    button->setStyleSheet(style);
     //}
+
+    if (ui->gameboard) {
+        ui->gameboard->setAlignment(boardAlignment);
+    }
+
+
+
     updateColorButtons();
 }
 
@@ -250,6 +277,93 @@ void Zarovka::updateColorButtons()
             "border-radius: 5px;"
             );
     }
+
+    ui->colorWhiteButton_3->setStyleSheet(
+        "background-color: white; "
+        "min-width: 20px; min-height: 20px; "
+        "border-radius: 5px;"
+        );
+
+    ui->colorBlueButton_3->setStyleSheet(
+        "background-color: #87CEEB; "
+        "min-width: 20px; min-height: 20px; "
+        "border-radius: 5px;"
+        );
+
+    ui->colorBlackButton_3->setStyleSheet(
+        "background-color: #F2FDD0; "
+        "min-width: 20px; min-height: 20px; "
+        "border-radius: 5px;"
+        );
+
+    if (selectedBoardColor == QColor(255, 255, 255)) {
+        ui->colorWhiteButton_3->setStyleSheet(
+            "background-color: white; "
+            "border: 4px solid red; "
+            "border-radius: 5px;"
+            );
+    }
+    else if (selectedBoardColor == QColor(135, 206, 235)) {
+        ui->colorBlueButton_3->setStyleSheet(
+            "background-color: #87CEEB; "
+            "border: 4px solid red; "
+            "border-radius: 5px;"
+            );
+    }
+    else if (selectedBoardColor == QColor(255, 253, 208)) {
+        ui->colorBlackButton_3->setStyleSheet(
+            "background-color: #F2FDD0; "
+            "border: 4px solid red; "
+            "border-radius: 5px;"
+            );
+    }
+
+    ui->colorWhiteButton_5->setStyleSheet(
+        boardAlignment == Qt::AlignLeft
+            ? "background-color: white; color: black; border: 4px solid red; border-radius: 5px;"
+            : "background-color: white; color: black; border-radius: 5px;"
+        );
+
+    ui->colorBlackButton_5->setStyleSheet(
+        boardAlignment == Qt::AlignRight
+            ? "background-color: white; color: black; border: 4px solid red; border-radius: 5px;"
+            : "background-color: white; color: black; border-radius: 5px;"
+        );
+}
+
+void Zarovka::on_colorWhiteButton_5_clicked()  // left
+{
+    boardAlignment = Qt::AlignLeft;
+    applySettings();
+    saveSettings();
+}
+
+void Zarovka::on_colorBlackButton_5_clicked()  // right
+{
+    boardAlignment = Qt::AlignRight;
+    applySettings();
+    saveSettings();
+}
+
+void Zarovka::on_colorWhiteButton_3_clicked()
+{
+    selectedBoardColor = QColor(255, 255, 255);
+    applySettings();
+    saveSettings();
+}
+
+void Zarovka::on_colorBlueButton_3_clicked()
+{
+    selectedBoardColor = QColor(135, 206, 235);
+    applySettings();
+    saveSettings();
+}
+
+void Zarovka::on_colorBlackButton_3_clicked()
+{
+    selectedBoardColor = QColor(255, 253, 208);
+    applySettings();
+    saveSettings();
 }
 
 void Zarovka::on_colorWhiteButton_clicked()

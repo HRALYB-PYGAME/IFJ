@@ -39,6 +39,13 @@ private slots:
     void on_colorBlackButton_clicked();
     void on_colorBlueButton_clicked();
 
+    void on_colorWhiteButton_3_clicked();
+    void on_colorBlueButton_3_clicked();
+    void on_colorBlackButton_3_clicked();
+
+    void on_colorWhiteButton_5_clicked();  // left
+    void on_colorBlackButton_5_clicked(); // right
+
     void on_pushButton_clicked();
 
     void on_pushButton_3_clicked();
@@ -56,6 +63,8 @@ private slots:
 private:
     Ui::Zarovka *ui;
     QColor selectedBgColor;  // current bg color
+    QColor selectedBoardColor;
+    Qt::Alignment boardAlignment;
 
     void loadSettings();
     void applySettings();
