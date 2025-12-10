@@ -8,6 +8,7 @@ class game
 {
 public:
     gameboard board;
+    std::string gamename;
     game(int rows, int cols);
     void gamecreate(int difficulty);
     void randomlyrotate();
@@ -20,6 +21,9 @@ public:
     void rotate(int row, int col);
 
     void savegame(std::string filename = "hra");
+    void loadgame(std::string filename);
+    bool deletegame(std::string filename);
+    void renamegame(std::string filename);
 private:
     gameboard gamecreateempty(int, int);
     void unpowernodes();
