@@ -8,8 +8,9 @@
 #include <QFile>
 #include <QDataStream>
 
-game::game(int rows, int cols) {
+game::game(int rows, int cols, bool editing) {
     this->board = this->gamecreateempty(rows, cols);
+    this->editing = editing;
     rebuildCache();
 }
 
@@ -378,6 +379,7 @@ void game::unpowernodes(){
 // checks if all bulbs are lit
 // returns true when all bulbs are lit, false otherwise
 bool game::arebulbslit(){
+    if (editing) return false;
     bool lit = true;
     for(int row=0; row<this->board.rows; row++){
         for(int col=0; col<this->board.cols; col++){

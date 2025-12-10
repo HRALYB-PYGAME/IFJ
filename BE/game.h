@@ -8,7 +8,8 @@ class game
 {
 public:
     gameboard board;
-    game(int rows, int cols);
+    bool editing;
+    game(int rows, int cols, bool editing=false);
     void gamecreate(int difficulty);
     void randomlyrotate();
     void update();

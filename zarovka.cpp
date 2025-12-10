@@ -442,7 +442,7 @@ void Zarovka::on_heightminus_clicked()
 void Zarovka::on_pushButton_4_clicked()
 {
     createGame(ui->widthlabel->text().toInt(),ui->heightlabel->text().toInt(), true);
-
+    activegame.editing = true;
     ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);
 
