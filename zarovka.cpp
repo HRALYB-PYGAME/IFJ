@@ -120,17 +120,20 @@ void Zarovka::resizeEvent(QResizeEvent *event)
     ui->gameboard->setContentsMargins(0, 0, 0, 0);
     ui->gameboard->setAlignment(boardAlignment);
     const int rows = activegame.board.rows;
-    const int cols = activegame.board.cols;
+    int extracols = (9/rows)+1;
+    const int cols = activegame.board.cols + extracols;
 
     QWidget::resizeEvent(event);
     QSize newsize = event->size();
+
+    // 4x draty, 4x zdroje, 1x zarovka
 
     int sidesize = (qMin(newsize.height(), newsize.width())/rows)*0.8;
 
     if (ui->gameboard->isEmpty()){
         buttons = std::vector<QPushButton*>();
         for (int row = 0; row < rows; ++row) {
-            for (int col = 0; col < cols; ++col) {
+            for (int col = 0; col < cols-extracols; ++col) {
                 QPushButton *btn = new QPushButton(QString(""));
                 btn->setFixedHeight(sidesize);
                 btn->setFixedWidth(sidesize);
@@ -152,8 +155,48 @@ void Zarovka::resizeEvent(QResizeEvent *event)
                 ui->gameboard->addWidget(btn, row, col);
                 buttons.insert(buttons.end(), btn);
             }
+            /*for (int row = 0; row < rows; row++){
+                for (int col = cols; col < cols+extracols; col++){
+                    QPushButton *btn = new QPushButton(QString("OPT"));
+                    btn->setFixedHeight(sidesize);
+                    btn->setFixedWidth(sidesize);
+                    btn->setStyleSheet(
+                        "QPushButton {"
+                        "    border: none;"
+                        "    border-radius: 0;"
+                        "    background-color: #abcdef;"
+                        "    outline: none;"
+                        "}"
+                        "QPushButton:pressed {"
+                        "    padding-left: 1px;"
+                        "    padding-top: 1px;"
+                        "}"
+                        );
+                    connect(btn, &QPushButton::clicked, this, [this, row, col]() {
+                        turn(qobject_cast<QPushButton*>(sender()), row, col);
+                    });
+                    ui->gameboard->addWidget(btn, row, col);
+                    buttons.insert(buttons.end(), btn);
+                }
+            }*/
         }
-        updateboard(sidesize, cols);
+        // QPushButton *btn = new QPushButton("zar.");
+        // btn->setFixedHeight(sidesize);
+        // btn->setFixedWidth(sidesize);
+        // btn->setStyleSheet(
+        //     "QPushButton {"
+        //     "    border: none;"
+        //     "    border-radius: 0;"
+        //     "    background-color: #abcdef;"
+        //     "    outline: none;"
+        //     "}"
+        //     "QPushButton:pressed {"
+        //     "    padding-left: 1px;"
+        //     "    padding-top: 1px;"
+        //     "}"
+        //     );
+        // ui->gameboard->addWidget(btn, 0, cols);
+        //updateboard(sidesize, cols);
     }
 
     //applySettings();
