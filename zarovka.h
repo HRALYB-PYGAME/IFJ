@@ -38,7 +38,7 @@ public:
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
     void resetLayout();
-    void editFile(QString filename);
+    void openGameFile(QString filename, bool editing = false);
 private slots:
     void on_playButton_clicked();
     void on_settingsButton_clicked();

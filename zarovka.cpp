@@ -642,11 +642,11 @@ QStringList Zarovka::getLevelFiles()
     return files;
 }
 
-void Zarovka::editFile(QString filename){
+void Zarovka::openGameFile(QString filename, bool editing){
     activegame.loadgame(filename);
     resetLayout();
     currentgamename = filename.chopped(5);
-    activegame.editing = true;
+    activegame.editing = editing;
     ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);
     QResizeEvent event(this->size(), this->size());
@@ -684,14 +684,23 @@ void Zarovka::loadLevelList()
             nameLabel->setStyleSheet("font-size: 16px; padding: 10px;");
             nameLabel->setMinimumWidth(300);
 
+            // Hrát
+            QPushButton *playBtn = new QPushButton("Hrát");
+            playBtn->setMinimumSize(100, 40);
+            playBtn->setStyleSheet("font-size: 14px;");
+            connect(playBtn, &QPushButton::clicked, this, [this, filename]() {
+                openGameFile(filename, false);
+                qDebug() << "Hrát level:" << filename;
+                // TODO
+            });
+
             // Editovat
             QPushButton *editBtn = new QPushButton("Editovat");
             editBtn->setMinimumSize(100, 40);
             editBtn->setStyleSheet("font-size: 14px;");
             connect(editBtn, &QPushButton::clicked, this, [this, filename]() {
-                editFile(filename);
+                openGameFile(filename, true);
                 qDebug() << "Editovat level:" << filename;
-                // TODO
             });
 
             // Přejmenovat
@@ -711,11 +720,11 @@ void Zarovka::loadLevelList()
                 activegame.deletegame(filename);
                 loadLevelList();
                 qDebug() << "Odstranit level:" << filename;
-                // TODO
             });
 
             rowLayout->addWidget(nameLabel);
             rowLayout->addStretch();
+            rowLayout->addWidget(playBtn);
             rowLayout->addWidget(editBtn);
             rowLayout->addWidget(renameBtn);
             rowLayout->addWidget(deleteBtn);
