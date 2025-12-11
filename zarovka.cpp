@@ -32,6 +32,12 @@ Zarovka::Zarovka(QWidget *parent)
     ui->stackedWidget->setCurrentIndex(3);
     loadSettings();
     applySettings();
+
+    QDir saveDir("save");
+    if (!saveDir.exists()) {
+        qDebug() << "Složka save/ neexistuje, vytvářím...";
+        bool created = QDir().mkdir("save");
+    }
 }
 
 Zarovka::~Zarovka()
@@ -508,8 +514,6 @@ QStringList Zarovka::getLevelFiles()
     QStringList filters;
     filters << "*.zvaz";
     QStringList files = dir.entryList(filters, QDir::Files, QDir::Name);
-    qDebug() << "Hledám ve složce:" << dir.absolutePath();
-    qDebug() << "Nalezeno souborů:" << files.count();
     return files;
 }
 
@@ -584,3 +588,9 @@ void Zarovka::loadLevelList()
         }
     }
 }
+
+void Zarovka::on_createLevelButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(5);
+}
+

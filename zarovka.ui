@@ -24,7 +24,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>7</number>
       </property>
       <widget class="QWidget" name="P01DifficultySelector">
        <layout class="QGridLayout" name="gridLayout_3">
@@ -1088,12 +1088,34 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>80</width>
+            <width>40</width>
             <height>40</height>
            </size>
           </property>
           <property name="text">
-           <string>← Zpět</string>
+           <string>← </string>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item alignment="Qt::AlignmentFlag::AlignRight">
+         <widget class="QPushButton" name="createLevelButton">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Vytvořit nový</string>
+          </property>
+          <property name="autoRepeatDelay">
+           <number>300</number>
           </property>
          </widget>
         </item>
@@ -1122,8 +1144,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>782</width>
-             <height>503</height>
+             <width>778</width>
+             <height>406</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1159,7 +1181,7 @@
      <x>0</x>
      <y>0</y>
      <width>804</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
