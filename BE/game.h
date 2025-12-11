@@ -24,11 +24,11 @@ public:
     void loadgame(std::string filename);
     bool deletegame(std::string filename);
     bool renamegame(std::string filenamebefore, std::string filenameafter);
+    void createnode(nodetype type, int row, int col, std::array<bool,4> sides);
 private:
     gameboard gamecreateempty(int, int);
     void unpowernodes();
     void recursiveupdate(int row, int col, side mustbe);
-    void createnode(nodetype type, int row, int col, std::array<bool,4> sides);
     QPixmap cachedImages[14][4];
     void rebuildCache();
 };

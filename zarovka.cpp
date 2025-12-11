@@ -153,16 +153,48 @@ void Zarovka::clearLayour(QLayout* layout){
 
 void Zarovka::turn(QPushButton *btn, int row, int col)
 {
-    activegame.rotate(row, col);
-    QPixmap rotated = activegame.getimage(row, col);
-    btn->setIcon(QIcon(rotated));
-    btn->setIconSize(btn->size());
-    btn->setText("");
-    activegame.update();
-    updateboard(buttons[0]->width(), activegame.board.cols);
-    if (activegame.arebulbslit()){
-        ui->stackedWidget->setCurrentIndex(2);
+    if (selectedtype == 0){
+        activegame.rotate(row, col);
+        QPixmap rotated = activegame.getimage(row, col);
+        btn->setIcon(QIcon(rotated));
+        btn->setIconSize(btn->size());
+        btn->setText("");
+        activegame.update();
+        updateboard(buttons[0]->width(), activegame.board.cols);
+        if (activegame.arebulbslit()){
+            ui->stackedWidget->setCurrentIndex(2);
+        }
     }
+    else{
+        if (activegame.getnodeat(row, col)->type == nodetype::power){
+            activegame.board.powerrow = -1;
+            activegame.board.powercol = -1;
+            buttons[buttons.size()-1]->show();
+        }
+        activegame.createnode(selectedtype, row, col, selectedsides);
+        if (selectedtype == nodetype::power){
+            activegame.board.powerrow = row;
+            activegame.board.powercol = col;
+            buttons[buttons.size()-1]->hide();
+        }
+        activegame.update();
+        updateboard(buttons[0]->width(), activegame.board.cols);
+        if (!shiftheld || selectedtype==nodetype::power) selectedtype = nodetype::empty;
+    }
+}
+
+void Zarovka::keyPressEvent(QKeyEvent* event) {
+    shiftheld = (event->modifiers() & Qt::ShiftModifier);
+
+    QWidget::keyPressEvent(event);
+}
+
+void Zarovka::keyReleaseEvent(QKeyEvent* event) {
+    if (!(event->modifiers() & Qt::ShiftModifier)) {
+        shiftheld = false;
+    }
+
+    QWidget::keyReleaseEvent(event);
 }
 
 void Zarovka::updateboard(int sidesize, int cols){
@@ -201,38 +233,12 @@ void Zarovka::resizeEvent(QResizeEvent *event)
         btn->setIconSize(btn->size());
     }
 
-    // if (ui->gameboard->isEmpty()){
-    //     qDebug("gbempty");
-    //     buttons.clear();
-    //     for (int row = 0; row < rows; ++row) {
-    //         for (int col = 0; col < cols; ++col) {
-    //             QPushButton *btn = new QPushButton(QString(""));
-    //             btn->setFixedHeight(sidesize);
-    //             btn->setFixedWidth(sidesize);
-    //             btn->setStyleSheet(
-    //                 "QPushButton {"
-    //                 "    border: none;"
-    //                 "    border-radius: 0;"
-    //                 "    background-color: #abcdef;"
-    //                 "    outline: none;"
-    //                 "}"
-    //                 "QPushButton:pressed {"
-    //                 "    padding-left: 1px;"
-    //                 "    padding-top: 1px;"
-    //                 "}"
-    //                 );
-    //             connect(btn, &QPushButton::clicked, this, [this, row, col]() {
-    //                 turn(qobject_cast<QPushButton*>(sender()), row, col);
-    //             });
-    //             ui->gameboard->addWidget(btn, row, col);
-    //             buttons.insert(buttons.end(), btn);
-    //         }
-    //     }
-    // }
-
     if (activegame.editing && ui->editoroptions->isEmpty()){
         qDebug("ag.empty");
         std::vector<std::string> icons = {":linkI.png", ":linkL.png", ":linkT.png", ":linkX.png", ":bulb.png", ":power.png"};
+        std::vector<nodetype> nodetypes = {nodetype::link, nodetype::link, nodetype::link, nodetype::link, nodetype::bulb, nodetype::power};
+        std::vector<std::array<bool, 4>> sides = {{true, false, true, false},{true, true, false, false},{true, true, true, false},
+                                                {true, true, true, true},{true, false, false, false},{true, false, false, false}};
         for(int i=0; i<icons.size(); i++){
             QPushButton *btn = new QPushButton(QString(""));
             btn->setFixedHeight(sidesize);
@@ -250,6 +256,12 @@ void Zarovka::resizeEvent(QResizeEvent *event)
                 "}"
                 );
             btn->setIcon(QIcon(QString::fromStdString(icons[i])));
+            nodetype nt = nodetypes[i];
+            std::array<bool, 4> s = sides[i];
+            connect(btn, &QPushButton::clicked, this, [this, nt, s](){
+                selectedtype = nt;
+                selectedsides = s;
+            });
             ui->editoroptions->addWidget(btn);
             buttons.insert(buttons.end(), btn);
         }

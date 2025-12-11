@@ -322,7 +322,7 @@ void game::rotate(int row, int col){
 }
 
 void game::recursiveupdate(int row, int col, side mustbe){
-    //std::cout << row << col << std::endl;
+    std::cout << row << col << std::endl;
     if (row < 0 || col < 0 || row >= this->board.rows || col >= this->board.cols){
         //std::cout << "out fo bounds" << std::endl;
         return;
@@ -339,7 +339,7 @@ void game::recursiveupdate(int row, int col, side mustbe){
     //std::cout << "accessing node" << row << " " << col << std::endl;
     node* currentnode = getnodeat(row, col);
 
-    //std::cout << "powering node" << row << col << std::endl;
+    std::cout << "powering node" << row << col << std::endl;
     //std::cout << "node have links at" << currentnode->sides[up] << currentnode->sides[1] <<currentnode->sides[2] <<currentnode->sides[3] << std::endl;
 
 

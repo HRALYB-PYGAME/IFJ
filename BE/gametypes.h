@@ -61,8 +61,8 @@ struct gameboard {
     int rows;
     int cols;
     std::vector<node> nodes;
-    int powerrow;
-    int powercol;
+    int powerrow = -1;
+    int powercol = -1;
 };
 
 #endif // GAMETYPES_H
