@@ -12,6 +12,11 @@
 #include <QSettings>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QDir>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QPushButton>
 
 
 Zarovka::Zarovka(QWidget *parent)
@@ -421,7 +426,7 @@ void Zarovka::on_pushButton_clicked()
 
 void Zarovka::on_pushButton_3_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(5);
+    ui->stackedWidget->setCurrentIndex(6);
 }
 
 
@@ -476,3 +481,106 @@ void Zarovka::on_pushButton_4_clicked()
     QCoreApplication::sendEvent(this, &event);
 }
 
+void Zarovka::on_backToMenuButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(3);
+}
+
+void Zarovka::on_myLevelsButton_clicked()
+{
+    loadLevelList();
+    ui->stackedWidget->setCurrentIndex(7);
+}
+
+void Zarovka::on_createNewButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(5);
+}
+
+void Zarovka::on_backToEditorMenuButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(6);
+}
+
+QStringList Zarovka::getLevelFiles()
+{
+    QDir dir("save"); //asi spis v save
+    QStringList filters;
+    filters << "*.zvaz";
+    QStringList files = dir.entryList(filters, QDir::Files, QDir::Name);
+    qDebug() << "Hledám ve složce:" << dir.absolutePath();
+    qDebug() << "Nalezeno souborů:" << files.count();
+    return files;
+}
+
+void Zarovka::loadLevelList()
+{
+    QLayoutItem *item;
+    while ((item = ui->levelListLayout->takeAt(0)) != nullptr) {
+        if (item->widget()) {
+            delete item->widget();
+        }
+        delete item;
+    }
+
+    QStringList levelFiles = getLevelFiles();
+
+    if (levelFiles.isEmpty()) {
+        QLabel *noLevelsLabel = new QLabel("Zatím nemáte žádné uložené levely");
+        noLevelsLabel->setAlignment(Qt::AlignCenter);
+        noLevelsLabel->setStyleSheet("font-size: 18px; color: gray;");
+        ui->levelListLayout->addWidget(noLevelsLabel);
+    } else {
+        for (const QString &filename : levelFiles) {
+            QWidget *rowWidget = new QWidget();
+            QHBoxLayout *rowLayout = new QHBoxLayout(rowWidget);
+
+            QString levelName = filename;
+            levelName.chop(5);
+
+            QLabel *nameLabel = new QLabel(levelName);
+            nameLabel->setStyleSheet("font-size: 16px; padding: 10px;");
+            nameLabel->setMinimumWidth(300);
+
+            // Editovat
+            QPushButton *editBtn = new QPushButton("Editovat");
+            editBtn->setMinimumSize(100, 40);
+            editBtn->setStyleSheet("font-size: 14px;");
+            connect(editBtn, &QPushButton::clicked, this, [this, filename]() {
+                qDebug() << "Editovat level:" << filename;
+                // TODO
+            });
+
+            // Přejmenovat
+            QPushButton *renameBtn = new QPushButton("Přejmenovat");
+            renameBtn->setMinimumSize(120, 40);
+            renameBtn->setStyleSheet("font-size: 14px;");
+            connect(renameBtn, &QPushButton::clicked, this, [this, filename]() {
+                qDebug() << "Přejmenovat level:" << filename;
+                // TODO
+            });
+
+            // Odstranit
+            QPushButton *deleteBtn = new QPushButton("Odstranit");
+            deleteBtn->setMinimumSize(100, 40);
+            deleteBtn->setStyleSheet("font-size: 14px; background-color: #ff4444; color: white;");
+            connect(deleteBtn, &QPushButton::clicked, this, [this, filename]() {
+                qDebug() << "Odstranit level:" << filename;
+                // TODO
+            });
+
+            rowLayout->addWidget(nameLabel);
+            rowLayout->addStretch();
+            rowLayout->addWidget(editBtn);
+            rowLayout->addWidget(renameBtn);
+            rowLayout->addWidget(deleteBtn);
+
+            ui->levelListLayout->addWidget(rowWidget);
+
+            QFrame *line = new QFrame();
+            line->setFrameShape(QFrame::HLine);
+            line->setFrameShadow(QFrame::Sunken);
+            ui->levelListLayout->addWidget(line);
+        }
+    }
+}

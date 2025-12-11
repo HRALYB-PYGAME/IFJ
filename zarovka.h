@@ -1,6 +1,8 @@
 #ifndef ZAROVKA_H
 #define ZAROVKA_H
 
+#include <QString>
+#include <QStringList>
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -46,6 +48,11 @@ private slots:
     void on_colorWhiteButton_5_clicked();  // left
     void on_colorBlackButton_5_clicked(); // right
 
+    void on_backToMenuButton_clicked();
+    void on_myLevelsButton_clicked();
+    void on_createNewButton_clicked();
+    void on_backToEditorMenuButton_clicked();
+
     void on_pushButton_clicked();
 
     void on_pushButton_3_clicked();
@@ -70,6 +77,9 @@ private:
     void applySettings();
     void saveSettings();
     void updateColorButtons();
+
+    void loadLevelList();
+    QStringList getLevelFiles();
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
