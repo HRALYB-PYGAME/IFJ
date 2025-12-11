@@ -23,8 +23,11 @@ Zarovka::Zarovka(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::Zarovka)
 {
+    qDebug("neco");
     ui->setupUi(this);
     this->mode = 0;
+
+    qDebug("halo");
 
     selectedBgColor = QColor(0, 0, 0);  // default background color
     selectedBoardColor = QColor(171, 205, 239);
@@ -33,10 +36,48 @@ Zarovka::Zarovka(QWidget *parent)
     loadSettings();
     applySettings();
 
+    qDebug("hello");
+
     QDir saveDir("save");
     if (!saveDir.exists()) {
         qDebug() << "Složka save/ neexistuje, vytvářím...";
         bool created = QDir().mkdir("save");
+    }
+
+    qDebug("hohoho");
+
+    this->show();
+    this->showNormal();
+    raise();
+    activateWindow();
+}
+
+void Zarovka::createButtons(){
+    int rows = activegame.board.rows;
+    int cols = activegame.board.cols;
+
+    buttons.clear();
+    for (int row = 0; row < rows; ++row) {
+        for (int col = 0; col < cols; ++col) {
+            QPushButton *btn = new QPushButton(QString(""));
+            btn->setStyleSheet(
+                "QPushButton {"
+                "    border: none;"
+                "    border-radius: 0;"
+                "    background-color: #abcdef;"
+                "    outline: none;"
+                "}"
+                "QPushButton:pressed {"
+                "    padding-left: 1px;"
+                "    padding-top: 1px;"
+                "}"
+                );
+            connect(btn, &QPushButton::clicked, this, [this, row, col]() {
+                turn(qobject_cast<QPushButton*>(sender()), row, col);
+            });
+            ui->gameboard->addWidget(btn, row, col);
+            buttons.insert(buttons.end(), btn);
+        }
     }
 }
 
@@ -95,6 +136,19 @@ void Zarovka::on_easyButton_clicked()
 void Zarovka::createGame(int w, int h, bool empty){
     activegame = game(w, h);
     if (!empty) activegame.gamecreate(0);
+    clearLayour(ui->gameboard);
+    clearLayour(ui->editoroptions);
+    createButtons();
+}
+
+void Zarovka::clearLayour(QLayout* layout){
+    QLayoutItem* item;
+    while((item = layout->takeAt(0)) != nullptr){
+        if (QWidget* widget = item->widget()) {
+            delete widget;
+        }
+        delete item;
+    }
 }
 
 void Zarovka::turn(QPushButton *btn, int row, int col)
@@ -141,35 +195,43 @@ void Zarovka::resizeEvent(QResizeEvent *event)
 
     int sidesize = (qMin(newsize.height(), newsize.width())/(rows+1))*0.8;
 
-    if (ui->gameboard->isEmpty()){
-        buttons = std::vector<QPushButton*>();
-        for (int row = 0; row < rows; ++row) {
-            for (int col = 0; col < cols; ++col) {
-                QPushButton *btn = new QPushButton(QString(""));
-                btn->setFixedHeight(sidesize);
-                btn->setFixedWidth(sidesize);
-                btn->setStyleSheet(
-                    "QPushButton {"
-                    "    border: none;"
-                    "    border-radius: 0;"
-                    "    background-color: #abcdef;"
-                    "    outline: none;"
-                    "}"
-                    "QPushButton:pressed {"
-                    "    padding-left: 1px;"
-                    "    padding-top: 1px;"
-                    "}"
-                    );
-                connect(btn, &QPushButton::clicked, this, [this, row, col]() {
-                    turn(qobject_cast<QPushButton*>(sender()), row, col);
-                });
-                ui->gameboard->addWidget(btn, row, col);
-                buttons.insert(buttons.end(), btn);
-            }
-        }
+    for (auto& btn : buttons){
+        btn->setFixedHeight(sidesize);
+        btn->setFixedWidth(sidesize);
+        btn->setIconSize(btn->size());
     }
 
+    // if (ui->gameboard->isEmpty()){
+    //     qDebug("gbempty");
+    //     buttons.clear();
+    //     for (int row = 0; row < rows; ++row) {
+    //         for (int col = 0; col < cols; ++col) {
+    //             QPushButton *btn = new QPushButton(QString(""));
+    //             btn->setFixedHeight(sidesize);
+    //             btn->setFixedWidth(sidesize);
+    //             btn->setStyleSheet(
+    //                 "QPushButton {"
+    //                 "    border: none;"
+    //                 "    border-radius: 0;"
+    //                 "    background-color: #abcdef;"
+    //                 "    outline: none;"
+    //                 "}"
+    //                 "QPushButton:pressed {"
+    //                 "    padding-left: 1px;"
+    //                 "    padding-top: 1px;"
+    //                 "}"
+    //                 );
+    //             connect(btn, &QPushButton::clicked, this, [this, row, col]() {
+    //                 turn(qobject_cast<QPushButton*>(sender()), row, col);
+    //             });
+    //             ui->gameboard->addWidget(btn, row, col);
+    //             buttons.insert(buttons.end(), btn);
+    //         }
+    //     }
+    // }
+
     if (activegame.editing && ui->editoroptions->isEmpty()){
+        qDebug("ag.empty");
         std::vector<std::string> icons = {":linkI.png", ":linkL.png", ":linkT.png", ":linkX.png", ":bulb.png", ":power.png"};
         for(int i=0; i<icons.size(); i++){
             QPushButton *btn = new QPushButton(QString(""));
