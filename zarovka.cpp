@@ -239,6 +239,29 @@ void Zarovka::resizeEvent(QResizeEvent *event)
         std::vector<nodetype> nodetypes = {nodetype::link, nodetype::link, nodetype::link, nodetype::link, nodetype::bulb, nodetype::power};
         std::vector<std::array<bool, 4>> sides = {{true, false, true, false},{true, true, false, false},{true, true, true, false},
                                                 {true, true, true, true},{true, false, false, false},{true, false, false, false}};
+
+        QPushButton *btn = new QPushButton(QString("SAVE"));
+        btn->setFixedHeight(sidesize);
+        btn->setFixedWidth(sidesize);
+        btn->setStyleSheet(
+            "QPushButton {"
+            "    border: none;"
+            "    border-radius: 0;"
+            "    background-color: #abcdef;"
+            "    outline: none;"
+            "}"
+            "QPushButton:pressed {"
+            "    padding-left: 1px;"
+            "    padding-top: 1px;"
+            "}"
+            );
+        std::string name = "test";
+        connect(btn, &QPushButton::clicked, this, [this, name](){
+            activegame.savegame(name);
+        });
+        ui->editoroptions->addWidget(btn);
+        buttons.insert(buttons.end(), btn);
+
         for(int i=0; i<icons.size(); i++){
             QPushButton *btn = new QPushButton(QString(""));
             btn->setFixedHeight(sidesize);

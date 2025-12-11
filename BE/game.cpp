@@ -62,7 +62,7 @@ void game::savegame(std::string filename){
     t = 4, // s draty nahoru, doprava a dolu
     x = 5  // vsude
     */
-    QFile file(QString("%1.zvaz").arg(filename));
+    QFile file(QString("save/%1.zvaz").arg(filename));
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QDataStream out(&file);
         out << board.rows;
