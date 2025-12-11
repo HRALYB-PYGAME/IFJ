@@ -26,10 +26,35 @@ void game::loadgame(QString filename){
         std::cout << board.powercol << " col loaded" << std::endl;
         board.nodes.clear();
         for(int i=0; i<board.rows*board.cols; i++){
+            int rotation;
             board.nodes.push_back(node());
             in >> board.nodes[i].type;
             in >> board.nodes[i].shape;
-            in >> board.nodes[i].rotation;
+            in >> rotation;
+            switch(board.nodes[i].shape){
+            case nodeshape::o:
+                board.nodes[i].sides = {false, false, false, false};
+                break;
+            case nodeshape::d:
+                board.nodes[i].sides = {true, false, false, false};
+                rotateby(i/board.cols, i%board.cols, rotation);
+                break;
+            case nodeshape::i:
+                board.nodes[i].sides = {true, false, true, false};
+                rotateby(i/board.cols, i%board.cols, rotation);
+                break;
+            case nodeshape::l:
+                board.nodes[i].sides = {true, true, false, false};
+                rotateby(i/board.cols, i%board.cols, rotation);
+                break;
+            case nodeshape::t:
+                board.nodes[i].sides = {true, true, true, false};
+                rotateby(i/board.cols, i%board.cols, rotation);
+                break;
+            case nodeshape::x:
+                board.nodes[i].sides = {true, true, true, true};
+                break;
+            }
         }
         file.close();
     }
@@ -267,16 +292,19 @@ void game::createnode(nodetype type, int row, int col, std::array<bool,4> sides)
     currentnode->rotation = 0;
 }
 
+void game::rotateby(int row, int col, int rotation){
+    for(int i=0; i<rotation; i++){
+        rotate(row, col);
+    }
+}
+
 // randomly rotates every node on the game board
 void game::randomlyrotate(){
     for(int row=0; row<this->board.rows; row++){
         for(int col=0; col<this->board.cols; col++){
-            node* currentnode = getnodeat(row, col);
-            //std::cout << currentnode->sides[0] << currentnode->sides[1] << currentnode->sides[2] << currentnode->sides[3] << "bef" << std::endl;
-            currentnode->rotation = rand() % 4;
-            std::array<bool, 4> newsides;
-            for(int i=0; i<4; i++) newsides[i] = currentnode->sides[(i-currentnode->rotation+4)%4];
-            for(int i=0; i<4; i++) currentnode->sides[i] = newsides[i];
+            int r = rand()%4;
+            rotateby(row, col, r);
+            //rotateby(row, col, rand() % 4);
 
             //std::cout << currentnode->sides[0] << currentnode->sides[1] << currentnode->sides[2] << currentnode->sides[3] << "aft" << std::endl;
         }
@@ -336,6 +364,7 @@ void game::recursiveupdate(int row, int col, side mustbe){
         //std::cout << "out fo bounds" << std::endl;
         return;
     }
+    std::cout << "type: " << getnodeat(row, col)->type << " sides: " << getnodeat(row, col)->sides[0] << getnodeat(row, col)->sides[1] << getnodeat(row, col)->sides[2] << getnodeat(row, col)->sides[3] << std::endl;
     if (mustbe != none && !getnodeat(row, col)->sides[mustbe]){
         //std::cout << "mustbe none" << std::endl;
         return;
@@ -397,12 +426,6 @@ bool game::arebulbslit(){
         }
     }
     return lit;
-}
-
-// rotates a node on [row, col] coordinates clockwise by 90 degrees
-void game::rotatenode(int row, int col){
-    getnodeat(row, col)->rotation += 1;
-    getnodeat(row, col)->rotation %= 4;
 }
 
 node* game::getnodeat(int row, int col){

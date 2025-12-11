@@ -14,7 +14,6 @@ public:
     void randomlyrotate();
     void update();
     bool arebulbslit();
-    void rotatenode(int row, int col);
     void print();
     node* getnodeat(int row, int col);
     QPixmap getimage(int row, int col);
@@ -25,6 +24,7 @@ public:
     bool deletegame(QString filename);
     bool renamegame(QString filenamebefore, QString filenameafter);
     void createnode(nodetype type, int row, int col, std::array<bool,4> sides);
+    void rotateby(int row, int col, int rotation);
 private:
     gameboard gamecreateempty(int, int);
     void unpowernodes();

@@ -2,6 +2,7 @@
 #define GAMETYPES_H
 #pragma once
 #include <vector>
+#include <array>
 
 enum nodetype {
     empty,
@@ -51,7 +52,7 @@ struct position {
 
 struct node {
     nodetype type;
-    bool sides[4];
+    std::array<bool, 4> sides;
     nodeshape shape;
     int rotation; // number from 0-3
     bool powered;

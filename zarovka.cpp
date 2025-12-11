@@ -266,6 +266,29 @@ void Zarovka::resizeEvent(QResizeEvent *event)
         ui->editoroptions->addWidget(btn);
         buttons.insert(buttons.end(), btn);
 
+        QPushButton *btn2 = new QPushButton(QString("MIX"));
+        btn2->setFixedHeight(sidesize);
+        btn2->setFixedWidth(sidesize);
+        btn2->setStyleSheet(
+            "QPushButton {"
+            "    border: none;"
+            "    border-radius: 0;"
+            "    background-color: #abcdef;"
+            "    outline: none;"
+            "}"
+            "QPushButton:pressed {"
+            "    padding-left: 1px;"
+            "    padding-top: 1px;"
+            "}"
+            );
+        connect(btn2, &QPushButton::clicked, this, [this, sidesize](){
+            activegame.randomlyrotate();
+            activegame.update();
+            updateboard(buttons[0]->width(), activegame.board.cols);
+        });
+        ui->editoroptions->addWidget(btn2);
+        buttons.insert(buttons.end(), btn2);
+
         for(int i=0; i<icons.size(); i++){
             QPushButton *btn = new QPushButton(QString(""));
             btn->setFixedHeight(sidesize);
@@ -619,6 +642,19 @@ QStringList Zarovka::getLevelFiles()
     return files;
 }
 
+void Zarovka::editFile(QString filename){
+    activegame.loadgame(filename);
+    resetLayout();
+    currentgamename = filename.chopped(5);
+    activegame.editing = true;
+    ui->stackedWidget->setCurrentIndex(1);
+    QWidget *page = ui->stackedWidget->widget(1);
+    QResizeEvent event(this->size(), this->size());
+    QCoreApplication::sendEvent(this, &event);
+    activegame.update();
+    updateboard(buttons[0]->width(), activegame.board.cols);
+}
+
 void Zarovka::loadLevelList()
 {
     QLayoutItem *item;
@@ -653,15 +689,7 @@ void Zarovka::loadLevelList()
             editBtn->setMinimumSize(100, 40);
             editBtn->setStyleSheet("font-size: 14px;");
             connect(editBtn, &QPushButton::clicked, this, [this, filename]() {
-                activegame.loadgame(filename);
-                resetLayout();
-                currentgamename = filename.chopped(5);
-                activegame.editing = true;
-                ui->stackedWidget->setCurrentIndex(1);
-                QWidget *page = ui->stackedWidget->widget(1);
-
-                QResizeEvent event(this->size(), this->size());
-                QCoreApplication::sendEvent(this, &event);
+                editFile(filename);
                 qDebug() << "Editovat level:" << filename;
                 // TODO
             });
