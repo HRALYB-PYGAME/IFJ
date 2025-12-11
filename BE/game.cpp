@@ -15,12 +15,14 @@ game::game(int rows, int cols, bool editing) {
 }
 
 void game::loadgame(QString filename){
-    QFile file(QString("%1.zvaz").arg(filename));
+    QFile file(QString("save/%1").arg(filename));
     if (file.open(QIODevice::ReadOnly)) {
         QDataStream in(&file);
         in >> board.rows;
         in >> board.cols;
+        board.nodes.clear();
         for(int i=0; i<board.rows*board.cols; i++){
+            board.nodes.push_back(node());
             in >> board.nodes[i].type;
             in >> board.nodes[i].shape;
             in >> board.nodes[i].rotation;
@@ -30,7 +32,8 @@ void game::loadgame(QString filename){
 }
 
 bool game::deletegame(QString filename){
-    bool success = QFile::remove(filename);
+    bool success = QFile::remove(QString("save/%1").arg(filename));
+    std::cout << success << std::endl;
     return success;
 }
 

@@ -649,6 +649,7 @@ void Zarovka::loadLevelList()
             editBtn->setMinimumSize(100, 40);
             editBtn->setStyleSheet("font-size: 14px;");
             connect(editBtn, &QPushButton::clicked, this, [this, filename]() {
+                activegame.loadgame(filename);
                 qDebug() << "Editovat level:" << filename;
                 // TODO
             });
@@ -667,6 +668,8 @@ void Zarovka::loadLevelList()
             deleteBtn->setMinimumSize(100, 40);
             deleteBtn->setStyleSheet("font-size: 14px; background-color: #ff4444; color: white;");
             connect(deleteBtn, &QPushButton::clicked, this, [this, filename]() {
+                activegame.deletegame(filename);
+                loadLevelList();
                 qDebug() << "Odstranit level:" << filename;
                 // TODO
             });
