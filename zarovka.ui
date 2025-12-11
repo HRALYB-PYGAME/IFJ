@@ -24,7 +24,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>7</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="P01DifficultySelector">
        <layout class="QGridLayout" name="gridLayout_3">
@@ -689,7 +689,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QTextEdit" name="textEdit">
+            <widget class="QTextEdit" name="levelname">
              <property name="font">
               <font>
                <pointsize>15</pointsize>
@@ -1144,8 +1144,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>778</width>
-             <height>406</height>
+             <width>766</width>
+             <height>416</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1181,7 +1181,7 @@
      <x>0</x>
      <y>0</y>
      <width>804</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

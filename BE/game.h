@@ -20,10 +20,10 @@ public:
     QPixmap getimage(int row, int col);
     void rotate(int row, int col);
 
-    void savegame(std::string filename = "hra");
-    void loadgame(std::string filename);
-    bool deletegame(std::string filename);
-    bool renamegame(std::string filenamebefore, std::string filenameafter);
+    void savegame(QString filename = "hra");
+    void loadgame(QString filename);
+    bool deletegame(QString filename);
+    bool renamegame(QString filenamebefore, QString filenameafter);
     void createnode(nodetype type, int row, int col, std::array<bool,4> sides);
 private:
     gameboard gamecreateempty(int, int);

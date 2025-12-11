@@ -257,7 +257,7 @@ void Zarovka::resizeEvent(QResizeEvent *event)
             );
         std::string name = "test";
         connect(btn, &QPushButton::clicked, this, [this, name](){
-            activegame.savegame(name);
+            activegame.savegame(currentgamename);
         });
         ui->editoroptions->addWidget(btn);
         buttons.insert(buttons.end(), btn);
@@ -576,6 +576,7 @@ void Zarovka::on_heightminus_clicked()
 void Zarovka::on_pushButton_4_clicked()
 {
     createGame(ui->widthlabel->text().toInt(),ui->heightlabel->text().toInt(), true);
+    currentgamename = ui->levelname->toPlainText();
     activegame.editing = true;
     ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);

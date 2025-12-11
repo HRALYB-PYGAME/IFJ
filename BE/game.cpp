@@ -14,7 +14,7 @@ game::game(int rows, int cols, bool editing) {
     rebuildCache();
 }
 
-void game::loadgame(std::string filename){
+void game::loadgame(QString filename){
     QFile file(QString("%1.zvaz").arg(filename));
     if (file.open(QIODevice::ReadOnly)) {
         QDataStream in(&file);
@@ -29,12 +29,12 @@ void game::loadgame(std::string filename){
     }
 }
 
-bool game::deletegame(std::string filename){
-    bool success = QFile::remove(QString::fromStdString(filename));
+bool game::deletegame(QString filename){
+    bool success = QFile::remove(filename);
     return success;
 }
 
-bool game::renamegame(std::string filenamebefore, std::string filenameafter){
+bool game::renamegame(QString filenamebefore, QString filenameafter){
     bool success = deletegame(filenamebefore);
     if (success == false) return false;
     if (!QFile::exists(QString("%1.zvaz").arg(filenameafter))) return false;
@@ -42,7 +42,7 @@ bool game::renamegame(std::string filenamebefore, std::string filenameafter){
     return true;
 }
 
-void game::savegame(std::string filename){
+void game::savegame(QString filename){
     // soubor .szgf
     // 1. radek [(int)x, (int)y] - x je sirka a y je vyska herniho pole
     // nasleduje y radku v kazdem bude 3x cisel

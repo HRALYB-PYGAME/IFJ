@@ -26,6 +26,7 @@ public:
     std::array<bool, 4> selectedsides = {false, false, false, false};
     void turn(QPushButton *btn, int row, int col);
     game activegame = game(0,0);
+    QString currentgamename;
     bool shiftheld;
     std::vector<QPushButton*> buttons;
 
