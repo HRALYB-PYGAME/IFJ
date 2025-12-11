@@ -136,6 +136,10 @@ void Zarovka::on_easyButton_clicked()
 void Zarovka::createGame(int w, int h, bool empty){
     activegame = game(w, h);
     if (!empty) activegame.gamecreate(0);
+    resetLayout();
+}
+
+void Zarovka::resetLayout(){
     clearLayour(ui->gameboard);
     clearLayour(ui->editoroptions);
     createButtons();
@@ -650,6 +654,14 @@ void Zarovka::loadLevelList()
             editBtn->setStyleSheet("font-size: 14px;");
             connect(editBtn, &QPushButton::clicked, this, [this, filename]() {
                 activegame.loadgame(filename);
+                resetLayout();
+                currentgamename = filename.chopped(5);
+                activegame.editing = true;
+                ui->stackedWidget->setCurrentIndex(1);
+                QWidget *page = ui->stackedWidget->widget(1);
+
+                QResizeEvent event(this->size(), this->size());
+                QCoreApplication::sendEvent(this, &event);
                 qDebug() << "Editovat level:" << filename;
                 // TODO
             });

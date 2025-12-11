@@ -20,6 +20,10 @@ void game::loadgame(QString filename){
         QDataStream in(&file);
         in >> board.rows;
         in >> board.cols;
+        in >> board.powerrow;
+        std::cout << board.powerrow << " row loaded" << std::endl;
+        in >> board.powercol;
+        std::cout << board.powercol << " col loaded" << std::endl;
         board.nodes.clear();
         for(int i=0; i<board.rows*board.cols; i++){
             board.nodes.push_back(node());
@@ -70,6 +74,8 @@ void game::savegame(QString filename){
         QDataStream out(&file);
         out << board.rows;
         out << board.cols;
+        out << board.powerrow;
+        out << board.powercol;
         for(int i=0; i<board.rows*board.cols; i++){
             out << board.nodes[i].type;
             out << board.nodes[i].shape;

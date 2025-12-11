@@ -37,6 +37,7 @@ public:
     void clearLayour(QLayout *layout);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
+    void resetLayout();
 private slots:
     void on_playButton_clicked();
     void on_settingsButton_clicked();
