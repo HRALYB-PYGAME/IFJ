@@ -19,6 +19,11 @@ enum side {
     none
 };
 
+enum language {
+    czech,
+    english
+};
+
 enum nodeshape {
     o, // bez zadnych dratu
     d, // s jednim dratem nahoru

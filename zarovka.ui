@@ -24,7 +24,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>5</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="P01DifficultySelector">
        <layout class="QGridLayout" name="gridLayout_3">
@@ -364,7 +364,7 @@
           <string>←</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_2">
+        <widget class="QLabel" name="settingsLabel">
          <property name="geometry">
           <rect>
            <x>350</x>
@@ -392,7 +392,7 @@
           <height>51</height>
          </rect>
         </property>
-        <widget class="QLabel" name="label_3">
+        <widget class="QLabel" name="bgColorLabel">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -468,7 +468,7 @@
           <height>51</height>
          </rect>
         </property>
-        <widget class="QLabel" name="label_5">
+        <widget class="QLabel" name="gameboardColorLabel">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -544,7 +544,7 @@
           <height>51</height>
          </rect>
         </property>
-        <widget class="QLabel" name="label_7">
+        <widget class="QLabel" name="gameboardAlignLabel">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -605,7 +605,7 @@
           <height>51</height>
          </rect>
         </property>
-        <widget class="QLabel" name="label_8">
+        <widget class="QLabel" name="languageLabel">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -623,7 +623,7 @@
           <string>Jazyk</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="colorWhiteButton_6">
+        <widget class="QPushButton" name="englishButton">
          <property name="geometry">
           <rect>
            <x>240</x>
@@ -640,7 +640,7 @@
           <string>English</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="colorBlackButton_6">
+        <widget class="QPushButton" name="czechButton">
          <property name="geometry">
           <rect>
            <x>310</x>
@@ -1120,7 +1120,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_11">
+         <widget class="QLabel" name="levellistlabel">
           <property name="font">
            <font>
             <pointsize>25</pointsize>
@@ -1144,8 +1144,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>766</width>
-             <height>416</height>
+             <width>66</width>
+             <height>26</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">

@@ -22,6 +22,7 @@ public:
     Zarovka(QWidget *parent = nullptr);
     ~Zarovka();
     int mode;
+    language language;
     nodetype selectedtype = nodetype::empty;
     std::array<bool, 4> selectedsides = {false, false, false, false};
     void turn(QPushButton *btn, int row, int col);
@@ -78,6 +79,10 @@ private slots:
     void on_pushButton_4_clicked();
 
     void on_createLevelButton_clicked();
+
+    void on_czechButton_clicked();
+
+    void on_englishButton_clicked();
 
 private:
     Ui::Zarovka *ui;

@@ -95,12 +95,16 @@ void game::savegame(QString filename){
     x = 5  // vsude
     */
     QFile file(QString("save/%1.zvaz").arg(filename));
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    if (file.open(QIODevice::WriteOnly)) {
         QDataStream out(&file);
         out << board.rows;
+        std::cout << board.rows << std::endl;
         out << board.cols;
+        std::cout << board.cols << std::endl;
         out << board.powerrow;
+        std::cout << board.powerrow << std::endl;
         out << board.powercol;
+        std::cout << board.powercol << std::endl;
         for(int i=0; i<board.rows*board.cols; i++){
             out << board.nodes[i].type;
             out << board.nodes[i].shape;

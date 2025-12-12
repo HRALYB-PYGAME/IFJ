@@ -23,11 +23,8 @@ Zarovka::Zarovka(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::Zarovka)
 {
-    qDebug("neco");
     ui->setupUi(this);
     this->mode = 0;
-
-    qDebug("halo");
 
     selectedBgColor = QColor(0, 0, 0);  // default background color
     selectedBoardColor = QColor(171, 205, 239);
@@ -35,8 +32,6 @@ Zarovka::Zarovka(QWidget *parent)
     ui->stackedWidget->setCurrentIndex(3);
     loadSettings();
     applySettings();
-
-    qDebug("hello");
 
     QDir saveDir("save");
     if (!saveDir.exists()) {
@@ -244,7 +239,7 @@ void Zarovka::resizeEvent(QResizeEvent *event)
         std::vector<std::array<bool, 4>> sides = {{true, false, true, false},{true, true, false, false},{true, true, true, false},
                                                 {true, true, true, true},{true, false, false, false},{true, false, false, false}};
 
-        QPushButton *btn = new QPushButton(QString("SAVE"));
+        QPushButton *btn = new QPushButton(QString(language == language::czech ? "ULOŽIT" : "SAVE"));
         btn->setFixedHeight(sidesize);
         btn->setFixedWidth(sidesize);
         btn->setStyleSheet(
@@ -352,11 +347,20 @@ void Zarovka::loadSettings()
         } else {
             boardAlignment = Qt::AlignLeft;
         }
+
+        if (obj.contains("language")){
+            int lang = obj["language"].toInt();
+            language = lang == 0 ? language::czech : language::english;
+        }
+        else{
+            language = language::czech;
+        }
     } else {
         selectedBgColor = QColor(0, 0, 0);
         selectedBoardColor = QColor(171, 205, 239);
         boardAlignment = Qt::AlignLeft;
     }
+    //language = obj[]
 
     updateColorButtons();
 }
@@ -367,6 +371,8 @@ void Zarovka::saveSettings()
     obj["backgroundColor"] = selectedBgColor.name();
     obj["boardColor"] = selectedBoardColor.name();
     obj["boardAlignment"] = (boardAlignment == Qt::AlignRight) ? "right" : "left";
+    obj["language"] = language;
+    //obj["language"] =
 
     QJsonDocument doc(obj);
 
@@ -389,7 +395,14 @@ void Zarovka::applySettings()
         ui->gameboard->setAlignment(boardAlignment);
     }
 
+    ui->colorWhiteButton_5->setText(language == language::czech ? "Vlevo" : "Left");
+    ui->colorBlackButton_5->setText(language == language::czech ? "Vpravo" : "Right");
 
+    ui->settingsLabel->setText(language == language::czech ? "Nastavení" : "Settings");
+    ui->languageLabel->setText(language == language::czech ? "Jazyk" : "Language");
+    ui->gameboardAlignLabel->setText(language == language::czech ? "Herní pole" : "Game board");
+    ui->bgColorLabel->setText(language == language::czech ? "Barva pozadí" : "Background color");
+    ui->gameboardColorLabel->setText(language == language::czech ? "Barva hrací plochy" : "Gameboard background color");
 
     updateColorButtons();
 }
@@ -487,6 +500,18 @@ void Zarovka::updateColorButtons()
 
     ui->colorBlackButton_5->setStyleSheet(
         boardAlignment == Qt::AlignRight
+            ? "background-color: white; color: black; border: 4px solid red; border-radius: 5px;"
+            : "background-color: white; color: black; border-radius: 5px;"
+        );
+
+    ui->czechButton->setStyleSheet(
+        language == language::czech
+            ? "background-color: white; color: black; border: 4px solid red; border-radius: 5px;"
+            : "background-color: white; color: black; border-radius: 5px;"
+        );
+
+    ui->englishButton->setStyleSheet(
+        language == language::english
             ? "background-color: white; color: black; border: 4px solid red; border-radius: 5px;"
             : "background-color: white; color: black; border-radius: 5px;"
         );
@@ -667,8 +692,11 @@ void Zarovka::loadLevelList()
 
     QStringList levelFiles = getLevelFiles();
 
+    ui->createLevelButton->setText(language == language::czech ? "Vytvořit nový" : "Make new");
+    ui->levellistlabel->setText(language == language::czech ? "Moje levely" : "Your levels");
+
     if (levelFiles.isEmpty()) {
-        QLabel *noLevelsLabel = new QLabel("Zatím nemáte žádné uložené levely");
+        QLabel *noLevelsLabel = new QLabel(language == language::czech ? "Zatím nemáte žádné uložené levely" : "You have no saved levels yet");
         noLevelsLabel->setAlignment(Qt::AlignCenter);
         noLevelsLabel->setStyleSheet("font-size: 18px; color: gray;");
         ui->levelListLayout->addWidget(noLevelsLabel);
@@ -685,7 +713,7 @@ void Zarovka::loadLevelList()
             nameLabel->setMinimumWidth(300);
 
             // Hrát
-            QPushButton *playBtn = new QPushButton("Hrát");
+            QPushButton *playBtn = new QPushButton(language == language::czech ? "Hrát" : "Play");
             playBtn->setMinimumSize(100, 40);
             playBtn->setStyleSheet("font-size: 14px;");
             connect(playBtn, &QPushButton::clicked, this, [this, filename]() {
@@ -695,7 +723,7 @@ void Zarovka::loadLevelList()
             });
 
             // Editovat
-            QPushButton *editBtn = new QPushButton("Editovat");
+            QPushButton *editBtn = new QPushButton(language == language::czech ? "Editovat" : "Edit");
             editBtn->setMinimumSize(100, 40);
             editBtn->setStyleSheet("font-size: 14px;");
             connect(editBtn, &QPushButton::clicked, this, [this, filename]() {
@@ -704,7 +732,7 @@ void Zarovka::loadLevelList()
             });
 
             // Přejmenovat
-            QPushButton *renameBtn = new QPushButton("Přejmenovat");
+            QPushButton *renameBtn = new QPushButton(language == language::czech ? "Přejmenovat" : "Rename");
             renameBtn->setMinimumSize(120, 40);
             renameBtn->setStyleSheet("font-size: 14px;");
             connect(renameBtn, &QPushButton::clicked, this, [this, filename]() {
@@ -713,7 +741,7 @@ void Zarovka::loadLevelList()
             });
 
             // Odstranit
-            QPushButton *deleteBtn = new QPushButton("Odstranit");
+            QPushButton *deleteBtn = new QPushButton(language == language::czech ? "Odstranit" : "Delete");
             deleteBtn->setMinimumSize(100, 40);
             deleteBtn->setStyleSheet("font-size: 14px; background-color: #ff4444; color: white;");
             connect(deleteBtn, &QPushButton::clicked, this, [this, filename]() {
@@ -742,5 +770,21 @@ void Zarovka::loadLevelList()
 void Zarovka::on_createLevelButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(5);
+}
+
+
+void Zarovka::on_czechButton_clicked()
+{
+    language = language::czech;
+    applySettings();
+    saveSettings();
+}
+
+
+void Zarovka::on_englishButton_clicked()
+{
+    language = language::english;
+    applySettings();
+    saveSettings();
 }
 
