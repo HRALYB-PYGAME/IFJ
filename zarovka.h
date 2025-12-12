@@ -1,9 +1,9 @@
 #ifndef ZAROVKA_H
 #define ZAROVKA_H
 
+#include <QMainWindow>
 #include <QString>
 #include <QStringList>
-#include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -26,10 +26,10 @@ public:
     nodetype selectedtype = nodetype::empty;
     std::array<bool, 4> selectedsides = {false, false, false, false};
     void turn(QPushButton *btn, int row, int col);
-    game activegame = game(0,0);
+    game activegame = game(0, 0);
     QString currentgamename;
     bool shiftheld;
-    std::vector<QPushButton*> buttons;
+    std::vector<QPushButton *> buttons;
 
     void updateboard(int sidesize);
     void updateboard(int sidesize, int cols);
@@ -56,7 +56,7 @@ private slots:
     void on_colorBlueButton_3_clicked();
     void on_colorBlackButton_3_clicked();
 
-    void on_colorWhiteButton_5_clicked();  // left
+    void on_colorWhiteButton_5_clicked(); // left
     void on_colorBlackButton_5_clicked(); // right
 
     void on_backToMenuButton_clicked();
@@ -84,9 +84,15 @@ private slots:
 
     void on_englishButton_clicked();
 
+    void on_buttonMediumLevel1_clicked();
+    void on_buttonMediumLevel2_clicked();
+    void on_buttonMediumLevel3_clicked();
+
+    void on_mediumButton_clicked();
+
 private:
     Ui::Zarovka *ui;
-    QColor selectedBgColor;  // current bg color
+    QColor selectedBgColor; // current bg color
     QColor selectedBoardColor;
     Qt::Alignment boardAlignment;
 
@@ -100,6 +106,5 @@ private:
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
-
 };
 #endif // ZAROVKA_H

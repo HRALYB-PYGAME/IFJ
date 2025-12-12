@@ -1,9 +1,9 @@
 #pragma once
 
-#include <QWidget>
 #include <QGridLayout>
-#include <QPushButton>
 #include <QPointer>
+#include <QPushButton>
+#include <QWidget>
 
 class SquareButton : public QPushButton
 {
@@ -31,7 +31,9 @@ class GridWidget : public QWidget
     Q_OBJECT
 public:
     explicit GridWidget(QWidget *parent = nullptr)
-        : QWidget(parent), m_layout(nullptr) {}
+        : QWidget(parent)
+        , m_layout(nullptr)
+    {}
 
     // -----------------------------------------------------------------
     // Public API – call this whenever you want a new grid

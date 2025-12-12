@@ -1,18 +1,18 @@
 #pragma once
-#include <QWidget>
 #include <QGridLayout>
 #include <QPushButton>
+#include <QWidget>
 
-class SquareButton : public QPushButton {
+class SquareButton : public QPushButton
+{
     Q_OBJECT
 public:
     using QPushButton::QPushButton;
-    void setSquareSize(int size) {
-        setFixedSize(size, size);
-    }
+    void setSquareSize(int size) { setFixedSize(size, size); }
 };
 
-class GridWidget : public QWidget {
+class GridWidget : public QWidget
+{
     Q_OBJECT
 public:
     GridWidget(QWidget *parent = nullptr);
@@ -26,6 +26,6 @@ protected:
 
 private:
     QGridLayout *m_layout = nullptr;
-    QVector<SquareButton*> m_buttons;
+    QVector<SquareButton *> m_buttons;
     int m_rows = 0, m_cols = 0;
 };
