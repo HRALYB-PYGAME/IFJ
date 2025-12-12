@@ -87,8 +87,21 @@ private slots:
     void on_buttonMediumLevel1_clicked();
     void on_buttonMediumLevel2_clicked();
     void on_buttonMediumLevel3_clicked();
+    void on_buttonMediumLevel4_clicked();
+    void on_buttonMediumLevel5_clicked();
+
+    void on_buttonHardLevel1_clicked();
+    void on_buttonHardLevel2_clicked();
+    void on_buttonHardLevel3_clicked();
+    void on_buttonHardLevel4_clicked();
+    void on_buttonHardLevel5_clicked();
 
     void on_mediumButton_clicked();
+    void on_hardButton_clicked();
+
+    void on_pushButton_11_clicked();
+
+    void on_pushButton_12_clicked();
 
 private:
     Ui::Zarovka *ui;

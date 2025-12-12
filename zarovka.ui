@@ -24,7 +24,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>7</number>
+       <number>8</number>
       </property>
       <widget class="QWidget" name="P01DifficultySelector">
        <layout class="QGridLayout" name="gridLayout_3">
@@ -1171,39 +1171,424 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="page">
-       <widget class="QWidget" name="horizontalLayoutWidget">
+      <widget class="QWidget" name="P07MediumLevels">
+       <widget class="QWidget" name="widget_14" native="true">
         <property name="geometry">
          <rect>
-          <x>60</x>
+          <x>20</x>
           <y>50</y>
-          <width>641</width>
-          <height>471</height>
+          <width>741</width>
+          <height>581</height>
          </rect>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_10">
-         <item>
-          <widget class="QPushButton" name="buttonMediumLevel1">
-           <property name="text">
-            <string>level 1</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="buttonMediumLevel2">
-           <property name="text">
-            <string>level 2</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="buttonMediumLevel3">
-           <property name="text">
-            <string>level 3</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QWidget" name="horizontalLayoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>10</y>
+           <width>711</width>
+           <height>118</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_10">
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <property name="topMargin">
+           <number>9</number>
+          </property>
+          <property name="rightMargin">
+           <number>9</number>
+          </property>
+          <property name="bottomMargin">
+           <number>9</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="buttonMediumLevel1">
+            <property name="minimumSize">
+             <size>
+              <width>500</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>level 1</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget_5">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>120</y>
+           <width>711</width>
+           <height>111</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_15">
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <property name="topMargin">
+           <number>9</number>
+          </property>
+          <property name="rightMargin">
+           <number>9</number>
+          </property>
+          <property name="bottomMargin">
+           <number>9</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="buttonMediumLevel2">
+            <property name="minimumSize">
+             <size>
+              <width>500</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>level 2</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget_2">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>230</y>
+           <width>711</width>
+           <height>111</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_12">
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <property name="topMargin">
+           <number>9</number>
+          </property>
+          <property name="rightMargin">
+           <number>9</number>
+          </property>
+          <property name="bottomMargin">
+           <number>9</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="buttonMediumLevel3">
+            <property name="minimumSize">
+             <size>
+              <width>500</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>level 3</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget_3">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>340</y>
+           <width>711</width>
+           <height>111</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_13">
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <property name="topMargin">
+           <number>9</number>
+          </property>
+          <property name="rightMargin">
+           <number>9</number>
+          </property>
+          <property name="bottomMargin">
+           <number>9</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="buttonMediumLevel4">
+            <property name="minimumSize">
+             <size>
+              <width>500</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>level 4</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget_4">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>450</y>
+           <width>711</width>
+           <height>118</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_14">
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <property name="topMargin">
+           <number>9</number>
+          </property>
+          <property name="rightMargin">
+           <number>9</number>
+          </property>
+          <property name="bottomMargin">
+           <number>9</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="buttonMediumLevel5">
+            <property name="minimumSize">
+             <size>
+              <width>500</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>level 5</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+       <widget class="QPushButton" name="pushButton_12">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>20</y>
+          <width>181</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>&lt;---</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="P08HardLevels">
+       <widget class="QWidget" name="widget_29" native="true">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>30</y>
+          <width>741</width>
+          <height>581</height>
+         </rect>
+        </property>
+        <widget class="QWidget" name="horizontalLayoutWidget_11">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>10</y>
+           <width>711</width>
+           <height>118</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_30">
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <property name="topMargin">
+           <number>9</number>
+          </property>
+          <property name="rightMargin">
+           <number>9</number>
+          </property>
+          <property name="bottomMargin">
+           <number>9</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="buttonHardLevel1">
+            <property name="minimumSize">
+             <size>
+              <width>500</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>level 1</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget_12">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>120</y>
+           <width>711</width>
+           <height>118</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_31">
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <property name="topMargin">
+           <number>9</number>
+          </property>
+          <property name="rightMargin">
+           <number>9</number>
+          </property>
+          <property name="bottomMargin">
+           <number>9</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="buttonHardLevel2">
+            <property name="minimumSize">
+             <size>
+              <width>500</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>level 2</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget_13">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>230</y>
+           <width>711</width>
+           <height>118</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_32">
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <property name="topMargin">
+           <number>9</number>
+          </property>
+          <property name="rightMargin">
+           <number>9</number>
+          </property>
+          <property name="bottomMargin">
+           <number>9</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="buttonHardLevel3">
+            <property name="minimumSize">
+             <size>
+              <width>500</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>level 3</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget_14">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>340</y>
+           <width>711</width>
+           <height>118</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_33">
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <property name="topMargin">
+           <number>9</number>
+          </property>
+          <property name="rightMargin">
+           <number>9</number>
+          </property>
+          <property name="bottomMargin">
+           <number>9</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="buttonHardLevel4">
+            <property name="minimumSize">
+             <size>
+              <width>500</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>level 4</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget_15">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>450</y>
+           <width>711</width>
+           <height>118</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_34">
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <property name="topMargin">
+           <number>9</number>
+          </property>
+          <property name="rightMargin">
+           <number>9</number>
+          </property>
+          <property name="bottomMargin">
+           <number>9</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="buttonHardLevel5">
+            <property name="minimumSize">
+             <size>
+              <width>500</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>level 5</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+       <widget class="QPushButton" name="pushButton_11">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>0</y>
+          <width>121</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>&lt;---</string>
+        </property>
        </widget>
       </widget>
      </widget>

@@ -774,17 +774,68 @@ void Zarovka::on_buttonMediumLevel1_clicked()
 
 void Zarovka::on_buttonMediumLevel2_clicked()
 {
-    openGameFile(".zvaz");
+    openGameFile("mainlevels/_M02.zvaz");
 }
 
 void Zarovka::on_buttonMediumLevel3_clicked()
 {
-    openGameFile("xd.zvaz");
+    openGameFile("mainlevels/_M03.zvaz");
 }
 
+void Zarovka::on_buttonMediumLevel4_clicked()
+{
+    openGameFile("mainlevels/_M04.zvaz");
+}
+
+void Zarovka::on_buttonMediumLevel5_clicked()
+{
+    openGameFile("mainlevels/_M05.zvaz");
+}
+
+void Zarovka::on_buttonHardLevel1_clicked()
+{
+    openGameFile("mainlevels/_H01.zvaz");
+}
+
+void Zarovka::on_buttonHardLevel2_clicked()
+{
+    openGameFile("mainlevels/_H02.zvaz");
+}
+
+void Zarovka::on_buttonHardLevel3_clicked()
+{
+    openGameFile("mainlevels/_H03.zvaz");
+}
+
+void Zarovka::on_buttonHardLevel4_clicked()
+{
+    openGameFile("mainlevels/_H04.zvaz");
+}
+
+void Zarovka::on_buttonHardLevel5_clicked()
+{
+    openGameFile("mainlevels/_H05.zvaz");
+}
 
 void Zarovka::on_mediumButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(8);
+}
+
+void Zarovka::on_hardButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(9);
+}
+
+
+void Zarovka::on_pushButton_11_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+
+void Zarovka::on_pushButton_12_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
