@@ -114,7 +114,7 @@ void Zarovka::updateUI(int mode)
     }
 }
 
-void Zarovka::on_easyButton_clicked()
+void Zarovka::on_randomButton_clicked()
 {
     createGame(5, 5);
 
@@ -766,6 +766,31 @@ void Zarovka::on_englishButton_clicked()
     saveSettings();
 }
 
+void Zarovka::on_buttonEasyLevel1_clicked()
+{
+    openGameFile("mainlevels/_E01.zvaz");
+}
+
+void Zarovka::on_buttonEasyLevel2_clicked()
+{
+    openGameFile("mainlevels/_E02.zvaz");
+}
+
+void Zarovka::on_buttonEasyLevel3_clicked()
+{
+    openGameFile("mainlevels/_E03.zvaz");
+}
+
+void Zarovka::on_buttonEasyLevel4_clicked()
+{
+    openGameFile("mainlevels/_E04.zvaz");
+}
+
+void Zarovka::on_buttonEasyLevel5_clicked()
+{
+    openGameFile("mainlevels/_E05.zvaz");
+}
+
 void Zarovka::on_buttonMediumLevel1_clicked()
 {
     // where are the levels???
@@ -817,6 +842,11 @@ void Zarovka::on_buttonHardLevel5_clicked()
     openGameFile("mainlevels/_H05.zvaz");
 }
 
+void Zarovka::on_easyButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(10);
+}
+
 void Zarovka::on_mediumButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(8);
@@ -827,15 +857,17 @@ void Zarovka::on_hardButton_clicked()
     ui->stackedWidget->setCurrentIndex(9);
 }
 
-
 void Zarovka::on_pushButton_11_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
 }
-
 
 void Zarovka::on_pushButton_12_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
 }
 
+void Zarovka::on_pushButton_13_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}

@@ -46,7 +46,7 @@ private slots:
     void on_backButton_clicked();
     void updateUI(int mode);
 
-    void on_easyButton_clicked();
+    void on_randomButton_clicked();
 
     void on_colorWhiteButton_clicked();
     void on_colorBlackButton_clicked();
@@ -84,6 +84,12 @@ private slots:
 
     void on_englishButton_clicked();
 
+    void on_buttonEasyLevel1_clicked();
+    void on_buttonEasyLevel2_clicked();
+    void on_buttonEasyLevel3_clicked();
+    void on_buttonEasyLevel4_clicked();
+    void on_buttonEasyLevel5_clicked();
+
     void on_buttonMediumLevel1_clicked();
     void on_buttonMediumLevel2_clicked();
     void on_buttonMediumLevel3_clicked();
@@ -96,12 +102,13 @@ private slots:
     void on_buttonHardLevel4_clicked();
     void on_buttonHardLevel5_clicked();
 
+    void on_easyButton_clicked();
     void on_mediumButton_clicked();
     void on_hardButton_clicked();
 
     void on_pushButton_11_clicked();
-
     void on_pushButton_12_clicked();
+    void on_pushButton_13_clicked();
 
 private:
     Ui::Zarovka *ui;
