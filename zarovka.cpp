@@ -766,6 +766,7 @@ void Zarovka::on_englishButton_clicked()
     saveSettings();
 }
 
+// TODO: dát main levely do nějaké složky a upravit cesty k nim
 void Zarovka::on_buttonEasyLevel1_clicked()
 {
     openGameFile("mainlevels/_E01.zvaz");
@@ -793,8 +794,7 @@ void Zarovka::on_buttonEasyLevel5_clicked()
 
 void Zarovka::on_buttonMediumLevel1_clicked()
 {
-    // where are the levels???
-    openGameFile("xdd.zvaz");
+    openGameFile("mainlevels/_M01.zvaz");
 }
 
 void Zarovka::on_buttonMediumLevel2_clicked()
