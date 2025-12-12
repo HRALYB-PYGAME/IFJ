@@ -23,4 +23,21 @@
         <file>power.png</file>
         <file>Empty.png</file>
     </qresource>
+    <qresource prefix="/mainlevels">
+        <file>_E01.zvaz</file>
+        <file>_E02.zvaz</file>
+        <file>_E03.zvaz</file>
+        <file>_E04.zvaz</file>
+        <file>_E05.zvaz</file>
+        <file>_H01.zvaz</file>
+        <file>_H02.zvaz</file>
+        <file>_H03.zvaz</file>
+        <file>_H04.zvaz</file>
+        <file>_H05.zvaz</file>
+        <file>_M01.zvaz</file>
+        <file>_M02.zvaz</file>
+        <file>_M03.zvaz</file>
+        <file>_M04.zvaz</file>
+        <file>_M05.zvaz</file>
+    </qresource>
 </RCC>

@@ -643,6 +643,8 @@ QStringList Zarovka::getLevelFiles()
 
 void Zarovka::openGameFile(QString filename, bool editing)
 {
+    if (QFile::exists(":/mainlevels/_E01.zvaz")) std::cout << "jo\n";
+    else std::cout << "ne\n";
     activegame.loadgame(filename);
     resetLayout();
     currentgamename = filename.chopped(5);
@@ -694,7 +696,7 @@ void Zarovka::loadLevelList()
             playBtn->setMinimumSize(100, 40);
             playBtn->setStyleSheet("font-size: 14px;");
             connect(playBtn, &QPushButton::clicked, this, [this, filename]() {
-                openGameFile(filename, false);
+                openGameFile(QString("save/%1").arg(filename), false);
                 qDebug() << "Hrát level:" << filename;
                 // TODO
             });
@@ -705,7 +707,7 @@ void Zarovka::loadLevelList()
             editBtn->setMinimumSize(100, 40);
             editBtn->setStyleSheet("font-size: 14px;");
             connect(editBtn, &QPushButton::clicked, this, [this, filename]() {
-                openGameFile(filename, true);
+                openGameFile(QString("save/%1").arg(filename), true);
                 qDebug() << "Editovat level:" << filename;
             });
 
@@ -769,42 +771,42 @@ void Zarovka::on_englishButton_clicked()
 // TODO: dát main levely do nějaké složky a upravit cesty k nim
 void Zarovka::on_buttonEasyLevel1_clicked()
 {
-    openGameFile("mainlevels/_E01.zvaz");
+    openGameFile(":/mainlevels/_E01.zvaz");
 }
 
 void Zarovka::on_buttonEasyLevel2_clicked()
 {
-    openGameFile("mainlevels/_E02.zvaz");
+    openGameFile(":/mainlevels/_E02.zvaz");
 }
 
 void Zarovka::on_buttonEasyLevel3_clicked()
 {
-    openGameFile("mainlevels/_E03.zvaz");
+    openGameFile(":/mainlevels/_E03.zvaz");
 }
 
 void Zarovka::on_buttonEasyLevel4_clicked()
 {
-    openGameFile("mainlevels/_E04.zvaz");
+    openGameFile(":/mainlevels/_E04.zvaz");
 }
 
 void Zarovka::on_buttonEasyLevel5_clicked()
 {
-    openGameFile("mainlevels/_E05.zvaz");
+    openGameFile(":/mainlevels/_E05.zvaz");
 }
 
 void Zarovka::on_buttonMediumLevel1_clicked()
 {
-    openGameFile("mainlevels/_M01.zvaz");
+    openGameFile(":/mainlevels/_M01.zvaz");
 }
 
 void Zarovka::on_buttonMediumLevel2_clicked()
 {
-    openGameFile("mainlevels/_M02.zvaz");
+    openGameFile(":/mainlevels/_M02.zvaz");
 }
 
 void Zarovka::on_buttonMediumLevel3_clicked()
 {
-    openGameFile("mainlevels/_M03.zvaz");
+    openGameFile(":/mainlevels/_M03.zvaz");
 }
 
 void Zarovka::on_buttonMediumLevel4_clicked()
@@ -814,32 +816,32 @@ void Zarovka::on_buttonMediumLevel4_clicked()
 
 void Zarovka::on_buttonMediumLevel5_clicked()
 {
-    openGameFile("mainlevels/_M05.zvaz");
+    openGameFile(":/mainlevels/_M05.zvaz");
 }
 
 void Zarovka::on_buttonHardLevel1_clicked()
 {
-    openGameFile("mainlevels/_H01.zvaz");
+    openGameFile(":/mainlevels/_H01.zvaz");
 }
 
 void Zarovka::on_buttonHardLevel2_clicked()
 {
-    openGameFile("mainlevels/_H02.zvaz");
+    openGameFile(":/mainlevels/_H02.zvaz");
 }
 
 void Zarovka::on_buttonHardLevel3_clicked()
 {
-    openGameFile("mainlevels/_H03.zvaz");
+    openGameFile(":/mainlevels/_H03.zvaz");
 }
 
 void Zarovka::on_buttonHardLevel4_clicked()
 {
-    openGameFile("mainlevels/_H04.zvaz");
+    openGameFile(":/mainlevels/_H04.zvaz");
 }
 
 void Zarovka::on_buttonHardLevel5_clicked()
 {
-    openGameFile("mainlevels/_H05.zvaz");
+    openGameFile(":/mainlevels/_H05.zvaz");
 }
 
 void Zarovka::on_easyButton_clicked()

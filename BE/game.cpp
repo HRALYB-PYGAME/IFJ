@@ -15,7 +15,7 @@ game::game(int rows, int cols, bool editing) {
 }
 
 void game::loadgame(QString filename){
-    QFile file(QString("save/%1").arg(filename));
+    QFile file(filename);
     if (file.open(QIODevice::ReadOnly)) {
         QDataStream in(&file);
         in >> board.rows;
