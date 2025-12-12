@@ -22,6 +22,7 @@ public:
     Zarovka(QWidget *parent = nullptr);
     ~Zarovka();
     int mode;
+    int previousPage = 0;
     language language;
     nodetype selectedtype = nodetype::empty;
     std::array<bool, 4> selectedsides = {false, false, false, false};
@@ -109,6 +110,10 @@ private slots:
     void on_pushButton_11_clicked();
     void on_pushButton_12_clicked();
     void on_pushButton_13_clicked();
+
+    void on_pushButton_14_clicked();
+
+    void onBackFromGame();
 
 private:
     Ui::Zarovka *ui;

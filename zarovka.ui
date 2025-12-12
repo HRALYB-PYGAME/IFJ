@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>804</width>
-    <height>649</height>
+    <height>761</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>10</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="P01DifficultySelector">
        <layout class="QGridLayout" name="gridLayout_3">
@@ -152,8 +152,33 @@
        </layout>
       </widget>
       <widget class="QWidget" name="P02GameBoard">
-       <layout class="QGridLayout" name="gridLayout_4">
-        <item row="0" column="0">
+       <layout class="QVBoxLayout" name="verticalLayout_gameboard_main">
+        <item>
+         <widget class="QPushButton" name="backFromGameButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>80</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>←</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QWidget" name="gameboardlayout" native="true">
           <layout class="QVBoxLayout" name="verticalLayout_8">
            <item>
@@ -356,8 +381,8 @@
           <rect>
            <x>20</x>
            <y>10</y>
-           <width>41</width>
-           <height>41</height>
+           <width>80</width>
+           <height>40</height>
           </rect>
          </property>
          <property name="text">
@@ -1000,7 +1025,7 @@
               </size>
              </property>
              <property name="text">
-              <string>← Menu</string>
+              <string>← </string>
              </property>
             </widget>
            </item>
@@ -1107,9 +1132,17 @@
          <widget class="QPushButton" name="createLevelButton">
           <property name="minimumSize">
            <size>
-            <width>120</width>
-            <height>50</height>
+            <width>130</width>
+            <height>55</height>
            </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: &quot;#007DFF&quot;</string>
           </property>
           <property name="text">
            <string>Vytvořit nový</string>
@@ -1144,8 +1177,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>766</width>
-             <height>416</height>
+             <width>758</width>
+             <height>493</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1372,12 +1405,12 @@
          <rect>
           <x>10</x>
           <y>0</y>
-          <width>121</width>
-          <height>31</height>
+          <width>80</width>
+          <height>40</height>
          </rect>
         </property>
         <property name="text">
-         <string>&lt;---</string>
+         <string>← </string>
         </property>
        </widget>
       </widget>
@@ -1582,12 +1615,12 @@
          <rect>
           <x>10</x>
           <y>0</y>
-          <width>121</width>
-          <height>31</height>
+          <width>80</width>
+          <height>40</height>
          </rect>
         </property>
         <property name="text">
-         <string>&lt;---</string>
+         <string>← </string>
         </property>
        </widget>
       </widget>
@@ -1792,12 +1825,12 @@
          <rect>
           <x>10</x>
           <y>0</y>
-          <width>121</width>
-          <height>31</height>
+          <width>80</width>
+          <height>40</height>
          </rect>
         </property>
         <property name="text">
-         <string>&lt;---</string>
+         <string>←</string>
         </property>
        </widget>
       </widget>
@@ -1811,7 +1844,7 @@
      <x>0</x>
      <y>0</y>
      <width>804</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

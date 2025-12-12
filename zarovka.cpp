@@ -37,6 +37,7 @@ Zarovka::Zarovka(QWidget *parent)
         bool created = QDir().mkdir("save");
     }
 
+    connect(ui->backFromGameButton, &QPushButton::clicked, this, &Zarovka::onBackFromGame);
     qDebug("hohoho");
 
     this->show();
@@ -117,6 +118,7 @@ void Zarovka::updateUI(int mode)
 void Zarovka::on_randomButton_clicked()
 {
     createGame(5, 5);
+    previousPage = 0;
 
     ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);
@@ -609,6 +611,7 @@ void Zarovka::on_pushButton_4_clicked()
 
     QResizeEvent event(this->size(), this->size());
     QCoreApplication::sendEvent(this, &event);
+    previousPage = 7;
 }
 
 void Zarovka::on_backToMenuButton_clicked()
@@ -694,10 +697,11 @@ void Zarovka::loadLevelList()
             // Hrát
             QPushButton *playBtn = new QPushButton(language == language::czech ? "Hrát" : "Play");
             playBtn->setMinimumSize(100, 40);
-            playBtn->setStyleSheet("font-size: 14px;");
+            playBtn->setStyleSheet("font-size: 14px; background-color: #007dff; color: white;");
             connect(playBtn, &QPushButton::clicked, this, [this, filename]() {
                 openGameFile(QString("save/%1").arg(filename), false);
                 qDebug() << "Hrát level:" << filename;
+                previousPage = 7;
                 // TODO
             });
 
@@ -772,91 +776,109 @@ void Zarovka::on_englishButton_clicked()
 void Zarovka::on_buttonEasyLevel1_clicked()
 {
     openGameFile(":/mainlevels/_E01.zvaz");
+    previousPage = 10;
 }
 
 void Zarovka::on_buttonEasyLevel2_clicked()
 {
     openGameFile(":/mainlevels/_E02.zvaz");
+    previousPage = 10;
 }
 
 void Zarovka::on_buttonEasyLevel3_clicked()
 {
     openGameFile(":/mainlevels/_E03.zvaz");
+    previousPage = 10;
 }
 
 void Zarovka::on_buttonEasyLevel4_clicked()
 {
     openGameFile(":/mainlevels/_E04.zvaz");
+    previousPage = 10;
 }
 
 void Zarovka::on_buttonEasyLevel5_clicked()
 {
     openGameFile(":/mainlevels/_E05.zvaz");
+    previousPage = 10;
 }
 
 void Zarovka::on_buttonMediumLevel1_clicked()
 {
     openGameFile(":/mainlevels/_M01.zvaz");
+    previousPage = 8;
 }
 
 void Zarovka::on_buttonMediumLevel2_clicked()
 {
     openGameFile(":/mainlevels/_M02.zvaz");
+    previousPage = 8;
 }
 
 void Zarovka::on_buttonMediumLevel3_clicked()
 {
     openGameFile(":/mainlevels/_M03.zvaz");
+    previousPage = 8;
 }
 
 void Zarovka::on_buttonMediumLevel4_clicked()
 {
     openGameFile("mainlevels/_M04.zvaz");
+    previousPage = 8;
 }
 
 void Zarovka::on_buttonMediumLevel5_clicked()
 {
     openGameFile(":/mainlevels/_M05.zvaz");
+    previousPage = 8;
 }
 
 void Zarovka::on_buttonHardLevel1_clicked()
 {
     openGameFile(":/mainlevels/_H01.zvaz");
+    previousPage = 9;
 }
 
 void Zarovka::on_buttonHardLevel2_clicked()
 {
     openGameFile(":/mainlevels/_H02.zvaz");
+    previousPage = 9;
 }
 
 void Zarovka::on_buttonHardLevel3_clicked()
 {
     openGameFile(":/mainlevels/_H03.zvaz");
+    previousPage = 9;
 }
 
 void Zarovka::on_buttonHardLevel4_clicked()
 {
     openGameFile(":/mainlevels/_H04.zvaz");
+    previousPage = 9;
 }
 
 void Zarovka::on_buttonHardLevel5_clicked()
 {
     openGameFile(":/mainlevels/_H05.zvaz");
+    previousPage = 9;
 }
 
 void Zarovka::on_easyButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(10);
+    previousPage = 0;
 }
 
 void Zarovka::on_mediumButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(8);
+    previousPage = 0;
 }
 
 void Zarovka::on_hardButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(9);
+    previousPage = 0;
 }
 
 void Zarovka::on_pushButton_11_clicked()
@@ -873,3 +895,18 @@ void Zarovka::on_pushButton_13_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
 }
+
+void Zarovka::on_pushButton_14_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+void Zarovka::onBackFromGame()
+{
+    ui->stackedWidget->setCurrentIndex(previousPage);
+}
+
+
+
+
+
