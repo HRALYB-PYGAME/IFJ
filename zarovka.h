@@ -35,7 +35,6 @@ public:
     std::vector<QPushButton *> buttons;
     QPushButton *savebtn;
 
-    void updateboard(int sidesize);
     void updateboard(int sidesize, int cols);
     void createGame(int w, int h, bool empty = false);
     void createButtons();
@@ -115,8 +114,6 @@ private slots:
     void on_pushButton_11_clicked();
     void on_pushButton_12_clicked();
     void on_pushButton_13_clicked();
-
-    void on_pushButton_14_clicked();
 
     void onBackFromGame();
 

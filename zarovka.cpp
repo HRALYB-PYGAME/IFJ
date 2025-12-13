@@ -188,7 +188,6 @@ void Zarovka::turn(QPushButton *btn, int row, int col)
         activegame.update();
         updateboard(buttons[0]->width(), activegame.board.cols);
         if (activegame.arebulbslit()) {
-            std::cout << "dokoncil jsi: " << currentgamename.toStdString() << std::endl;
             activegame.addrecord(currentgamename, sec, activegame.moveCount);
 
             int totalSeconds = sec / 1000;
@@ -252,7 +251,6 @@ void Zarovka::updateboard(int sidesize, int cols)
         QPushButton *button = buttons[i];
         button->setFixedHeight(sidesize);
         button->setFixedWidth(sidesize);
-        //std::cout << "getting img for" << i/cols << " " << i%cols << std::endl;
         int row = i / cols;
         if (ui->stackedWidget->currentIndex() == 1 && row < activegame.board.rows)
             button->setIcon(QIcon(activegame.getimage(i / cols, i % cols)));
@@ -683,7 +681,6 @@ void Zarovka::on_pushButton_4_clicked()
 {
     createGame(ui->widthlabel->text().toInt(), ui->heightlabel->text().toInt(), true);
     currentgamename = ui->levelname->toPlainText();
-    std::cout << currentgamename.toStdString() << " <<cgn" << std::endl;
     activegame.editing = true;
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);
@@ -729,7 +726,6 @@ void Zarovka::openGameFile(QString filename, bool editing)
     resetLayout();
     currentgamename = filename.chopped(5);
     if(currentgamename.startsWith("save")) currentgamename = currentgamename.mid(5);
-    std::cout << "cgn >> " << currentgamename.toStdString() << std::endl;
     activegame.editing = editing;
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);
@@ -833,7 +829,6 @@ void Zarovka::loadLevelList()
             connect(renameBtn, &QPushButton::clicked, this, [this, filename, nameLabel]() {
                 int steps = -1;
                 int time = -1;
-                std::cout << filename.toStdString() << " <fn\n";
                 activegame.loadgame(QString("save/%1").arg(filename));
                 if (activegame.iscompleted(filename.chopped(5))){
                     steps = activegame.getrecordsteps(filename.chopped(5));
@@ -844,9 +839,7 @@ void Zarovka::loadLevelList()
                 if (steps != -1){
                     activegame.addrecord(nameLabel->toPlainText(), time, steps);
                 }
-                qDebug() << "Přejmenovat level:" << filename;
                 loadLevelList();
-                // TODO
             });
 
             // Odstranit
@@ -1070,11 +1063,6 @@ void Zarovka::on_pushButton_12_clicked()
 }
 
 void Zarovka::on_pushButton_13_clicked()
-{
-    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(0);
-}
-
-void Zarovka::on_pushButton_14_clicked()
 {
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(0);
 }

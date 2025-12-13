@@ -19,16 +19,13 @@ game::game(int rows, int cols, bool editing) {
 }
 
 void game::loadgame(QString filename){
-    std::cout << "loading " << filename.toStdString() << std::endl;
     QFile file(filename);
     if (file.open(QIODevice::ReadOnly)) {
         QDataStream in(&file);
         in >> board.rows;
         in >> board.cols;
         in >> board.powerrow;
-        std::cout << board.powerrow << " row loaded" << std::endl;
         in >> board.powercol;
-        std::cout << board.powercol << " col loaded" << std::endl;
         board.nodes.clear();
         for(int i=0; i<board.rows*board.cols; i++){
             int rotation;
@@ -67,10 +64,8 @@ void game::loadgame(QString filename){
 }
 
 bool game::deletegame(QString filename){
-    std::cout << "deleting save/" << filename.toStdString() << std::endl;
     removerecord(filename.chopped(5));
     bool success = QFile::remove(QString("save/%1").arg(filename));
-    std::cout << success << std::endl;
     return success;
 }
 
@@ -204,46 +199,20 @@ void game::addrecord(QString levelname, int time, int steps){
 }
 
 void game::savegame(QString filename){
-    std::cout << "saving as " << filename.toStdString() << ".zvaz" << std::endl;
-    // soubor .szgf
-    // 1. radek [(int)x, (int)y] - x je sirka a y je vyska herniho pole
-    // nasleduje y radku v kazdem bude 3x cisel
-    // kazda trojice cisel bude slozena z [(int)typ, (int)tvar, (int)rotace]
-    // typ:
-    /*
-    empty,= 0
-    bulb, = 1
-    link, = 2
-    power = 3
-    */
-    /*
-    o = 0, // bez zadnych dratu
-    d = 1, // s jednim dratem nahoru
-    i = 2, // s dratem nahoru a dolu
-    l = 3, // s draty nahoru a doprava
-    t = 4, // s draty nahoru, doprava a dolu
-    x = 5  // vsude
-    */
     QFile file(QString("save/%1.zvaz").arg(filename));
     if (file.open(QIODevice::WriteOnly)) {
-        std::cout << "writing in file" << std::endl;
         QDataStream out(&file);
         out << board.rows;
-        std::cout << board.rows << std::endl;
         out << board.cols;
-        std::cout << board.cols << std::endl;
         out << board.powerrow;
-        std::cout << board.powerrow << std::endl;
         out << board.powercol;
-        std::cout << board.powercol << std::endl;
         for(int i=0; i<board.rows*board.cols; i++){
             out << board.nodes[i].type;
             out << board.nodes[i].shape;
             out << board.nodes[i].rotation;
         }
         file.close();
-        removerecord(filename);
-        std::cout << "opening" << std::endl;
+        removerecord(filename);;
     }
 }
 
@@ -268,7 +237,6 @@ gameboard game::gamecreateempty(int rows, int cols){
     newgame.rows = rows;
     newgame.nodes = std::vector<node>(rows*cols, {empty, { false, false, false, false }, o, 0, false});
 
-    //std::cout << "created a emtpy game" << std::endl;
     return newgame;
 }
 
@@ -298,7 +266,6 @@ void game::gamecreate(int difficulty){
     occupiednodes[powerrow][powercol] = true;
 
     float probability = 0.02;
-    //std::cout << "creating game" << std::endl;
     // path generation
     while (((double) rand() / (RAND_MAX)) > probability){
         int direction = rand() % 4;
@@ -334,9 +301,7 @@ void game::gamecreate(int difficulty){
                 path.insert(path.end(), {powerrow, powercol});
             }
         }
-        //std::cout << "while looping" << std::endl;
     }
-    //std::cout << "done" << std::endl;
 
 
     for(int i=1; i < path.size() - 1; i++){
@@ -356,8 +321,6 @@ void game::gamecreate(int difficulty){
         createnode(link, current.row, current.col, sides);
     }
 
-    //std::cout << "done creating nodes" << std::endl;
-
     position current = path[path.size()-1];
     position previous = path[path.size()-2];
     std::array<bool, 4> sides = {false, false, false, false};
@@ -367,15 +330,9 @@ void game::gamecreate(int difficulty){
     if(current.row - previous.row == -1) sides[down] = true;
     createnode(bulb, current.row, current.col, sides);
 
-    //std::cout << "done credting walls" << std::endl;
-
     randomlyrotate();
 
-    //std::cout << "done randomly rotating" << std::endl;
-
     update();
-
-    //std::cout << "done update" << std::endl;
 }
 
 void game::print(){
@@ -442,16 +399,12 @@ void game::randomlyrotate(){
         for(int col=0; col<this->board.cols; col++){
             int r = rand()%4;
             rotateby(row, col, r);
-            //rotateby(row, col, rand() % 4);
-
-            //std::cout << currentnode->sides[0] << currentnode->sides[1] << currentnode->sides[2] << currentnode->sides[3] << "aft" << std::endl;
         }
     }
 }
 
 QPixmap game::getimage(int row, int col){
     node* currentnode = getnodeat(row, col);
-    //std::cout << row << " " << col << " is " << currentnode->type << std::endl;
     nodetype buttontype = currentnode->type;
     int buttonrotation = currentnode->rotation;
     bool powered = currentnode->powered;
@@ -497,49 +450,30 @@ void game::rotate(int row, int col){
 }
 
 void game::recursiveupdate(int row, int col, side mustbe){
-    std::cout << row << col << std::endl;
     if (row < 0 || col < 0 || row >= this->board.rows || col >= this->board.cols){
-        //std::cout << "out fo bounds" << std::endl;
         return;
     }
-    std::cout << "type: " << getnodeat(row, col)->type << " sides: " << getnodeat(row, col)->sides[0] << getnodeat(row, col)->sides[1] << getnodeat(row, col)->sides[2] << getnodeat(row, col)->sides[3] << std::endl;
     if (mustbe != none && !getnodeat(row, col)->sides[mustbe]){
-        //std::cout << "mustbe none" << std::endl;
         return;
     }
     if (getnodeat(row, col)->powered){
-        //std::cout << "node" << row << col << "already powered" << std::endl;
         return;
     }
 
-    //std::cout << "accessing node" << row << " " << col << std::endl;
     node* currentnode = getnodeat(row, col);
 
-    std::cout << "powering node" << row << col << std::endl;
-    //std::cout << "node have links at" << currentnode->sides[up] << currentnode->sides[1] <<currentnode->sides[2] <<currentnode->sides[3] << std::endl;
-
-
     currentnode->powered = true;
-    //std::cout << "powering done" << std::endl;
     if (currentnode->sides[up]){
-        //std::cout << "up" << std::endl;
         recursiveupdate(row-1, col, down);
-        //std::cout << "success" << std::endl;
     }
     if (currentnode->sides[right]){
-        //std::cout << "up" << std::endl;
         recursiveupdate(row, col+1, left);
-        //std::cout << "success" << std::endl;
     }
     if (currentnode->sides[down]){
-        //std::cout << "up" << std::endl;
         recursiveupdate(row+1, col, up);
-        //std::cout << "success" << std::endl;
     }
     if (currentnode->sides[left]){
-        //std::cout << "up" << std::endl;
         recursiveupdate(row, col-1, right);
-        //std::cout << "success" << std::endl;
     }
 }
 
