@@ -27,7 +27,7 @@ Zarovka::Zarovka(QWidget *parent)
     selectedBgColor = QColor(0, 0, 0); // default background color
     selectedBoardColor = QColor(171, 205, 239);
     boardAlignment = Qt::AlignLeft;
-    ui->stackedWidget->setCurrentIndex(3);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(3);
     loadSettings();
     applySettings();
 
@@ -41,8 +41,6 @@ Zarovka::Zarovka(QWidget *parent)
 
     gameTimer = new QTimer(this);
     connect(gameTimer, &QTimer::timeout, this, &Zarovka::onTimerTick);
-
-    qDebug("hohoho");
 
     this->show();
     this->showNormal();
@@ -86,17 +84,17 @@ Zarovka::~Zarovka()
 void Zarovka::on_playButton_clicked()
 {
     this->mode = 1;
-    ui->stackedWidget->setCurrentIndex(0);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(0);
 }
 
 void Zarovka::on_settingsButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(4);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(4);
 }
 
 void Zarovka::on_backButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(3);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(3);
 }
 
 void Zarovka::updateUI(int mode)
@@ -108,7 +106,7 @@ void Zarovka::updateUI(int mode)
     case 0:
         this->activateWindow();
         //ui->gameMenu->widget()->setVisible(true);
-        ui->stackedWidget->setCurrentIndex(0);
+        previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(0);
         break;
     case 1:
         //ui->gameMenu->widget()->setVisible(false);
@@ -122,11 +120,11 @@ void Zarovka::updateUI(int mode)
 void Zarovka::on_randomButton_clicked()
 {
     createGame(5, 5);
-    previousPage = 0;
+    //previousPage = 0;
 
     currentgamename = ":random";
 
-    ui->stackedWidget->setCurrentIndex(1);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);
 
     QResizeEvent event(this->size(), this->size());
@@ -211,7 +209,7 @@ void Zarovka::turn(QPushButton *btn, int row, int col)
                                                                  .arg(minutes)
                                                                  .arg(seconds, 2, 10, QChar('0'))
                                                                  .arg(deciseconds));
-            ui->stackedWidget->setCurrentIndex(2);
+            previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(2);
         }
     } else {
         if (activegame.getnodeat(row, col)->type == nodetype::power) {
@@ -356,6 +354,17 @@ void Zarovka::resizeEvent(QResizeEvent *event)
         connect(btn2, &QPushButton::clicked, this, [this, sidesize]() {
             activegame.randomlyrotate();
             activegame.update();
+            savebtn->setText(language == language::czech ? "ULOŽIT" : "SAVE");
+            savebtn->setStyleSheet("QPushButton {"
+                                   "    border: none;"
+                                   "    border-radius: 0;"
+                                   "    background-color: #abcdef;"
+                                   "    outline: none;"
+                                   "}"
+                                   "QPushButton:pressed {"
+                                   "    padding-left: 1px;"
+                                   "    padding-top: 1px;"
+                                   "}");
             updateboard(buttons[0]->width(), activegame.board.cols);
         });
         ui->editoroptions->addWidget(btn2);
@@ -620,12 +629,12 @@ void Zarovka::on_colorBlueButton_clicked()
 
 void Zarovka::on_pushButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(3);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(3);
 }
 
 void Zarovka::on_pushButton_3_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(6);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(6);
 }
 
 void Zarovka::on_widthplus_clicked()
@@ -674,33 +683,33 @@ void Zarovka::on_pushButton_4_clicked()
     currentgamename = ui->levelname->toPlainText();
     std::cout << currentgamename.toStdString() << " <<cgn" << std::endl;
     activegame.editing = true;
-    ui->stackedWidget->setCurrentIndex(1);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);
 
     QResizeEvent event(this->size(), this->size());
     QCoreApplication::sendEvent(this, &event);
-    previousPage = 7;
+    //previousPage = 7;
 }
 
 void Zarovka::on_backToMenuButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(3);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(3);
 }
 
 void Zarovka::on_myLevelsButton_clicked()
 {
     loadLevelList();
-    ui->stackedWidget->setCurrentIndex(7);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(7);
 }
 
 void Zarovka::on_createNewButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(5);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(5);
 }
 
 void Zarovka::on_backToEditorMenuButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(6);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(6);
 }
 
 QStringList Zarovka::getLevelFiles()
@@ -720,7 +729,7 @@ void Zarovka::openGameFile(QString filename, bool editing)
     if(currentgamename.startsWith("save")) currentgamename = currentgamename.mid(5);
     std::cout << "cgn >> " << currentgamename.toStdString() << std::endl;
     activegame.editing = editing;
-    ui->stackedWidget->setCurrentIndex(1);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);
     QResizeEvent event(this->size(), this->size());
     QCoreApplication::sendEvent(this, &event);
@@ -800,7 +809,7 @@ void Zarovka::loadLevelList()
             connect(playBtn, &QPushButton::clicked, this, [this, filename]() {
                 openGameFile(QString("save/%1").arg(filename), false);
                 qDebug() << "Hrát level:" << filename;
-                previousPage = 7;
+                //previousPage = 6;
                 // TODO
             });
 
@@ -879,7 +888,7 @@ void Zarovka::loadLevelList()
 
 void Zarovka::on_createLevelButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(5);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(5);
 }
 
 void Zarovka::on_czechButton_clicked()
@@ -900,91 +909,91 @@ void Zarovka::on_englishButton_clicked()
 void Zarovka::on_buttonEasyLevel1_clicked()
 {
     openGameFile(":/mainlevels/_E01.zvaz");
-    previousPage = 10;
+    //previousPage = 10;
 }
 
 void Zarovka::on_buttonEasyLevel2_clicked()
 {
     openGameFile(":/mainlevels/_E02.zvaz");
-    previousPage = 10;
+    //previousPage = 10;
 }
 
 void Zarovka::on_buttonEasyLevel3_clicked()
 {
     openGameFile(":/mainlevels/_E03.zvaz");
-    previousPage = 10;
+    //previousPage = 10;
 }
 
 void Zarovka::on_buttonEasyLevel4_clicked()
 {
     openGameFile(":/mainlevels/_E04.zvaz");
-    previousPage = 10;
+    //previousPage = 10;
 }
 
 void Zarovka::on_buttonEasyLevel5_clicked()
 {
     openGameFile(":/mainlevels/_E05.zvaz");
-    previousPage = 10;
+    //previousPage = 10;
 }
 
 void Zarovka::on_buttonMediumLevel1_clicked()
 {
     openGameFile(":/mainlevels/_M01.zvaz");
-    previousPage = 8;
+    //previousPage = 8;
 }
 
 void Zarovka::on_buttonMediumLevel2_clicked()
 {
     openGameFile(":/mainlevels/_M02.zvaz");
-    previousPage = 8;
+    //previousPage = 8;
 }
 
 void Zarovka::on_buttonMediumLevel3_clicked()
 {
     openGameFile(":/mainlevels/_M03.zvaz");
-    previousPage = 8;
+    //previousPage = 8;
 }
 
 void Zarovka::on_buttonMediumLevel4_clicked()
 {
     openGameFile("mainlevels/_M04.zvaz");
-    previousPage = 8;
+    //previousPage = 8;
 }
 
 void Zarovka::on_buttonMediumLevel5_clicked()
 {
     openGameFile(":/mainlevels/_M05.zvaz");
-    previousPage = 8;
+    //previousPage = 8;
 }
 
 void Zarovka::on_buttonHardLevel1_clicked()
 {
     openGameFile(":/mainlevels/_H01.zvaz");
-    previousPage = 9;
+    //previousPage = 9;
 }
 
 void Zarovka::on_buttonHardLevel2_clicked()
 {
     openGameFile(":/mainlevels/_H02.zvaz");
-    previousPage = 9;
+    //previousPage = 9;
 }
 
 void Zarovka::on_buttonHardLevel3_clicked()
 {
     openGameFile(":/mainlevels/_H03.zvaz");
-    previousPage = 9;
+    //previousPage = 9;
 }
 
 void Zarovka::on_buttonHardLevel4_clicked()
 {
     openGameFile(":/mainlevels/_H04.zvaz");
-    previousPage = 9;
+    //previousPage = 9;
 }
 
 void Zarovka::on_buttonHardLevel5_clicked()
 {
     openGameFile(":/mainlevels/_H05.zvaz");
-    previousPage = 9;
+    //previousPage = 9;
 }
 
 void Zarovka::updateLevelButton(QPushButton* button, QString name, int level){
@@ -1010,7 +1019,7 @@ void Zarovka::updateLevelButton(QPushButton* button, QString name, int level){
 
 void Zarovka::on_easyButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(10);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(10);
 
     updateLevelButton(ui->buttonEasyLevel1, ":/mainlevels/_E01", 1);
     updateLevelButton(ui->buttonEasyLevel2, ":/mainlevels/_E02", 2);
@@ -1018,12 +1027,13 @@ void Zarovka::on_easyButton_clicked()
     updateLevelButton(ui->buttonEasyLevel4, ":/mainlevels/_E04", 4);
     updateLevelButton(ui->buttonEasyLevel5, ":/mainlevels/_E05", 5);
 
-    previousPage = 0;
+    //previousPage = 0;
 }
 
 void Zarovka::on_mediumButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(8);
+
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(8);
 
     updateLevelButton(ui->buttonMediumLevel1, ":/mainlevels/_M01", 1);
     updateLevelButton(ui->buttonMediumLevel2, ":/mainlevels/_M02", 2);
@@ -1031,12 +1041,12 @@ void Zarovka::on_mediumButton_clicked()
     updateLevelButton(ui->buttonMediumLevel4, ":/mainlevels/_M04", 4);
     updateLevelButton(ui->buttonMediumLevel5, ":/mainlevels/_M05", 5);
 
-    previousPage = 0;
+    //previousPage = 0;
 }
 
 void Zarovka::on_hardButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(9);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(9);
 
     updateLevelButton(ui->buttonHardLevel1, ":/mainlevels/_H01", 1);
     updateLevelButton(ui->buttonHardLevel2, ":/mainlevels/_H02", 2);
@@ -1044,27 +1054,27 @@ void Zarovka::on_hardButton_clicked()
     updateLevelButton(ui->buttonHardLevel4, ":/mainlevels/_H04", 4);
     updateLevelButton(ui->buttonHardLevel5, ":/mainlevels/_H05", 5);
 
-    previousPage = 0;
+    //previousPage = 0;
 }
 
 void Zarovka::on_pushButton_11_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(0);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(0);
 }
 
 void Zarovka::on_pushButton_12_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(0);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(0);
 }
 
 void Zarovka::on_pushButton_13_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(0);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(0);
 }
 
 void Zarovka::on_pushButton_14_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(0);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(0);
 }
 
 void Zarovka::onBackFromGame()
@@ -1174,6 +1184,6 @@ void Zarovka::onTimerTick()
 
 void Zarovka::on_backFromDifficultySelect_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(3);
+    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(3);
 }
 
