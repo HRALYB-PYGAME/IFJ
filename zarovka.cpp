@@ -190,52 +190,7 @@ void Zarovka::turn(QPushButton *btn, int row, int col)
         if (activegame.arebulbslit()) {
             std::cout << "dokoncil jsi: " << currentgamename.toStdString() << std::endl;
             activegame.addrecord(currentgamename, sec, activegame.moveCount);
-            // if (currentgamename.startsWith(":")){
-            //     QChar difficulty = currentgamename.at(currentgamename.length() - 3);
-            //     int index = currentgamename.right(2).toInt()-1;
 
-            //     QPushButton* easyButtons[5] = {
-            //         ui->buttonEasyLevel1,
-            //         ui->buttonEasyLevel2,
-            //         ui->buttonEasyLevel3,
-            //         ui->buttonEasyLevel4,
-            //         ui->buttonEasyLevel5
-            //     };
-
-            //     QPushButton* mediumButtons[5] = {
-            //         ui->buttonMediumLevel1,
-            //         ui->buttonMediumLevel2,
-            //         ui->buttonMediumLevel3,
-            //         ui->buttonMediumLevel4,
-            //         ui->buttonMediumLevel5
-            //     };
-
-            //     QPushButton* hardButtons[5] = {
-            //         ui->buttonHardLevel1,
-            //         ui->buttonHardLevel2,
-            //         ui->buttonHardLevel3,
-            //         ui->buttonHardLevel4,
-            //         ui->buttonHardLevel5
-            //     };
-
-            //     QString text = QString("Level %1\n%2: %3\t%4: %5")
-            //                         .arg(index+1).arg(language == language::czech ? "Kroky" : "Steps")
-            //                         .arg(activegame.getrecordsteps(currentgamename))
-            //                         .arg(language == language::czech ? "Čas" : "Time")
-            //                         .arg(activegame.getrecordtime(currentgamename));
-
-            //     switch (difficulty.unicode()) {
-            //     case 'E':
-            //         easyButtons[index]->setText(text);
-            //         break;
-            //     case 'M':
-            //         mediumButtons[index]->setText(text);
-            //         break;
-            //     case 'H':
-            //         hardButtons[index]->setText(text);
-            //         break;
-            //     }
-            // }
             int totalSeconds = sec / 1000;
             int minutes = totalSeconds / 60;
             int seconds = totalSeconds % 60;
@@ -812,13 +767,29 @@ void Zarovka::loadLevelList()
             nameLabel->setFixedHeight(40);
             nameLabel->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
             nameLabel->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-            // if (activegame.iscompleted(levelName)){
-            //     nameLabel->setText(QString("%1\n%2: %3\t%4: %5").arg(levelName).arg(language == language::czech ? "Kroky" : "Steps")
-            //                            .arg(activegame.getrecordsteps(levelName))
-            //                            .arg(language == language::czech ? "Čas" : "Time").arg(activegame.getrecordtime(levelName)));
-            // }
             nameLabel->setStyleSheet("font-size: 16px; padding: 10px;");
-            nameLabel->setMinimumWidth(300);
+            nameLabel->setMinimumWidth(150);
+
+            QLabel *record = new QLabel();
+            record->setMinimumSize(150, 40);
+            if (activegame.iscompleted(levelName)){
+                int sec = activegame.getrecordtime(levelName);
+                int totalSeconds = sec / 1000;
+                int minutes = totalSeconds / 60;
+                int seconds = totalSeconds % 60;
+                int deciseconds = (sec % 1000) / 100;
+                int steps = activegame.getrecordsteps(levelName);
+
+                record->setText(QString("%1: %2\t%3: %4:%5.%6")
+                                    .arg(language == language::czech ? "Kroky" : "Steps")
+                                    .arg(steps).arg(language == language::czech ? "Čas" : "Time")
+                                    .arg(minutes).arg(seconds, 2, 10, QChar('0'))
+                                    .arg(deciseconds));
+            }
+            else{
+                record->setText(language == language::czech ? "NEDOKONČENO" : "NOT COMPLETED");
+            }
+
 
             // Hrát
             QPushButton *playBtn = new QPushButton(language == language::czech ? "Hrát" : "Play");
@@ -887,6 +858,7 @@ void Zarovka::loadLevelList()
             });
 
             rowLayout->addWidget(nameLabel);
+            rowLayout->addWidget(record);
             rowLayout->addStretch();
             rowLayout->addWidget(playBtn);
             rowLayout->addWidget(editBtn);
