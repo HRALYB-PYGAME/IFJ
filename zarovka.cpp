@@ -188,6 +188,54 @@ void Zarovka::turn(QPushButton *btn, int row, int col)
         activegame.update();
         updateboard(buttons[0]->width(), activegame.board.cols);
         if (activegame.arebulbslit()) {
+            std::cout << "dokoncil jsi: " << currentgamename.toStdString() << std::endl;
+            activegame.addrecord(currentgamename, sec, activegame.moveCount);
+            // if (currentgamename.startsWith(":")){
+            //     QChar difficulty = currentgamename.at(currentgamename.length() - 3);
+            //     int index = currentgamename.right(2).toInt()-1;
+
+            //     QPushButton* easyButtons[5] = {
+            //         ui->buttonEasyLevel1,
+            //         ui->buttonEasyLevel2,
+            //         ui->buttonEasyLevel3,
+            //         ui->buttonEasyLevel4,
+            //         ui->buttonEasyLevel5
+            //     };
+
+            //     QPushButton* mediumButtons[5] = {
+            //         ui->buttonMediumLevel1,
+            //         ui->buttonMediumLevel2,
+            //         ui->buttonMediumLevel3,
+            //         ui->buttonMediumLevel4,
+            //         ui->buttonMediumLevel5
+            //     };
+
+            //     QPushButton* hardButtons[5] = {
+            //         ui->buttonHardLevel1,
+            //         ui->buttonHardLevel2,
+            //         ui->buttonHardLevel3,
+            //         ui->buttonHardLevel4,
+            //         ui->buttonHardLevel5
+            //     };
+
+            //     QString text = QString("Level %1\n%2: %3\t%4: %5")
+            //                         .arg(index+1).arg(language == language::czech ? "Kroky" : "Steps")
+            //                         .arg(activegame.getrecordsteps(currentgamename))
+            //                         .arg(language == language::czech ? "Čas" : "Time")
+            //                         .arg(activegame.getrecordtime(currentgamename));
+
+            //     switch (difficulty.unicode()) {
+            //     case 'E':
+            //         easyButtons[index]->setText(text);
+            //         break;
+            //     case 'M':
+            //         mediumButtons[index]->setText(text);
+            //         break;
+            //     case 'H':
+            //         hardButtons[index]->setText(text);
+            //         break;
+            //     }
+            // }
             int totalSeconds = sec / 1000;
             int minutes = totalSeconds / 60;
             int seconds = totalSeconds % 60;
@@ -711,7 +759,8 @@ void Zarovka::openGameFile(QString filename, bool editing)
 {
     activegame.loadgame(filename);
     resetLayout();
-    currentgamename = filename.mid(5).chopped(5);
+    currentgamename = filename.chopped(5);
+    if(currentgamename.startsWith("save")) currentgamename = currentgamename.mid(5);
     std::cout << "cgn >> " << currentgamename.toStdString() << std::endl;
     activegame.editing = editing;
     ui->stackedWidget->setCurrentIndex(1);
@@ -760,6 +809,14 @@ void Zarovka::loadLevelList()
 
 
             QTextEdit *nameLabel = new QTextEdit(levelName);
+            nameLabel->setFixedHeight(40);
+            nameLabel->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+            nameLabel->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+            // if (activegame.iscompleted(levelName)){
+            //     nameLabel->setText(QString("%1\n%2: %3\t%4: %5").arg(levelName).arg(language == language::czech ? "Kroky" : "Steps")
+            //                            .arg(activegame.getrecordsteps(levelName))
+            //                            .arg(language == language::czech ? "Čas" : "Time").arg(activegame.getrecordtime(levelName)));
+            // }
             nameLabel->setStyleSheet("font-size: 16px; padding: 10px;");
             nameLabel->setMinimumWidth(300);
 
@@ -790,10 +847,21 @@ void Zarovka::loadLevelList()
             renameBtn->setMinimumSize(120, 40);
             renameBtn->setStyleSheet("font-size: 14px;");
             connect(renameBtn, &QPushButton::clicked, this, [this, filename, nameLabel]() {
+                int steps = -1;
+                int time = -1;
+                std::cout << filename.toStdString() << " <fn\n";
                 activegame.loadgame(QString("save/%1").arg(filename));
-                activegame.savegame(nameLabel->toPlainText());
+                if (activegame.iscompleted(filename.chopped(5))){
+                    steps = activegame.getrecordsteps(filename.chopped(5));
+                    time = activegame.getrecordtime(filename.chopped(5));
+                }
                 activegame.deletegame(filename);
+                activegame.savegame(nameLabel->toPlainText());
+                if (steps != -1){
+                    activegame.addrecord(nameLabel->toPlainText(), time, steps);
+                }
                 qDebug() << "Přejmenovat level:" << filename;
+                loadLevelList();
                 // TODO
             });
 
@@ -945,21 +1013,63 @@ void Zarovka::on_buttonHardLevel5_clicked()
     previousPage = 9;
 }
 
+void Zarovka::updateLevelButton(QPushButton* button, QString name, int level){
+    if (activegame.iscompleted(name)){
+        int sec = activegame.getrecordtime(name);
+        int totalSeconds = sec / 1000;
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+        int deciseconds = (sec % 1000) / 100;
+        int steps = activegame.getrecordsteps(name);
+
+        button->setText(QString("Level %1\n%2: %3\t%4: %5:%6.%7")
+                            .arg(level).arg(language == language::czech ? "Kroky" : "Steps")
+                            .arg(steps).arg(language == language::czech ? "Čas" : "Time")
+                            .arg(minutes).arg(seconds, 2, 10, QChar('0'))
+                            .arg(deciseconds));
+    }
+    else{
+        button->setText(QString("Level %1").arg(level));
+    }
+
+}
+
 void Zarovka::on_easyButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(10);
+
+    updateLevelButton(ui->buttonEasyLevel1, ":/mainlevels/_E01", 1);
+    updateLevelButton(ui->buttonEasyLevel2, ":/mainlevels/_E02", 2);
+    updateLevelButton(ui->buttonEasyLevel3, ":/mainlevels/_E03", 3);
+    updateLevelButton(ui->buttonEasyLevel4, ":/mainlevels/_E04", 4);
+    updateLevelButton(ui->buttonEasyLevel5, ":/mainlevels/_E05", 5);
+
     previousPage = 0;
 }
 
 void Zarovka::on_mediumButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(8);
+
+    updateLevelButton(ui->buttonMediumLevel1, ":/mainlevels/_M01", 1);
+    updateLevelButton(ui->buttonMediumLevel2, ":/mainlevels/_M02", 2);
+    updateLevelButton(ui->buttonMediumLevel3, ":/mainlevels/_M03", 3);
+    updateLevelButton(ui->buttonMediumLevel4, ":/mainlevels/_M04", 4);
+    updateLevelButton(ui->buttonMediumLevel5, ":/mainlevels/_M05", 5);
+
     previousPage = 0;
 }
 
 void Zarovka::on_hardButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(9);
+
+    updateLevelButton(ui->buttonHardLevel1, ":/mainlevels/_H01", 1);
+    updateLevelButton(ui->buttonHardLevel2, ":/mainlevels/_H02", 2);
+    updateLevelButton(ui->buttonHardLevel3, ":/mainlevels/_H03", 3);
+    updateLevelButton(ui->buttonHardLevel4, ":/mainlevels/_H04", 4);
+    updateLevelButton(ui->buttonHardLevel5, ":/mainlevels/_H05", 5);
+
     previousPage = 0;
 }
 

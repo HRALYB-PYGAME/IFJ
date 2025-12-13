@@ -24,7 +24,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>5</number>
+       <number>9</number>
       </property>
       <widget class="QWidget" name="P01DifficultySelector">
        <layout class="QGridLayout" name="gridLayout_3">
@@ -1202,8 +1202,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>66</width>
-             <height>26</height>
+             <width>98</width>
+             <height>28</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1270,7 +1270,7 @@
              </size>
             </property>
             <property name="text">
-             <string>level 1</string>
+             <string>Level 1</string>
             </property>
            </widget>
           </item>
@@ -1307,7 +1307,7 @@
              </size>
             </property>
             <property name="text">
-             <string>level 2</string>
+             <string>Level 2</string>
             </property>
            </widget>
           </item>
@@ -1344,7 +1344,7 @@
              </size>
             </property>
             <property name="text">
-             <string>level 3</string>
+             <string>Level 3</string>
             </property>
            </widget>
           </item>
@@ -1381,7 +1381,7 @@
              </size>
             </property>
             <property name="text">
-             <string>level 4</string>
+             <string>Level 4</string>
             </property>
            </widget>
           </item>
@@ -1418,7 +1418,7 @@
              </size>
             </property>
             <property name="text">
-             <string>level 5</string>
+             <string>Level 5</string>
             </property>
            </widget>
           </item>
@@ -1480,7 +1480,7 @@
              </size>
             </property>
             <property name="text">
-             <string>level 1</string>
+             <string>Level 1</string>
             </property>
            </widget>
           </item>
@@ -1517,7 +1517,7 @@
              </size>
             </property>
             <property name="text">
-             <string>level 2</string>
+             <string>Level 2</string>
             </property>
            </widget>
           </item>
@@ -1554,7 +1554,7 @@
              </size>
             </property>
             <property name="text">
-             <string>level 3</string>
+             <string>Level 3</string>
             </property>
            </widget>
           </item>
@@ -1591,7 +1591,7 @@
              </size>
             </property>
             <property name="text">
-             <string>level 4</string>
+             <string>Level 4</string>
             </property>
            </widget>
           </item>
@@ -1628,7 +1628,7 @@
              </size>
             </property>
             <property name="text">
-             <string>level 5</string>
+             <string>Level 5</string>
             </property>
            </widget>
           </item>
@@ -1690,7 +1690,7 @@
              </size>
             </property>
             <property name="text">
-             <string>level 1</string>
+             <string>Level 1</string>
             </property>
            </widget>
           </item>
@@ -1727,7 +1727,7 @@
              </size>
             </property>
             <property name="text">
-             <string>level 2</string>
+             <string>Level 2</string>
             </property>
            </widget>
           </item>
@@ -1764,7 +1764,7 @@
              </size>
             </property>
             <property name="text">
-             <string>level 3</string>
+             <string>Level 3</string>
             </property>
            </widget>
           </item>
@@ -1801,7 +1801,7 @@
              </size>
             </property>
             <property name="text">
-             <string>level 4</string>
+             <string>Level 4</string>
             </property>
            </widget>
           </item>
@@ -1838,7 +1838,7 @@
              </size>
             </property>
             <property name="text">
-             <string>level 5</string>
+             <string>Level 5</string>
             </property>
            </widget>
           </item>

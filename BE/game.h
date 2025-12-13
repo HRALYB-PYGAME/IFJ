@@ -27,6 +27,11 @@ public:
     void createnode(nodetype type, int row, int col, std::array<bool,4> sides);
     void rotateby(int row, int col, int rotation);
     void resetMoveCount();
+    void addrecord(QString levelname, int time, int steps);
+    void removerecord(QString levelname);
+    int getrecordtime(QString levelname);
+    int getrecordsteps(QString levelname);
+    bool iscompleted(QString levelname);
 private:
     gameboard gamecreateempty(int, int);
     void unpowernodes();

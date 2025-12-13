@@ -45,6 +45,7 @@ public:
     void resetLayout();
     void openGameFile(QString filename, bool editing = false);
     void updateStatsDisplay();
+    void updateLevelButton(QPushButton *button, QString name, int level);
 private slots:
     void on_playButton_clicked();
     void on_settingsButton_clicked();

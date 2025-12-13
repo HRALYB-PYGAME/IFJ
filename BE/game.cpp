@@ -6,6 +6,9 @@
 #include <iostream>
 #include <QWidget>
 #include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
 #include <QDataStream>
 
 game::game(int rows, int cols, bool editing) {
@@ -65,17 +68,139 @@ void game::loadgame(QString filename){
 
 bool game::deletegame(QString filename){
     std::cout << "deleting save/" << filename.toStdString() << std::endl;
+    removerecord(filename.chopped(5));
     bool success = QFile::remove(QString("save/%1").arg(filename));
     std::cout << success << std::endl;
     return success;
 }
 
-bool game::renamegame(QString filenamebefore, QString filenameafter){
-    bool success = deletegame(filenamebefore);
-    if (success == false) return false;
-    if (!QFile::exists(QString("%1.zvaz").arg(filenameafter))) return false;
-    savegame(filenameafter);
-    return true;
+int game::getrecordtime(QString levelname){
+    QString filename = "records.json";
+    QJsonObject recordsObj;
+
+    QFile file(filename);
+    if (!file.exists()) return 0;
+
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QByteArray data = file.readAll();
+        file.close();
+        QJsonDocument doc = QJsonDocument::fromJson(data);
+        if (doc.isObject()) {
+            recordsObj = doc.object();
+        }
+    }
+
+    if (recordsObj.contains(levelname))
+        return recordsObj[levelname].toObject()["time"].toInt();
+    return 0;
+}
+
+int game::getrecordsteps(QString levelname){
+    QString filename = "records.json";
+    QJsonObject recordsObj;
+
+    QFile file(filename);
+    if (!file.exists()) return 0;
+
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QByteArray data = file.readAll();
+        file.close();
+        QJsonDocument doc = QJsonDocument::fromJson(data);
+        if (doc.isObject()) {
+            recordsObj = doc.object();
+        }
+    }
+
+    if (recordsObj.contains(levelname))
+        return recordsObj[levelname].toObject()["steps"].toInt();
+    return 0;
+}
+
+bool game::iscompleted(QString levelname){
+    QString filename = "records.json";
+    QJsonObject recordsObj;
+
+    QFile file(filename);
+    if (!file.exists()) return false;
+
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QByteArray data = file.readAll();
+        file.close();
+        QJsonDocument doc = QJsonDocument::fromJson(data);
+        if (doc.isObject()) {
+            recordsObj = doc.object();
+        }
+    }
+
+    if (recordsObj.contains(levelname)) return true;
+    return false;
+}
+
+void game::removerecord(QString levelname){
+    QString filename = "records.json";
+    QJsonObject recordsObj;
+
+    QFile file(filename);
+    if (!file.exists()) return;
+
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QByteArray data = file.readAll();
+        file.close();
+        QJsonDocument doc = QJsonDocument::fromJson(data);
+        if (doc.isObject()) {
+            recordsObj = doc.object();
+        }
+    }
+
+    if (recordsObj.contains(levelname)) {
+        recordsObj.remove(levelname);
+
+        if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QJsonDocument doc(recordsObj);
+            file.write(doc.toJson());
+            file.close();
+        }
+    }
+
+}
+
+
+void game::addrecord(QString levelname, int time, int steps){
+    QString filename = "records.json";
+    QJsonObject recordsObj;
+
+    QFile file(filename);
+    if (file.exists() && file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QByteArray data = file.readAll();
+        file.close();
+        QJsonDocument doc = QJsonDocument::fromJson(data);
+        if (doc.isObject()) {
+            recordsObj = doc.object();
+        }
+    }
+
+    if (recordsObj.contains(levelname)) {
+        QJsonObject levelObj = recordsObj[levelname].toObject();
+        int storedTime = levelObj.value("time").toInt();
+        int storedSteps = levelObj.value("steps").toInt();
+        if (time < storedTime) {
+            levelObj["time"] = time;
+        }
+        if (steps < storedSteps) {
+            levelObj["steps"] = steps;
+        }
+        recordsObj[levelname] = levelObj;
+    } else {
+        QJsonObject levelObj;
+        levelObj["time"] = time;
+        levelObj["steps"] = steps;
+        recordsObj[levelname] = levelObj;
+    }
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QJsonDocument doc(recordsObj);
+        file.write(doc.toJson());
+        file.close();
+    }
 }
 
 void game::savegame(QString filename){
@@ -117,6 +242,7 @@ void game::savegame(QString filename){
             out << board.nodes[i].rotation;
         }
         file.close();
+        removerecord(filename);
         std::cout << "opening" << std::endl;
     }
 }
