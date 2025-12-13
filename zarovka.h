@@ -33,6 +33,7 @@ public:
     QString currentgamename;
     bool shiftheld;
     std::vector<QPushButton *> buttons;
+    QPushButton *savebtn;
 
     void updateboard(int sidesize);
     void updateboard(int sidesize, int cols);

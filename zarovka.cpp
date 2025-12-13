@@ -160,6 +160,19 @@ void Zarovka::clearLayour(QLayout *layout)
 
 void Zarovka::turn(QPushButton *btn, int row, int col)
 {
+    if (activegame.editing){
+        savebtn->setText(language == language::czech ? "ULOŽIT" : "SAVE");
+        savebtn->setStyleSheet("QPushButton {"
+                               "    border: none;"
+                               "    border-radius: 0;"
+                               "    background-color: #abcdef;"
+                               "    outline: none;"
+                               "}"
+                               "QPushButton:pressed {"
+                               "    padding-left: 1px;"
+                               "    padding-top: 1px;"
+                               "}");
+    }
     if (selectedtype == 0) {
         activegame.rotate(row, col);
 
@@ -291,13 +304,13 @@ void Zarovka::resizeEvent(QResizeEvent *event)
                                                   {true, false, false, false},
                                                   {true, false, false, false}};
 
-        QPushButton *btn = new QPushButton(QString(language == language::czech ? "ULOŽIT" : "SAVE"));
-        btn->setFixedHeight(sidesize);
-        btn->setFixedWidth(sidesize);
-        btn->setStyleSheet("QPushButton {"
+        savebtn = new QPushButton(QString(language == language::czech ? "ULOŽENO" : "SAVED"));
+        savebtn->setFixedHeight(sidesize);
+        savebtn->setFixedWidth(sidesize);
+        savebtn->setStyleSheet("QPushButton {"
                            "    border: none;"
                            "    border-radius: 0;"
-                           "    background-color: #abcdef;"
+                           "    background-color: #00ff00;"
                            "    outline: none;"
                            "}"
                            "QPushButton:pressed {"
@@ -305,11 +318,22 @@ void Zarovka::resizeEvent(QResizeEvent *event)
                            "    padding-top: 1px;"
                            "}");
         std::string name = "test";
-        connect(btn, &QPushButton::clicked, this, [this, name]() {
+        connect(savebtn, &QPushButton::clicked, this, [this, name]() {
+            savebtn->setText(language == language::czech ? "ULOŽENO" : "SAVED");
+            savebtn->setStyleSheet("QPushButton {"
+                               "    border: none;"
+                               "    border-radius: 0;"
+                               "    background-color: #00ff00;"
+                               "    outline: none;"
+                               "}"
+                               "QPushButton:pressed {"
+                               "    padding-left: 1px;"
+                               "    padding-top: 1px;"
+                               "}");
             activegame.savegame(currentgamename);
         });
-        ui->editoroptions->addWidget(btn);
-        buttons.insert(buttons.end(), btn);
+        ui->editoroptions->addWidget(savebtn);
+        buttons.insert(buttons.end(), savebtn);
 
         QPushButton *btn2 = new QPushButton(QString("MIX"));
         btn2->setFixedHeight(sidesize);
@@ -356,6 +380,8 @@ void Zarovka::resizeEvent(QResizeEvent *event)
             ui->editoroptions->addWidget(btn);
             buttons.insert(buttons.end(), btn);
         }
+
+        if (activegame.board.powerrow >= 0) buttons[buttons.size()-1]->hide();
     }
 
     //applySettings();
@@ -641,6 +667,7 @@ void Zarovka::on_pushButton_4_clicked()
 {
     createGame(ui->widthlabel->text().toInt(), ui->heightlabel->text().toInt(), true);
     currentgamename = ui->levelname->toPlainText();
+    std::cout << currentgamename.toStdString() << " <<cgn" << std::endl;
     activegame.editing = true;
     ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);
@@ -682,11 +709,10 @@ QStringList Zarovka::getLevelFiles()
 
 void Zarovka::openGameFile(QString filename, bool editing)
 {
-    if (QFile::exists(":/mainlevels/_E01.zvaz")) std::cout << "jo\n";
-    else std::cout << "ne\n";
     activegame.loadgame(filename);
     resetLayout();
-    currentgamename = filename.chopped(5);
+    currentgamename = filename.mid(5).chopped(5);
+    std::cout << "cgn >> " << currentgamename.toStdString() << std::endl;
     activegame.editing = editing;
     ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);
@@ -732,7 +758,8 @@ void Zarovka::loadLevelList()
             QString levelName = filename;
             levelName.chop(5);
 
-            QLabel *nameLabel = new QLabel(levelName);
+
+            QTextEdit *nameLabel = new QTextEdit(levelName);
             nameLabel->setStyleSheet("font-size: 16px; padding: 10px;");
             nameLabel->setMinimumWidth(300);
 
@@ -762,7 +789,10 @@ void Zarovka::loadLevelList()
                                                                                  : "Rename");
             renameBtn->setMinimumSize(120, 40);
             renameBtn->setStyleSheet("font-size: 14px;");
-            connect(renameBtn, &QPushButton::clicked, this, [this, filename]() {
+            connect(renameBtn, &QPushButton::clicked, this, [this, filename, nameLabel]() {
+                activegame.loadgame(QString("save/%1").arg(filename));
+                activegame.savegame(nameLabel->toPlainText());
+                activegame.deletegame(filename);
                 qDebug() << "Přejmenovat level:" << filename;
                 // TODO
             });
@@ -955,7 +985,10 @@ void Zarovka::on_pushButton_14_clicked()
 
 void Zarovka::onBackFromGame()
 {
-    if (activegame.editing) activegame.savegame(currentgamename);
+    if (activegame.editing){
+        activegame.savegame(currentgamename);
+    }
+    selectedtype = nodetype::empty;
     ui->stackedWidget->setCurrentIndex(previousPage);
     loadLevelList();
 }

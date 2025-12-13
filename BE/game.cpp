@@ -16,6 +16,7 @@ game::game(int rows, int cols, bool editing) {
 }
 
 void game::loadgame(QString filename){
+    std::cout << "loading " << filename.toStdString() << std::endl;
     QFile file(filename);
     if (file.open(QIODevice::ReadOnly)) {
         QDataStream in(&file);
@@ -63,6 +64,7 @@ void game::loadgame(QString filename){
 }
 
 bool game::deletegame(QString filename){
+    std::cout << "deleting save/" << filename.toStdString() << std::endl;
     bool success = QFile::remove(QString("save/%1").arg(filename));
     std::cout << success << std::endl;
     return success;
@@ -77,6 +79,7 @@ bool game::renamegame(QString filenamebefore, QString filenameafter){
 }
 
 void game::savegame(QString filename){
+    std::cout << "saving as " << filename.toStdString() << ".zvaz" << std::endl;
     // soubor .szgf
     // 1. radek [(int)x, (int)y] - x je sirka a y je vyska herniho pole
     // nasleduje y radku v kazdem bude 3x cisel
@@ -98,6 +101,7 @@ void game::savegame(QString filename){
     */
     QFile file(QString("save/%1.zvaz").arg(filename));
     if (file.open(QIODevice::WriteOnly)) {
+        std::cout << "writing in file" << std::endl;
         QDataStream out(&file);
         out << board.rows;
         std::cout << board.rows << std::endl;
@@ -113,6 +117,7 @@ void game::savegame(QString filename){
             out << board.nodes[i].rotation;
         }
         file.close();
+        std::cout << "opening" << std::endl;
     }
 }
 
