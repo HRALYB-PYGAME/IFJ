@@ -771,11 +771,21 @@ void Zarovka::loadLevelList()
             QPushButton *deleteBtn = new QPushButton(language == language::czech ? "Odstranit"
                                                                                  : "Delete");
             deleteBtn->setMinimumSize(100, 40);
-            deleteBtn->setStyleSheet("font-size: 14px; background-color: #ff4444; color: white;");
-            connect(deleteBtn, &QPushButton::clicked, this, [this, filename]() {
-                activegame.deletegame(filename);
-                loadLevelList();
-                qDebug() << "Odstranit level:" << filename;
+            deleteBtn->setStyleSheet("font-size: 12px; background-color: #ff4444; color: white;");
+            deleteBtn->setCheckable(true);
+            deleteBtn->setChecked(false);
+
+            connect(deleteBtn, &QPushButton::clicked, this,
+                    [this, filename, deleteBtn](bool checked) {
+                if (checked) {
+                    deleteBtn->setText(language == language::czech
+                                           ? "Opravdu smazat?"
+                                           : "Really delete?");
+                } else {
+                    activegame.deletegame(filename);
+                    loadLevelList();
+                    qDebug() << "Odstranit level:" << filename;
+                }
             });
 
             rowLayout->addWidget(nameLabel);
