@@ -124,6 +124,8 @@ void Zarovka::on_randomButton_clicked()
     createGame(5, 5);
     previousPage = 0;
 
+    currentgamename = ":random";
+
     ui->stackedWidget->setCurrentIndex(1);
     QWidget *page = ui->stackedWidget->widget(1);
 
