@@ -38,6 +38,10 @@ Zarovka::Zarovka(QWidget *parent)
     }
 
     connect(ui->backFromGameButton, &QPushButton::clicked, this, &Zarovka::onBackFromGame);
+
+    gameTimer = new QTimer(this);
+    connect(gameTimer, &QTimer::timeout, this, &Zarovka::onTimerTick);
+
     qDebug("hohoho");
 
     this->show();
@@ -171,6 +175,7 @@ void Zarovka::turn(QPushButton *btn, int row, int col)
         activegame.update();
         updateboard(buttons[0]->width(), activegame.board.cols);
         if (activegame.arebulbslit()) {
+            gameTimer->stop();
             ui->stackedWidget->setCurrentIndex(2);
         }
     } else {
@@ -976,10 +981,15 @@ void Zarovka::createStatsDisplay()
     int cols = activegame.board.cols;
     int rows = activegame.board.rows;
     ui->gameboard->addWidget(statsWidget, 0, cols, rows, 1);
+
+    sec = 0;
+    gameTimer->start(100); // spusti casovac
 }
 
 void Zarovka::hideStatsDisplay()
 {
+    gameTimer->stop();
+
     if (statsWidget != nullptr) {
         ui->gameboard->removeWidget(statsWidget);
         delete statsWidget;
@@ -994,10 +1004,25 @@ void Zarovka::updateStatsDisplay()
     if (!activegame.editing && movesLabel != nullptr) {
         movesLabel->setText(QString::number(activegame.moveCount));
     }
-    if (!activegame.editing && timeLabel != nullptr) {
-        timeLabel->setText("0:00");
-    }
 }
 
+void Zarovka::onTimerTick()
+{
+    if (!activegame.editing) {
+        sec += 100;
+
+        int totalSeconds = sec / 1000;
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+        int deciseconds = (sec % 1000) / 100;
+
+        if (timeLabel != nullptr) {
+            timeLabel->setText(QString("%1:%2.%3")
+                                   .arg(minutes)
+                                   .arg(seconds, 2, 10, QChar('0'))
+                                   .arg(deciseconds));
+        }
+    }
+}
 
 

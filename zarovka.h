@@ -5,6 +5,7 @@
 #include <QString>
 #include <QStringList>
 #include <QLabel>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -117,6 +118,8 @@ private slots:
 
     void onBackFromGame();
 
+    void onTimerTick();
+
 private:
     Ui::Zarovka *ui;
     QColor selectedBgColor; // current bg color
@@ -125,6 +128,8 @@ private:
     QLabel *timeLabel = nullptr;
     QLabel *movesLabel = nullptr;
     QWidget *statsWidget = nullptr;
+    QTimer *gameTimer = nullptr;
+    int sec = 0;
 
     void loadSettings();
     void applySettings();
