@@ -595,7 +595,7 @@ void Zarovka::updateColorButtons()
 
 /**
  * @brief Nastavuje pozici hrací plochy doleva
- * @author Klara Coupkova
+ * @author Klára Čoupková
  */
 void Zarovka::on_colorWhiteButton_5_clicked() // left
 {
@@ -606,7 +606,7 @@ void Zarovka::on_colorWhiteButton_5_clicked() // left
 
 /**
  * @brief Nastavuje pozici hrací plochy doprava
- * @author Klara Coupkova
+ * @author Klára Čoupková
  */
 void Zarovka::on_colorBlackButton_5_clicked() // right
 {
@@ -617,7 +617,7 @@ void Zarovka::on_colorBlackButton_5_clicked() // right
 
 /**
  * @brief Nastavuje barvu pozadí hrací plochy na bílou
- * @author Klara Coupkova
+ * @author Klára Čoupková
  */
 void Zarovka::on_colorWhiteButton_3_clicked()
 {
@@ -628,7 +628,7 @@ void Zarovka::on_colorWhiteButton_3_clicked()
 
 /**
  * @brief Nastavuje barvu pozadí hrací plochy na modrou
- * @author Klara Coupkova
+ * @author Klára Čoupková
  */
 void Zarovka::on_colorBlueButton_3_clicked()
 {
@@ -639,7 +639,7 @@ void Zarovka::on_colorBlueButton_3_clicked()
 
 /**
  * @brief Nastavuje barvu pozadí hrací plochy na žlutou
- * @author Klara Coupkova
+ * @author Klára Čoupková
  */
 void Zarovka::on_colorBlackButton_3_clicked()
 {
@@ -650,7 +650,7 @@ void Zarovka::on_colorBlackButton_3_clicked()
 
 /**
  * @brief Nastavuje barvu pozadí na šedou
- * @author Klara Coupkova
+ * @author Klára Čoupková
  */
 void Zarovka::on_colorWhiteButton_clicked()
 {
@@ -661,7 +661,7 @@ void Zarovka::on_colorWhiteButton_clicked()
 
 /**
  * @brief Nastavuje barvu pozadí na černou
- * @author Klara Coupkova
+ * @author Klára Čoupková
  */
 void Zarovka::on_colorBlackButton_clicked()
 {
@@ -672,7 +672,7 @@ void Zarovka::on_colorBlackButton_clicked()
 
 /**
  * @brief Nastavuje barvu pozadí na modrou
- * @author Klara Coupkova
+ * @author Klára Čoupková
  */
 void Zarovka::on_colorBlueButton_clicked()
 {
@@ -1168,8 +1168,13 @@ void Zarovka::onBackFromGame()
     loadLevelList();
 }
 
+/**
+ * @brief  Vytvoří a zobrazí widget se statistikami hry (čas a počet tahů)
+ * @author Klára Čoupková
+ */
 void Zarovka::createStatsDisplay()
 {
+    // Mimo herní mód se statistiky nezobrazují
     if (statsWidget != nullptr || activegame.editing) {
         return;
     }
@@ -1194,7 +1199,7 @@ void Zarovka::createStatsDisplay()
     movesLayout->addWidget(movesTitle);
     movesLayout->addWidget(movesLabel);
 
-    // Cas
+    // Čas
     QWidget *timeWidget = new QWidget();
     QVBoxLayout *timeLayout = new QVBoxLayout(timeWidget);
     timeLayout->setSpacing(5);
@@ -1219,9 +1224,13 @@ void Zarovka::createStatsDisplay()
     ui->gameboard->addWidget(statsWidget, 0, cols, rows, 1);
 
     sec = 0;
-    gameTimer->start(100); // spusti casovac
+    gameTimer->start(100); // spustí časovač
 }
 
+/**
+ * @brief Skryje a odstraní widget se statistikami hry
+ * @author Klára Čoupková
+ */
 void Zarovka::hideStatsDisplay()
 {
     gameTimer->stop();
@@ -1235,6 +1244,10 @@ void Zarovka::hideStatsDisplay()
     }
 }
 
+/**
+ * @brief Aktualizuje zobrazení počtu tahů ve statistikách
+ * @author Klára Čoupková
+ */
 void Zarovka::updateStatsDisplay()
 {
     if (!activegame.editing && movesLabel != nullptr) {
@@ -1242,6 +1255,10 @@ void Zarovka::updateStatsDisplay()
     }
 }
 
+/**
+ * @brief Funkce časovače aktualizuje zobrazení času každých 100ms
+ * @author Klára Čoupková
+ */
 void Zarovka::onTimerTick()
 {
     if (!activegame.editing) {
