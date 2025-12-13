@@ -137,6 +137,7 @@ void Zarovka::createGame(int w, int h, bool empty)
 
 void Zarovka::resetLayout()
 {
+    hideStatsDisplay();
     clearLayour(ui->gameboard);
     clearLayour(ui->editoroptions);
     createButtons();
@@ -157,6 +158,12 @@ void Zarovka::turn(QPushButton *btn, int row, int col)
 {
     if (selectedtype == 0) {
         activegame.rotate(row, col);
+
+        if (!activegame.editing) {
+            activegame.moveCount++;
+            updateStatsDisplay();
+        }
+
         QPixmap rotated = activegame.getimage(row, col);
         btn->setIcon(QIcon(rotated));
         btn->setIconSize(btn->size());
@@ -236,6 +243,13 @@ void Zarovka::resizeEvent(QResizeEvent *event)
         btn->setFixedHeight(sidesize);
         btn->setFixedWidth(sidesize);
         btn->setIconSize(btn->size());
+    }
+
+    if (!activegame.editing && ui->stackedWidget->currentIndex() == 1) {
+        createStatsDisplay();
+        updateStatsDisplay();
+    } else if (activegame.editing) {
+        hideStatsDisplay();
     }
 
     if (activegame.editing && ui->editoroptions->isEmpty()) {
@@ -658,6 +672,12 @@ void Zarovka::openGameFile(QString filename, bool editing)
     QCoreApplication::sendEvent(this, &event);
     activegame.update();
     updateboard(buttons[0]->width(), activegame.board.cols);
+
+    if (!editing) {
+        activegame.resetMoveCount();
+        createStatsDisplay();
+        updateStatsDisplay();
+    }
 }
 
 void Zarovka::loadLevelList()
@@ -904,9 +924,80 @@ void Zarovka::on_pushButton_14_clicked()
 void Zarovka::onBackFromGame()
 {
     ui->stackedWidget->setCurrentIndex(previousPage);
+    loadLevelList();
 }
 
+void Zarovka::createStatsDisplay()
+{
+    if (statsWidget != nullptr || activegame.editing) {
+        return;
+    }
 
+    statsWidget = new QWidget();
+    QVBoxLayout *statsLayout = new QVBoxLayout(statsWidget);
+    statsLayout->setSpacing(20);
+    statsLayout->setContentsMargins(10, 10, 10, 10);
+    statsLayout->setAlignment(Qt::AlignTop);
+
+    // Tahy
+    QWidget *movesWidget = new QWidget();
+    QVBoxLayout *movesLayout = new QVBoxLayout(movesWidget);
+    movesLayout->setSpacing(5);
+    movesLayout->setContentsMargins(10, 10, 10, 10);
+
+    QLabel *movesTitle = new QLabel(language == language::czech ? "Tahy:" : "Moves:");
+    movesTitle->setStyleSheet("font-size: 16px; font-weight: bold;");
+    movesLabel = new QLabel("0");
+    movesLabel->setStyleSheet("font-size: 24px; font-weight: bold; color: #007DFF;");
+
+    movesLayout->addWidget(movesTitle);
+    movesLayout->addWidget(movesLabel);
+
+    // Cas
+    QWidget *timeWidget = new QWidget();
+    QVBoxLayout *timeLayout = new QVBoxLayout(timeWidget);
+    timeLayout->setSpacing(5);
+    timeLayout->setContentsMargins(10, 10, 10, 10);
+
+    QLabel *timeTitle = new QLabel(language == language::czech ? "Čas:" : "Time:");
+    timeTitle->setStyleSheet("font-size: 16px; font-weight: bold;");
+    timeLabel = new QLabel("0:00");
+    timeLabel->setStyleSheet("font-size: 24px; font-weight: bold; color: #007DFF;");
+
+    timeLayout->addWidget(timeTitle);
+    timeLayout->addWidget(timeLabel);
+
+    statsLayout->addWidget(movesWidget);
+    statsLayout->addWidget(timeWidget);
+    statsLayout->addStretch();
+    statsWidget->setMinimumWidth(120);
+    statsWidget->setMaximumWidth(180);
+
+    int cols = activegame.board.cols;
+    int rows = activegame.board.rows;
+    ui->gameboard->addWidget(statsWidget, 0, cols, rows, 1);
+}
+
+void Zarovka::hideStatsDisplay()
+{
+    if (statsWidget != nullptr) {
+        ui->gameboard->removeWidget(statsWidget);
+        delete statsWidget;
+        statsWidget = nullptr;
+        timeLabel = nullptr;
+        movesLabel = nullptr;
+    }
+}
+
+void Zarovka::updateStatsDisplay()
+{
+    if (!activegame.editing && movesLabel != nullptr) {
+        movesLabel->setText(QString::number(activegame.moveCount));
+    }
+    if (!activegame.editing && timeLabel != nullptr) {
+        timeLabel->setText("0:00");
+    }
+}
 
 
 

@@ -10,6 +10,7 @@ public:
     gameboard board;
     bool editing;
     game(int rows, int cols, bool editing=false);
+    int moveCount;
     void gamecreate(int difficulty);
     void randomlyrotate();
     void update();
@@ -25,6 +26,7 @@ public:
     bool renamegame(QString filenamebefore, QString filenameafter);
     void createnode(nodetype type, int row, int col, std::array<bool,4> sides);
     void rotateby(int row, int col, int rotation);
+    void resetMoveCount();
 private:
     gameboard gamecreateempty(int, int);
     void unpowernodes();

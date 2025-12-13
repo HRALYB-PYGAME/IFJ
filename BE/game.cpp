@@ -11,6 +11,7 @@
 game::game(int rows, int cols, bool editing) {
     this->board = this->gamecreateempty(rows, cols);
     this->editing = editing;
+    this->moveCount = 0;
     rebuildCache();
 }
 
@@ -58,6 +59,7 @@ void game::loadgame(QString filename){
         }
         file.close();
     }
+    this->moveCount = 0;
 }
 
 bool game::deletegame(QString filename){
@@ -141,6 +143,7 @@ gameboard game::gamecreateempty(int rows, int cols){
 
 // creates a new random level configuration
 void game::gamecreate(int difficulty){
+    this->moveCount = 0;
     int powerrow = rand() % this->board.rows;
     int powercol = rand() % this->board.cols;
     int rows = this->board.rows;
@@ -434,4 +437,8 @@ bool game::arebulbslit(){
 
 node* game::getnodeat(int row, int col){
     return &this->board.nodes[row*this->board.cols + col];
+}
+
+void game::resetMoveCount() {
+    this->moveCount = 0;
 }

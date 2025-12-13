@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QString>
 #include <QStringList>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -41,6 +42,7 @@ public:
     void keyReleaseEvent(QKeyEvent *event);
     void resetLayout();
     void openGameFile(QString filename, bool editing = false);
+    void updateStatsDisplay();
 private slots:
     void on_playButton_clicked();
     void on_settingsButton_clicked();
@@ -120,6 +122,9 @@ private:
     QColor selectedBgColor; // current bg color
     QColor selectedBoardColor;
     Qt::Alignment boardAlignment;
+    QLabel *timeLabel = nullptr;
+    QLabel *movesLabel = nullptr;
+    QWidget *statsWidget = nullptr;
 
     void loadSettings();
     void applySettings();
@@ -128,6 +133,8 @@ private:
 
     void loadLevelList();
     QStringList getLevelFiles();
+    void createStatsDisplay();
+    void hideStatsDisplay();
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
