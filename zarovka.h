@@ -124,6 +124,10 @@ private slots:
 
     void on_backFromDifficultySelect_clicked();
 
+    void on_playAgainButton_clicked();
+
+    void on_menuButton_clicked();
+
 private:
     Ui::Zarovka *ui;
     QColor selectedBgColor; // current bg color

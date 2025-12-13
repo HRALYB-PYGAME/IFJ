@@ -483,6 +483,8 @@ void Zarovka::applySettings()
     ui->colorWhiteButton_5->setText(language == language::czech ? "Vlevo" : "Left");
     ui->colorBlackButton_5->setText(language == language::czech ? "Vpravo" : "Right");
 
+    ui->playAgainButton->setText(language == language::czech ? "Hrát Znovu" : "Play Again");
+
     ui->settingsLabel->setText(language == language::czech ? "Nastavení" : "Settings");
     ui->languageLabel->setText(language == language::czech ? "Jazyk" : "Language");
     ui->gameboardAlignLabel->setText(language == language::czech ? "Herní pole" : "Game board");
@@ -1185,5 +1187,17 @@ void Zarovka::onTimerTick()
 void Zarovka::on_backFromDifficultySelect_clicked()
 {
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(3);
+}
+
+
+void Zarovka::on_playAgainButton_clicked()
+{
+    openGameFile(QString("%1.zvaz").arg(currentgamename));
+}
+
+
+void Zarovka::on_menuButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(3);
 }
 

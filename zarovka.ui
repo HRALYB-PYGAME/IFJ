@@ -24,7 +24,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="P01DifficultySelector">
        <layout class="QGridLayout" name="gridLayout_3">
@@ -243,7 +243,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="playAgainButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
               <horstretch>0</horstretch>
@@ -256,7 +256,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Back</string>
+             <string>Play Again</string>
             </property>
            </widget>
           </item>
@@ -711,7 +711,7 @@
       <widget class="QWidget" name="P04NewLevelCreator">
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <widget class="QPushButton" name="pushButton_5">
+         <widget class="QPushButton" name="menuButton">
           <property name="text">
            <string>Menu</string>
           </property>
