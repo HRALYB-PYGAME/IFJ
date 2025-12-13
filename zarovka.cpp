@@ -81,12 +81,20 @@ Zarovka::~Zarovka()
     delete ui;
 }
 
+/**
+ * @brief Přesune uživatele na výběr obtížnosti
+ * @author Klára Čoupková
+ */
 void Zarovka::on_playButton_clicked()
 {
     this->mode = 1;
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(0);
 }
 
+/**
+ * @brief Přesune uživatele do nastavení
+ * @author Klára Čoupková
+ */
 void Zarovka::on_settingsButton_clicked()
 {
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(4);
@@ -401,6 +409,10 @@ void Zarovka::resizeEvent(QResizeEvent *event)
     updateboard(sidesize, cols);
 }
 
+/**
+ * @brief Načte uživatelská nastavení ze souboru settings.json
+ * @author Klára Čoupková
+ */
 void Zarovka::loadSettings()
 {
     QFile file("settings.json");
@@ -448,6 +460,10 @@ void Zarovka::loadSettings()
     updateColorButtons();
 }
 
+/**
+ * @brief Uloží uživatelská nastavení do souboru settings.json
+ * @author Klára Čoupková
+ */
 void Zarovka::saveSettings()
 {
     QJsonObject obj;
@@ -466,13 +482,14 @@ void Zarovka::saveSettings()
     }
 }
 
+/**
+ * @brief Aplikuje načtená nastavení na UI aplikace
+ * @author Klára Čoupková
+ */
 void Zarovka::applySettings()
 {
     QString style = QString("QMainWindow { background-color: %1; }").arg(selectedBgColor.name());
     this->setStyleSheet(style);
-    //for(QPushButton* button : buttons){
-    //    button->setStyleSheet(style);
-    //}
 
     if (ui->gameboard) {
         ui->gameboard->setAlignment(boardAlignment);
@@ -493,6 +510,10 @@ void Zarovka::applySettings()
     updateColorButtons();
 }
 
+/**
+ * @brief Zvýrazní vybraná nastavení
+ * @author Klára Čoupková
+ */
 void Zarovka::updateColorButtons()
 {
     ui->colorWhiteButton->setStyleSheet("background-color: #969696; "
@@ -571,6 +592,11 @@ void Zarovka::updateColorButtons()
             : "background-color: white; color: black; border-radius: 5px;");
 }
 
+
+/**
+ * @brief Nastavuje pozici hrací plochy doleva
+ * @author Klara Coupkova
+ */
 void Zarovka::on_colorWhiteButton_5_clicked() // left
 {
     boardAlignment = Qt::AlignLeft;
@@ -578,6 +604,10 @@ void Zarovka::on_colorWhiteButton_5_clicked() // left
     saveSettings();
 }
 
+/**
+ * @brief Nastavuje pozici hrací plochy doprava
+ * @author Klara Coupkova
+ */
 void Zarovka::on_colorBlackButton_5_clicked() // right
 {
     boardAlignment = Qt::AlignRight;
@@ -585,6 +615,10 @@ void Zarovka::on_colorBlackButton_5_clicked() // right
     saveSettings();
 }
 
+/**
+ * @brief Nastavuje barvu pozadí hrací plochy na bílou
+ * @author Klara Coupkova
+ */
 void Zarovka::on_colorWhiteButton_3_clicked()
 {
     selectedBoardColor = QColor(255, 255, 255);
@@ -592,6 +626,10 @@ void Zarovka::on_colorWhiteButton_3_clicked()
     saveSettings();
 }
 
+/**
+ * @brief Nastavuje barvu pozadí hrací plochy na modrou
+ * @author Klara Coupkova
+ */
 void Zarovka::on_colorBlueButton_3_clicked()
 {
     selectedBoardColor = QColor(135, 206, 235);
@@ -599,6 +637,10 @@ void Zarovka::on_colorBlueButton_3_clicked()
     saveSettings();
 }
 
+/**
+ * @brief Nastavuje barvu pozadí hrací plochy na žlutou
+ * @author Klara Coupkova
+ */
 void Zarovka::on_colorBlackButton_3_clicked()
 {
     selectedBoardColor = QColor(255, 253, 208);
@@ -606,6 +648,10 @@ void Zarovka::on_colorBlackButton_3_clicked()
     saveSettings();
 }
 
+/**
+ * @brief Nastavuje barvu pozadí na šedou
+ * @author Klara Coupkova
+ */
 void Zarovka::on_colorWhiteButton_clicked()
 {
     selectedBgColor = QColor(150, 150, 150);
@@ -613,6 +659,10 @@ void Zarovka::on_colorWhiteButton_clicked()
     saveSettings();
 }
 
+/**
+ * @brief Nastavuje barvu pozadí na černou
+ * @author Klara Coupkova
+ */
 void Zarovka::on_colorBlackButton_clicked()
 {
     selectedBgColor = QColor(0, 0, 0);
@@ -620,6 +670,10 @@ void Zarovka::on_colorBlackButton_clicked()
     saveSettings();
 }
 
+/**
+ * @brief Nastavuje barvu pozadí na modrou
+ * @author Klara Coupkova
+ */
 void Zarovka::on_colorBlueButton_clicked()
 {
     selectedBgColor = QColor(0, 51, 102);
@@ -632,6 +686,10 @@ void Zarovka::on_pushButton_clicked()
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(3);
 }
 
+/**
+ * @brief Přesune uživatele z úvodní obrayovky do editoru
+ * @author Klára Čoupková
+ */
 void Zarovka::on_pushButton_3_clicked()
 {
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(6);
@@ -690,30 +748,50 @@ void Zarovka::on_pushButton_4_clicked()
     //previousPage = 7;
 }
 
+/**
+ * @brief Přesune uživatele zpět do menu
+ * @author Klára Čoupková
+ */
 void Zarovka::on_backToMenuButton_clicked()
 {
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(3);
 }
 
+/**
+ * @brief Přesune uživatele do seznamu levelů
+ * @author Klára Čoupková
+ */
 void Zarovka::on_myLevelsButton_clicked()
 {
     loadLevelList();
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(7);
 }
 
+/**
+ * @brief Přesune uživatele do editoru
+ * @author Klára Čoupková
+ */
 void Zarovka::on_createNewButton_clicked()
 {
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(5);
 }
 
+/**
+ * @brief Vrátí uživatele zpět do hlavního menu editoru
+ * @author Klára Čoupková
+ */
 void Zarovka::on_backToEditorMenuButton_clicked()
 {
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(6);
 }
 
+/**
+ * @brief Vrátí seznam všеch uložených levelů ze složky save
+ * @author Klára Čoupková
+ */
 QStringList Zarovka::getLevelFiles()
 {
-    QDir dir("save"); //asi spis v save
+    QDir dir("save");
     QStringList filters;
     filters << "*.zvaz";
     QStringList files = dir.entryList(filters, QDir::Files, QDir::Name);
@@ -741,6 +819,10 @@ void Zarovka::openGameFile(QString filename, bool editing)
     }
 }
 
+/**
+ * @brief Načte a zobrazí seznam uložených uživatelských levelů
+ * @author Klára Čoupková
+ */
 void Zarovka::loadLevelList()
 {
     QLayoutItem *item;
@@ -886,6 +968,11 @@ void Zarovka::on_createLevelButton_clicked()
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(5);
 }
 
+
+/**
+ * @brief Nastavuje jazyk na češtinu
+ * @author Klára Čoupková
+ */
 void Zarovka::on_czechButton_clicked()
 {
     language = language::czech;
@@ -893,6 +980,10 @@ void Zarovka::on_czechButton_clicked()
     saveSettings();
 }
 
+/**
+ * @brief Nastavuje jazyk na angličtinu
+ * @author Klára Čoupková
+ */
 void Zarovka::on_englishButton_clicked()
 {
     language = language::english;
