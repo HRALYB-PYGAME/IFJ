@@ -175,7 +175,24 @@ void Zarovka::turn(QPushButton *btn, int row, int col)
         activegame.update();
         updateboard(buttons[0]->width(), activegame.board.cols);
         if (activegame.arebulbslit()) {
+            int totalSeconds = sec / 1000;
+            int minutes = totalSeconds / 60;
+            int seconds = totalSeconds % 60;
+            int deciseconds = (sec % 1000) / 100;
+
             gameTimer->stop();
+            ui->label->setText(language == language::czech ? QString("Gratuluji, vyhrál jsi\n%1 krok%2\t%3:%4.%5s")
+                                                                 .arg(activegame.moveCount)
+                                                                 .arg(activegame.moveCount == 1 ? "" : activegame.moveCount > 4 ? "ů" : "y")
+                                                                 .arg(minutes)
+                                                                 .arg(seconds, 2, 10, QChar('0'))
+                                                                 .arg(deciseconds)
+                                                           : QString("Congrats you won\n%1 move%2\t%3:%4.%5s")
+                                                                 .arg(activegame.moveCount)
+                                                                 .arg(activegame.moveCount > 1 ? "s" : "")
+                                                                 .arg(minutes)
+                                                                 .arg(seconds, 2, 10, QChar('0'))
+                                                                 .arg(deciseconds));
             ui->stackedWidget->setCurrentIndex(2);
         }
     } else {
@@ -928,6 +945,7 @@ void Zarovka::on_pushButton_14_clicked()
 
 void Zarovka::onBackFromGame()
 {
+    if (activegame.editing) activegame.savegame(currentgamename);
     ui->stackedWidget->setCurrentIndex(previousPage);
     loadLevelList();
 }
