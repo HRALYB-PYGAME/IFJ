@@ -1054,3 +1054,9 @@ void Zarovka::onTimerTick()
 }
 
 
+
+void Zarovka::on_backFromDifficultySelect_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(3);
+}
+

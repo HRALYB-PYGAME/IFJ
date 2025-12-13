@@ -120,6 +120,8 @@ private slots:
 
     void onTimerTick();
 
+    void on_backFromDifficultySelect_clicked();
+
 private:
     Ui::Zarovka *ui;
     QColor selectedBgColor; // current bg color
