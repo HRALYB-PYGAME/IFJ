@@ -1,43 +1,35 @@
 <RCC>
     <qresource prefix="/resources">
-        <file>resources/img.png</file>
-        <file>img.png</file>
+        <file>resources/textures/bulb.png</file>
+        <file>resources/textures/bulbpowered.png</file>
+        <file>resources/textures/Empty.png</file>
+        <file>resources/textures/linkD.png</file>
+        <file>resources/textures/linkDpowered.png</file>
+        <file>resources/textures/linkI.png</file>
+        <file>resources/textures/linkIpowered.png</file>
+        <file>resources/textures/linkL.png</file>
+        <file>resources/textures/linkLpowered.png</file>
+        <file>resources/textures/linkT.png</file>
+        <file>resources/textures/linkTpowered.png</file>
+        <file>resources/textures/linkX.png</file>
+        <file>resources/textures/linkXpowered.png</file>
+        <file>resources/textures/power.png</file>
+        <file>resources/mainlevels/_E01.zvaz</file>
+        <file>resources/mainlevels/_E02.zvaz</file>
+        <file>resources/mainlevels/_E03.zvaz</file>
+        <file>resources/mainlevels/_E04.zvaz</file>
+        <file>resources/mainlevels/_E05.zvaz</file>
+        <file>resources/mainlevels/_H01.zvaz</file>
+        <file>resources/mainlevels/_H02.zvaz</file>
+        <file>resources/mainlevels/_H03.zvaz</file>
+        <file>resources/mainlevels/_H04.zvaz</file>
+        <file>resources/mainlevels/_H05.zvaz</file>
+        <file>resources/mainlevels/_M01.zvaz</file>
+        <file>resources/mainlevels/_M02.zvaz</file>
+        <file>resources/mainlevels/_M03.zvaz</file>
+        <file>resources/mainlevels/_M04.zvaz</file>
+        <file>resources/mainlevels/_M05.zvaz</file>
     </qresource>
-    <qresource prefix="/">
-        <file>img.png</file>
-        <file>drat.jpg</file>
-        <file>zarovka.jpg</file>
-        <file>zdroj.png</file>
-        <file>bulb.png</file>
-        <file>bulbpowered.png</file>
-        <file>linkD.png</file>
-        <file>linkDpowered.png</file>
-        <file>linkI.png</file>
-        <file>linkIpowered.png</file>
-        <file>linkL.png</file>
-        <file>linkLpowered.png</file>
-        <file>linkT.png</file>
-        <file>linkTpowered.png</file>
-        <file>linkX.png</file>
-        <file>linkXpowered.png</file>
-        <file>power.png</file>
-        <file>Empty.png</file>
-    </qresource>
-    <qresource prefix="/mainlevels">
-        <file>_E01.zvaz</file>
-        <file>_E02.zvaz</file>
-        <file>_E03.zvaz</file>
-        <file>_E04.zvaz</file>
-        <file>_E05.zvaz</file>
-        <file>_H01.zvaz</file>
-        <file>_H02.zvaz</file>
-        <file>_H03.zvaz</file>
-        <file>_H04.zvaz</file>
-        <file>_H05.zvaz</file>
-        <file>_M01.zvaz</file>
-        <file>_M02.zvaz</file>
-        <file>_M03.zvaz</file>
-        <file>_M04.zvaz</file>
-        <file>_M05.zvaz</file>
-    </qresource>
+    <qresource prefix="/"/>
+    <qresource prefix="/mainlevels"/>
 </RCC>

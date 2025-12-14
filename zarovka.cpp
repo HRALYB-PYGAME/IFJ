@@ -14,7 +14,6 @@
 #include "./ui_zarovka.h"
 #include "BE/game.h"
 #include "BE/gametypes.h"
-#include "squarebutton.h"
 #include <iostream>
 
 /**
@@ -26,31 +25,35 @@ Zarovka::Zarovka(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::Zarovka)
 {
-    ui->setupUi(this);
-    this->mode = 0;
+    ui->setupUi(this);                 // inicializace UI prvků vytvořených v Qt Designeru
+    this->mode = 0;                    // nastavení výchozího herního režimu
+    selectedBgColor = QColor(0, 0, 0); // výchozí barva pozadí
+    selectedBoardColor = QColor(171, 205, 239); // výchozí barva herní plochy
+    boardAlignment = Qt::AlignLeft;    // výchozí zarovnání herní desky
 
-    selectedBgColor = QColor(0, 0, 0); // default background color
-    selectedBoardColor = QColor(171, 205, 239);
-    boardAlignment = Qt::AlignLeft;
-    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(3);
-    loadSettings();
-    applySettings();
+    previousPage = ui->stackedWidget->currentIndex(); // uložení aktuální stránky
+    ui->stackedWidget->setCurrentIndex(3);            // přepnutí na úvodní / výchozí stránku
 
-    QDir saveDir("save");
+    loadSettings();                    // načtení uložených nastavení ze souboru
+    applySettings();                   // aplikace načtených nastavení na UI
+
+    QDir saveDir("save");              // práce se složkou pro ukládání dat
     if (!saveDir.exists()) {
         qDebug() << "Složka save/ neexistuje, vytvářím...";
-        bool created = QDir().mkdir("save");
+        bool created = QDir().mkdir("save"); // vytvoření složky save
     }
 
-    connect(ui->backFromGameButton, &QPushButton::clicked, this, &Zarovka::onBackFromGame);
+    connect(ui->backFromGameButton, &QPushButton::clicked,
+            this, &Zarovka::onBackFromGame); // návrat z hry zpět do menu
 
-    gameTimer = new QTimer(this);
-    connect(gameTimer, &QTimer::timeout, this, &Zarovka::onTimerTick);
+    gameTimer = new QTimer(this);       // vytvoření časovače pro herní logiku
+    connect(gameTimer, &QTimer::timeout,
+            this, &Zarovka::onTimerTick); // obsluha časového kroku hry
 
-    this->show();
-    this->showNormal();
-    raise();
-    activateWindow();
+    this->show();                       // zobrazení hlavního okna
+    this->showNormal();                 // zajištění normální velikosti okna
+    raise();                            // přesunutí okna do popředí
+    activateWindow();                  // aktivace okna pro uživatelský vstup
 }
 
 /**
@@ -59,28 +62,31 @@ Zarovka::Zarovka(QWidget *parent)
  */
 void Zarovka::createButtons()
 {
-    int rows = activegame.board.rows;
-    int cols = activegame.board.cols;
+    int rows = activegame.board.rows;   // získání počtu řádků herního pole
+    int cols = activegame.board.cols;   // získání počtu sloupců herního pole
 
-    buttons.clear();
+    buttons.clear();                    // vyčištění seznamu tlačítek
     for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < cols; ++col) {
-            QPushButton *btn = new QPushButton(QString(""));
+            QPushButton *btn = new QPushButton(QString("")); // vytvoření nového tlačítka bez textu
+
             btn->setStyleSheet("QPushButton {"
                                "    border: none;"
                                "    border-radius: 0;"
-                               "    background-color: #abcdef;"
+                               "    background-color: #abcdef;" // výchozí barva tlačítka
                                "    outline: none;"
                                "}"
                                "QPushButton:pressed {"
-                               "    padding-left: 1px;"
+                               "    padding-left: 1px;"          // vizuální efekt stisknutí
                                "    padding-top: 1px;"
                                "}");
+
             connect(btn, &QPushButton::clicked, this, [this, row, col]() {
-                turn(qobject_cast<QPushButton *>(sender()), row, col);
+                turn(qobject_cast<QPushButton *>(sender()), row, col); // obsluha kliknutí na konkrétní pole
             });
-            ui->gameboard->addWidget(btn, row, col);
-            buttons.insert(buttons.end(), btn);
+
+            ui->gameboard->addWidget(btn, row, col); // přidání tlačítka do mřížky herního pole
+            buttons.insert(buttons.end(), btn);      // uložení tlačítka do seznamu
         }
     }
 }
@@ -128,7 +134,7 @@ void Zarovka::on_backButton_clicked()
  */
 void Zarovka::on_randomButton_clicked()
 {
-    createGame(5, 5);
+    createGame(5, 5); // vytvoř náhodnou hru
     //previousPage = 0;
 
     currentgamename = ":random";
@@ -152,6 +158,10 @@ void Zarovka::createGame(int w, int h, bool empty)
     resetLayout();
 }
 
+/**
+ * @brief  Vymaže všechny child widgety z herního plánu a editor možností.
+ * @author Matyáš Hebert
+ */
 void Zarovka::resetLayout()
 {
     hideStatsDisplay();
@@ -183,74 +193,85 @@ void Zarovka::clearLayour(QLayout *layout)
  */
 void Zarovka::turn(QPushButton *btn, int row, int col)
 {
-    if (activegame.editing){
-        savebtn->setText(language == language::czech ? "ULOŽIT" : "SAVE");
+    if (activegame.editing) {
+        savebtn->setText(language == language::czech ? "ULOŽIT" : "SAVE"); // změna textu tlačítka pro uložení
         savebtn->setStyleSheet("QPushButton {"
                                "    border: none;"
                                "    border-radius: 0;"
-                               "    background-color: #abcdef;"
+                               "    background-color: #abcdef;" // zvýraznění tlačítka po úpravě
                                "    outline: none;"
                                "}"
                                "QPushButton:pressed {"
-                               "    padding-left: 1px;"
+                               "    padding-left: 1px;"          // vizuální efekt stisknutí
                                "    padding-top: 1px;"
                                "}");
     }
-    if (selectedtype == 0) {
-        activegame.rotate(row, col);
+
+    if (selectedtype == 0) {            // není označené žádná možnost -> tlačítko se bude otáčet
+        activegame.rotate(row, col);    // otočení vybraného prvku
 
         if (!activegame.editing) {
-            activegame.moveCount++;
-            updateStatsDisplay();
+            activegame.moveCount++;     // zvýšení počtu tahů
+            updateStatsDisplay();       // aktualizace statistiky hry
         }
 
-        QPixmap rotated = activegame.getimage(row, col);
-        btn->setIcon(QIcon(rotated));
-        btn->setIconSize(btn->size());
-        btn->setText("");
-        activegame.update();
-        updateboard(buttons[0]->width(), activegame.board.cols);
-        if (activegame.arebulbslit()) {
-            activegame.addrecord(currentgamename, sec, activegame.moveCount);
+        QPixmap rotated = activegame.getimage(row, col); // získání nového obrázku prvku
+        btn->setIcon(QIcon(rotated));   // nastavení ikony tlačítka
+        btn->setIconSize(btn->size());  // přizpůsobení velikosti ikony
+        btn->setText("");               // odstranění textu tlačítka
+
+        activegame.update();            // aktualizace hry
+        updateboard(buttons[0]->width(), activegame.board.cols); // překreslení herní desky
+
+        if (activegame.arebulbslit()) { // kontrola výherního stavu
+            activegame.addrecord(currentgamename, sec, activegame.moveCount); // uložení rekordu
 
             int totalSeconds = sec / 1000;
             int minutes = totalSeconds / 60;
             int seconds = totalSeconds % 60;
             int deciseconds = (sec % 1000) / 100;
 
-            gameTimer->stop();
-            ui->label->setText(language == language::czech ? QString("Gratuluji, vyhrál jsi\n%1 krok%2\t%3:%4.%5s")
-                                                                 .arg(activegame.moveCount)
-                                                                 .arg(activegame.moveCount == 1 ? "" : activegame.moveCount > 4 ? "ů" : "y")
-                                                                 .arg(minutes)
-                                                                 .arg(seconds, 2, 10, QChar('0'))
-                                                                 .arg(deciseconds)
-                                                           : QString("Congrats you won\n%1 move%2\t%3:%4.%5s")
-                                                                 .arg(activegame.moveCount)
-                                                                 .arg(activegame.moveCount > 1 ? "s" : "")
-                                                                 .arg(minutes)
-                                                                 .arg(seconds, 2, 10, QChar('0'))
-                                                                 .arg(deciseconds));
-            previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(2);
+            gameTimer->stop();           // zastavení herního časovače
+            ui->label->setText(language == language::czech
+                                   ? QString("Gratuluji, vyhrál jsi\n%1 krok%2\t%3:%4.%5s")
+                                         .arg(activegame.moveCount)
+                                         .arg(activegame.moveCount == 1 ? "" : activegame.moveCount > 4 ? "ů" : "y")
+                                         .arg(minutes)
+                                         .arg(seconds, 2, 10, QChar('0'))
+                                         .arg(deciseconds)
+                                   : QString("Congrats you won\n%1 move%2\t%3:%4.%5s")
+                                         .arg(activegame.moveCount)
+                                         .arg(activegame.moveCount > 1 ? "s" : "")
+                                         .arg(minutes)
+                                         .arg(seconds, 2, 10, QChar('0'))
+                                         .arg(deciseconds)); // zobrazení výherní zprávy
+
+            previousPage = ui->stackedWidget->currentIndex(); // uložení předchozí stránky
+            ui->stackedWidget->setCurrentIndex(2);            // přepnutí na výherní obrazovku
         }
-    } else {
+    } else {                             // editační režim – vkládání prvků
         if (activegame.getnodeat(row, col)->type == nodetype::power) {
-            activegame.board.powerrow = -1;
+            activegame.board.powerrow = -1; // odstranění původního zdroje
             activegame.board.powercol = -1;
-            buttons[buttons.size() - 1]->show();
+            buttons[buttons.size() - 1]->show(); // opětovné povolení tlačítka zdroje
         }
-        activegame.createnode(selectedtype, row, col, selectedsides);
+
+        activegame.createnode(selectedtype, row, col, selectedsides); // vložení nového prvku
+
         if (selectedtype == nodetype::power) {
-            activegame.board.powerrow = row;
+            activegame.board.powerrow = row; // nastavení nové pozice zdroje
             activegame.board.powercol = col;
-            buttons[buttons.size() - 1]->hide();
+            buttons[buttons.size() - 1]->hide(); // zakázání dalšího vkládání zdroje
         }
-        activegame.update();
-        updateboard(buttons[0]->width(), activegame.board.cols);
+
+        activegame.update();             // aktualizace herního stavu
+        updateboard(buttons[0]->width(), activegame.board.cols); // překreslení desky
+
         if (!shiftheld || selectedtype == nodetype::power)
-            selectedtype = nodetype::empty;
+            selectedtype = nodetype::empty; // reset vybraného typu po vložení
     }
 }
+
 
 /**
  * @brief Reakce na zmáčknutí klávesy Shift (pokládání více polí stejného typu v editoru)
@@ -289,8 +310,6 @@ void Zarovka::updateboard(int sidesize, int cols)
         int row = i / cols;
         if (ui->stackedWidget->currentIndex() == 1 && row < activegame.board.rows)
             button->setIcon(QIcon(activegame.getimage(i / cols, i % cols)));
-        else if (row < activegame.board.rows)
-            button->setIcon(QIcon(":img.png"));
         button->setIconSize(button->size());
     }
 }
@@ -302,79 +321,86 @@ void Zarovka::updateboard(int sidesize, int cols)
  */
 void Zarovka::resizeEvent(QResizeEvent *event)
 {
-    ui->gameboard->setSpacing(0);
-    ui->gameboard->setContentsMargins(0, 0, 0, 0);
-    ui->gameboard->setAlignment(boardAlignment);
-    const int rows = activegame.board.rows;
-    const int cols = activegame.board.cols;
+    ui->gameboard->setSpacing(0);                 // odstranění mezer mezi jednotlivými poli
+    ui->gameboard->setContentsMargins(0, 0, 0, 0); // odstranění okrajů layoutu
+    ui->gameboard->setAlignment(boardAlignment);  // nastavení zarovnání herní desky
 
-    QWidget::resizeEvent(event);
-    QSize newsize = event->size();
+    const int rows = activegame.board.rows;       // počet řádků herního pole
+    const int cols = activegame.board.cols;       // počet sloupců herního pole
+
+    QWidget::resizeEvent(event);                  // zavolání rodičovské implementace resizeEvent
+    QSize newsize = event->size();                // získání nové velikosti okna
 
     int sidesize = (qMin(newsize.height(), newsize.width()) / (rows + 1)) * 0.8;
+    // výpočet velikosti jednoho pole podle velikosti okna
 
     for (auto &btn : buttons) {
-        btn->setFixedHeight(sidesize);
-        btn->setFixedWidth(sidesize);
-        btn->setIconSize(btn->size());
+        btn->setFixedHeight(sidesize);            // nastavení výšky tlačítka
+        btn->setFixedWidth(sidesize);             // nastavení šířky tlačítka
+        btn->setIconSize(btn->size());            // přizpůsobení velikosti ikony tlačítku
     }
 
     if (!activegame.editing && ui->stackedWidget->currentIndex() == 1) {
-        createStatsDisplay();
-        updateStatsDisplay();
+        createStatsDisplay();                     // vytvoření panelu statistik
+        updateStatsDisplay();                     // aktualizace statistik hry
     } else if (activegame.editing) {
-        hideStatsDisplay();
+        hideStatsDisplay();                       // skrytí statistik v editačním režimu
     }
 
     if (activegame.editing && ui->editoroptions->isEmpty()) {
-        qDebug("ag.empty");
+        qDebug("ag.empty");                       // ladicí výpis – prázdné editační menu
+
         std::vector<std::string> icons
             = {":linkI.png", ":linkL.png", ":linkT.png", ":linkX.png", ":bulb.png", ":power.png"};
+        // seznam ikon jednotlivých prvků
         std::vector<nodetype> nodetypes = {nodetype::link,
                                            nodetype::link,
                                            nodetype::link,
                                            nodetype::link,
                                            nodetype::bulb,
                                            nodetype::power};
+        // typy uzlů odpovídající ikonám
         std::vector<std::array<bool, 4>> sides = {{true, false, true, false},
                                                   {true, true, false, false},
                                                   {true, true, true, false},
                                                   {true, true, true, true},
                                                   {true, false, false, false},
                                                   {true, false, false, false}};
+        // definice směrů propojení jednotlivých prvků
 
         savebtn = new QPushButton(QString(language == language::czech ? "ULOŽENO" : "SAVED"));
+        // vytvoření tlačítka pro uložení mapy
         savebtn->setFixedHeight(sidesize);
         savebtn->setFixedWidth(sidesize);
         savebtn->setStyleSheet("QPushButton {"
-                           "    border: none;"
-                           "    border-radius: 0;"
-                           "    background-color: #00ff00;"
-                           "    outline: none;"
-                           "}"
-                           "QPushButton:pressed {"
-                           "    padding-left: 1px;"
-                           "    padding-top: 1px;"
-                           "}");
-        std::string name = "test";
-        connect(savebtn, &QPushButton::clicked, this, [this, name]() {
-            savebtn->setText(language == language::czech ? "ULOŽENO" : "SAVED");
-            savebtn->setStyleSheet("QPushButton {"
                                "    border: none;"
                                "    border-radius: 0;"
-                               "    background-color: #00ff00;"
+                               "    background-color: #00ff00;" // barva indikující uložený stav
                                "    outline: none;"
                                "}"
                                "QPushButton:pressed {"
                                "    padding-left: 1px;"
                                "    padding-top: 1px;"
                                "}");
-            activegame.savegame(currentgamename);
+        std::string name = "test";
+        connect(savebtn, &QPushButton::clicked, this, [this, name]() {
+            savebtn->setText(language == language::czech ? "ULOŽENO" : "SAVED"); // změna textu po uložení
+            savebtn->setStyleSheet("QPushButton {"
+                                   "    border: none;"
+                                   "    border-radius: 0;"
+                                   "    background-color: #00ff00;"
+                                   "    outline: none;"
+                                   "}"
+                                   "QPushButton:pressed {"
+                                   "    padding-left: 1px;"
+                                   "    padding-top: 1px;"
+                                   "}");
+            activegame.savegame(currentgamename);  // uložení aktuální hry
         });
-        ui->editoroptions->addWidget(savebtn);
-        buttons.insert(buttons.end(), savebtn);
+        ui->editoroptions->addWidget(savebtn);    // přidání tlačítka do editačního menu
+        buttons.insert(buttons.end(), savebtn);   // uložení tlačítka do seznamu
 
-        QPushButton *btn2 = new QPushButton(QString("MIX"));
+        QPushButton *btn2 = new QPushButton(QString("MIX")); // tlačítko pro náhodné otočení polí
         btn2->setFixedHeight(sidesize);
         btn2->setFixedWidth(sidesize);
         btn2->setStyleSheet("QPushButton {"
@@ -388,9 +414,9 @@ void Zarovka::resizeEvent(QResizeEvent *event)
                             "    padding-top: 1px;"
                             "}");
         connect(btn2, &QPushButton::clicked, this, [this, sidesize]() {
-            activegame.randomlyrotate();
-            activegame.update();
-            savebtn->setText(language == language::czech ? "ULOŽIT" : "SAVE");
+            activegame.randomlyrotate();           // náhodné otočení všech prvků
+            activegame.update();                   // aktualizace hry
+            savebtn->setText(language == language::czech ? "ULOŽIT" : "SAVE"); // označení neuloženého stavu
             savebtn->setStyleSheet("QPushButton {"
                                    "    border: none;"
                                    "    border-radius: 0;"
@@ -401,13 +427,13 @@ void Zarovka::resizeEvent(QResizeEvent *event)
                                    "    padding-left: 1px;"
                                    "    padding-top: 1px;"
                                    "}");
-            updateboard(buttons[0]->width(), activegame.board.cols);
+            updateboard(buttons[0]->width(), activegame.board.cols); // aktualizace zobrazení desky
         });
-        ui->editoroptions->addWidget(btn2);
-        buttons.insert(buttons.end(), btn2);
+        ui->editoroptions->addWidget(btn2);       // přidání tlačítka do menu
+        buttons.insert(buttons.end(), btn2);      // uložení tlačítka do seznamu
 
         for (int i = 0; i < icons.size(); i++) {
-            QPushButton *btn = new QPushButton(QString(""));
+            QPushButton *btn = new QPushButton(QString("")); // vytvoření tlačítka pro výběr prvku
             btn->setFixedHeight(sidesize);
             btn->setFixedWidth(sidesize);
             btn->setStyleSheet("QPushButton {"
@@ -420,22 +446,24 @@ void Zarovka::resizeEvent(QResizeEvent *event)
                                "    padding-left: 1px;"
                                "    padding-top: 1px;"
                                "}");
-            btn->setIcon(QIcon(QString::fromStdString(icons[i])));
+            btn->setIcon(QIcon(QString::fromStdString(icons[i]))); // nastavení ikony prvku
             nodetype nt = nodetypes[i];
             std::array<bool, 4> s = sides[i];
             connect(btn, &QPushButton::clicked, this, [this, nt, s]() {
-                selectedtype = nt;
-                selectedsides = s;
+                selectedtype = nt;                // nastavení vybraného typu prvku
+                selectedsides = s;                // nastavení jeho propojení
             });
-            ui->editoroptions->addWidget(btn);
-            buttons.insert(buttons.end(), btn);
+            ui->editoroptions->addWidget(btn);    // přidání tlačítka do editačního menu
+            buttons.insert(buttons.end(), btn);   // uložení tlačítka do seznamu
         }
 
-        if (activegame.board.powerrow >= 0) buttons[buttons.size()-1]->hide();
+        if (activegame.board.powerrow >= 0)
+            buttons[buttons.size() - 1]->hide();  // skrytí tlačítka zdroje, pokud už existuje
     }
 
-    updateboard(sidesize, cols);
+    updateboard(sidesize, cols);                  // aktualizace herního pole
 }
+
 
 /**
  * @brief Načte uživatelská nastavení ze souboru settings.json
@@ -443,48 +471,48 @@ void Zarovka::resizeEvent(QResizeEvent *event)
  */
 void Zarovka::loadSettings()
 {
-    QFile file("settings.json");
+    QFile file("settings.json");                         // otevření souboru s nastavením
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QByteArray data = file.readAll();
-        file.close();
+        QByteArray data = file.readAll();                // načtení celého obsahu souboru
+        file.close();                                    // uzavření souboru
 
-        QJsonDocument doc = QJsonDocument::fromJson(data);
-        QJsonObject obj = doc.object();
+        QJsonDocument doc = QJsonDocument::fromJson(data); // vytvoření JSON dokumentu
+        QJsonObject obj = doc.object();                  // získání kořenového objektu
 
         if (obj.contains("backgroundColor")) {
-            QString colorStr = obj["backgroundColor"].toString();
+            QString colorStr = obj["backgroundColor"].toString(); // načtení barvy pozadí
             selectedBgColor = QColor(colorStr);
         } else {
-            selectedBgColor = QColor(0, 0, 0);
+            selectedBgColor = QColor(0, 0, 0);           // výchozí barva pozadí
         }
 
         if (obj.contains("boardColor")) {
-            QString colorStr = obj["boardColor"].toString();
+            QString colorStr = obj["boardColor"].toString(); // načtení barvy herní desky
             selectedBoardColor = QColor(colorStr);
         } else {
-            selectedBoardColor = QColor(171, 205, 239);
+            selectedBoardColor = QColor(171, 205, 239);  // výchozí barva herní desky
         }
 
         if (obj.contains("boardAlignment")) {
-            QString alignment = obj["boardAlignment"].toString();
+            QString alignment = obj["boardAlignment"].toString(); // načtení zarovnání desky
             boardAlignment = (alignment == "right") ? Qt::AlignRight : Qt::AlignLeft;
         } else {
-            boardAlignment = Qt::AlignLeft;
+            boardAlignment = Qt::AlignLeft;              // výchozí zarovnání desky
         }
 
         if (obj.contains("language")) {
-            int lang = obj["language"].toInt();
+            int lang = obj["language"].toInt();          // načtení jazykového nastavení
             language = lang == 0 ? language::czech : language::english;
         } else {
-            language = language::czech;
+            language = language::czech;                  // výchozí jazyk aplikace
         }
     } else {
-        selectedBgColor = QColor(0, 0, 0);
-        selectedBoardColor = QColor(171, 205, 239);
-        boardAlignment = Qt::AlignLeft;
+        selectedBgColor = QColor(0, 0, 0);               // výchozí barva pozadí při chybě souboru
+        selectedBoardColor = QColor(171, 205, 239);      // výchozí barva herní desky
+        boardAlignment = Qt::AlignLeft;                  // výchozí zarovnání desky
     }
 
-    updateColorButtons();
+    updateColorButtons();                                // aktualizace tlačítek
 }
 
 /**
@@ -515,26 +543,35 @@ void Zarovka::saveSettings()
  */
 void Zarovka::applySettings()
 {
-    QString style = QString("QMainWindow { background-color: %1; }").arg(selectedBgColor.name());
-    this->setStyleSheet(style);
+    QString style = QString("QMainWindow { background-color: %1; }")
+    .arg(selectedBgColor.name()); // vytvoření stylu pro barvu pozadí okna
+    this->setStyleSheet(style);                        // aplikace stylu na hlavní okno
 
     if (ui->gameboard) {
-        ui->gameboard->setAlignment(boardAlignment);
+        ui->gameboard->setAlignment(boardAlignment);   // nastavení zarovnání herní desky
     }
 
-    ui->colorWhiteButton_5->setText(language == language::czech ? "Vlevo" : "Left");
-    ui->colorBlackButton_5->setText(language == language::czech ? "Vpravo" : "Right");
+    ui->colorWhiteButton_5->setText(language == language::czech ? "Vlevo" : "Left");  // text tlačítka zarovnání vlevo
+    ui->colorBlackButton_5->setText(language == language::czech ? "Vpravo" : "Right"); // text tlačítka zarovnání vpravo
 
-    ui->playAgainButton->setText(language == language::czech ? "Hrát Znovu" : "Play Again");
+    ui->playAgainButton->setText(language == language::czech ? "Hrát Znovu" : "Play Again"); // tlačítko opakování hry
 
-    ui->settingsLabel->setText(language == language::czech ? "Nastavení" : "Settings");
-    ui->languageLabel->setText(language == language::czech ? "Jazyk" : "Language");
-    ui->gameboardAlignLabel->setText(language == language::czech ? "Herní pole" : "Game board");
-    ui->bgColorLabel->setText(language == language::czech ? "Barva pozadí" : "Background color");
-    ui->gameboardColorLabel->setText(language == language::czech ? "Barva hrací plochy"
-                                                                 : "Gameboard background color");
+    ui->settingsLabel->setText(language == language::czech ? "Nastavení" : "Settings");      // nadpis nastavení
+    ui->languageLabel->setText(language == language::czech ? "Jazyk" : "Language");          // popisek jazyka
+    ui->gameboardAlignLabel->setText(language == language::czech ? "Herní pole" : "Game board"); // popisek zarovnání pole
+    ui->bgColorLabel->setText(language == language::czech ? "Barva pozadí" : "Background color"); // popisek barvy pozadí
+    ui->gameboardColorLabel->setText(language == language::czech
+                                         ? "Barva hrací plochy"
+                                         : "Gameboard background color");                          // popisek barvy herní plochy
 
-    updateColorButtons();
+    ui->playButton->setText(language == language::czech ? "Hrát" : "Play");                  // tlačítko spuštění hry
+    ui->settingsButton->setText(language == language::czech ? "Nastavení" : "Settings");     // tlačítko nastavení
+    ui->hardButton->setText(language == language::czech ? "Těžké" : "Hard");                 // volba obtížnosti – těžká
+    ui->mediumButton->setText(language == language::czech ? "Střední" : "Medium");           // volba obtížnosti – střední
+    ui->easyButton->setText(language == language::czech ? "Lehké" : "Easy");                 // volba obtížnosti – lehká
+    ui->randomButton->setText(language == language::czech ? "Náhodné" : "Random");           // volba náhodné hry
+
+    updateColorButtons();                               // aktualizace vzhledu tlačítek
 }
 
 /**
@@ -855,22 +892,29 @@ QStringList Zarovka::getLevelFiles()
  */
 void Zarovka::openGameFile(QString filename, bool editing)
 {
-    activegame.loadgame(filename);
-    resetLayout();
-    currentgamename = filename.chopped(5);
-    if(currentgamename.startsWith("save")) currentgamename = currentgamename.mid(5);
-    activegame.editing = editing;
-    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(1);
-    QWidget *page = ui->stackedWidget->widget(1);
+    activegame.loadgame(filename);              // načtení herních dat ze souboru
+    resetLayout();                              // vyčištění a znovuvytvoření rozložení UI
+
+    currentgamename = filename.chopped(5);      // odstranění přípony souboru
+    if (currentgamename.startsWith("save"))
+        currentgamename = currentgamename.mid(5); // odstranění prefixu "save" z názvu
+
+    activegame.editing = editing;               // nastavení herního nebo editačního režimu
+
+    previousPage = ui->stackedWidget->currentIndex(); // uložení aktuální stránky
+    ui->stackedWidget->setCurrentIndex(1);            // přepnutí na herní obrazovku
+
+    QWidget *page = ui->stackedWidget->widget(1);     // získání widgetu herní stránky
     QResizeEvent event(this->size(), this->size());
-    QCoreApplication::sendEvent(this, &event);
-    activegame.update();
-    updateboard(buttons[0]->width(), activegame.board.cols);
+    QCoreApplication::sendEvent(this, &event);        // vynucení přepočtu velikostí prvků
+
+    activegame.update();                        // aktualizace herní logiky
+    updateboard(buttons[0]->width(), activegame.board.cols); // vykreslení herní desky
 
     if (!editing) {
-        activegame.resetMoveCount();
-        createStatsDisplay();
-        updateStatsDisplay();
+        activegame.resetMoveCount();            // vynulování počtu tahů
+        createStatsDisplay();                   // vytvoření panelu statistik
+        updateStatsDisplay();                   // aktualizace zobrazených statistik
     }
 }
 
@@ -883,105 +927,93 @@ void Zarovka::loadLevelList()
     QLayoutItem *item;
     while ((item = ui->levelListLayout->takeAt(0)) != nullptr) {
         if (item->widget()) {
-            delete item->widget();
+            delete item->widget();              // odstranění widgetu z layoutu
         }
-        delete item;
+        delete item;                            // uvolnění položky layoutu
     }
 
-    QStringList levelFiles = getLevelFiles();
+    QStringList levelFiles = getLevelFiles();   // získání seznamu uložených levelů
 
-    ui->createLevelButton->setText(language == language::czech ? "Vytvořit nový" : "Make new");
-    ui->levellistlabel->setText(language == language::czech ? "Moje levely" : "Your levels");
+    ui->createLevelButton->setText(language == language::czech ? "Vytvořit nový" : "Make new"); // text tlačítka vytvoření
+    ui->levellistlabel->setText(language == language::czech ? "Moje levely" : "Your levels");   // nadpis seznamu levelů
 
     if (levelFiles.isEmpty()) {
         QLabel *noLevelsLabel = new QLabel(language == language::czech
                                                ? "Zatím nemáte žádné uložené levely"
-                                               : "You have no saved levels yet");
+                                               : "You have no saved levels yet"); // zpráva při prázdném seznamu
         noLevelsLabel->setAlignment(Qt::AlignCenter);
         noLevelsLabel->setStyleSheet("font-size: 18px; color: gray;");
-        ui->levelListLayout->addWidget(noLevelsLabel);
+        ui->levelListLayout->addWidget(noLevelsLabel); // přidání informace do layoutu
     } else {
         for (const QString &filename : levelFiles) {
-            QWidget *rowWidget = new QWidget();
-            QHBoxLayout *rowLayout = new QHBoxLayout(rowWidget);
+            QWidget *rowWidget = new QWidget();         // widget jednoho řádku seznamu
+            QHBoxLayout *rowLayout = new QHBoxLayout(rowWidget); // horizontální rozložení řádku
 
             QString levelName = filename;
-            levelName.chop(5);
+            levelName.chop(5);                          // odstranění přípony souboru
 
-
-            QTextEdit *nameLabel = new QTextEdit(levelName);
+            QTextEdit *nameLabel = new QTextEdit(levelName); // editovatelný název levelu
             nameLabel->setFixedHeight(40);
             nameLabel->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
             nameLabel->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
             nameLabel->setStyleSheet("font-size: 16px; padding: 10px;");
             nameLabel->setMinimumWidth(150);
 
-            QLabel *record = new QLabel();
+            QLabel *record = new QLabel();               // popisek rekordu levelu
             record->setMinimumSize(150, 40);
-            if (activegame.iscompleted(levelName)){
-                int sec = activegame.getrecordtime(levelName);
+            if (activegame.iscompleted(levelName)) {
+                int sec = activegame.getrecordtime(levelName); // načtení času rekordu
                 int totalSeconds = sec / 1000;
                 int minutes = totalSeconds / 60;
                 int seconds = totalSeconds % 60;
                 int deciseconds = (sec % 1000) / 100;
-                int steps = activegame.getrecordsteps(levelName);
+                int steps = activegame.getrecordsteps(levelName); // načtení počtu kroků
 
                 record->setText(QString("%1: %2\t%3: %4:%5.%6")
                                     .arg(language == language::czech ? "Kroky" : "Steps")
-                                    .arg(steps).arg(language == language::czech ? "Čas" : "Time")
-                                    .arg(minutes).arg(seconds, 2, 10, QChar('0'))
-                                    .arg(deciseconds));
-            }
-            else{
-                record->setText(language == language::czech ? "NEDOKONČENO" : "NOT COMPLETED");
+                                    .arg(steps)
+                                    .arg(language == language::czech ? "Čas" : "Time")
+                                    .arg(minutes)
+                                    .arg(seconds, 2, 10, QChar('0'))
+                                    .arg(deciseconds)); // zobrazení rekordu
+            } else {
+                record->setText(language == language::czech ? "NEDOKONČENO" : "NOT COMPLETED"); // level bez rekordu
             }
 
-
-            // Hrát
-            QPushButton *playBtn = new QPushButton(language == language::czech ? "Hrát" : "Play");
+            QPushButton *playBtn = new QPushButton(language == language::czech ? "Hrát" : "Play"); // tlačítko spuštění
             playBtn->setMinimumSize(100, 40);
             playBtn->setStyleSheet("font-size: 14px; background-color: #007dff; color: white;");
             connect(playBtn, &QPushButton::clicked, this, [this, filename]() {
-                openGameFile(QString("save/%1").arg(filename), false);
-                qDebug() << "Hrát level:" << filename;
-                //previousPage = 6;
-                // TODO
+                openGameFile(QString("save/%1").arg(filename), false); // spuštění levelu v herním režimu
             });
 
-            // Editovat
-            QPushButton *editBtn = new QPushButton(language == language::czech ? "Editovat"
-                                                                               : "Edit");
+            QPushButton *editBtn = new QPushButton(language == language::czech ? "Editovat" : "Edit"); // tlačítko editace
             editBtn->setMinimumSize(100, 40);
             editBtn->setStyleSheet("font-size: 14px;");
             connect(editBtn, &QPushButton::clicked, this, [this, filename]() {
-                openGameFile(QString("save/%1").arg(filename), true);
-                qDebug() << "Editovat level:" << filename;
+                openGameFile(QString("save/%1").arg(filename), true); // otevření levelu v editoru
             });
 
-            // Přejmenovat
-            QPushButton *renameBtn = new QPushButton(language == language::czech ? "Přejmenovat"
-                                                                                 : "Rename");
+            QPushButton *renameBtn = new QPushButton(language == language::czech ? "Přejmenovat" : "Rename"); // přejmenování
             renameBtn->setMinimumSize(120, 40);
             renameBtn->setStyleSheet("font-size: 14px;");
             connect(renameBtn, &QPushButton::clicked, this, [this, filename, nameLabel]() {
                 int steps = -1;
                 int time = -1;
-                activegame.loadgame(QString("save/%1").arg(filename));
-                if (activegame.iscompleted(filename.chopped(5))){
-                    steps = activegame.getrecordsteps(filename.chopped(5));
+                activegame.loadgame(QString("save/%1").arg(filename)); // načtení původního levelu
+                if (activegame.iscompleted(filename.chopped(5))) {
+                    steps = activegame.getrecordsteps(filename.chopped(5)); // záloha rekordu
                     time = activegame.getrecordtime(filename.chopped(5));
                 }
-                activegame.deletegame(filename);
-                activegame.savegame(nameLabel->toPlainText());
-                if (steps != -1){
-                    activegame.addrecord(nameLabel->toPlainText(), time, steps);
+                activegame.deletegame(filename);          // smazání původního souboru
+                activegame.savegame(nameLabel->toPlainText()); // uložení pod novým názvem
+                if (steps != -1) {
+                    activegame.addrecord(nameLabel->toPlainText(), time, steps); // obnova rekordu
                 }
-                loadLevelList();
+                loadLevelList();                          // obnovení seznamu levelů
             });
 
-            // Odstranit
-            QPushButton *deleteBtn = new QPushButton(language == language::czech ? "Odstranit"
-                                                                                 : "Delete");
+            QPushButton *deleteBtn = new QPushButton(language == language::czech ? "Odstranit" : "Delete"); // mazání levelu
             deleteBtn->setMinimumSize(100, 40);
             deleteBtn->setStyleSheet("font-size: 12px; background-color: #ff4444; color: white;");
             deleteBtn->setCheckable(true);
@@ -989,28 +1021,27 @@ void Zarovka::loadLevelList()
 
             connect(deleteBtn, &QPushButton::clicked, this,
                     [this, filename, deleteBtn](bool checked) {
-                if (checked) {
-                    deleteBtn->setText(language == language::czech
-                                           ? "Opravdu smazat?"
-                                           : "Really delete?");
-                } else {
-                    activegame.deletegame(filename);
-                    loadLevelList();
-                    qDebug() << "Odstranit level:" << filename;
-                }
-            });
+                        if (checked) {
+                            deleteBtn->setText(language == language::czech
+                                                   ? "Opravdu smazat?"
+                                                   : "Really delete?"); // potvrzení mazání
+                        } else {
+                            activegame.deletegame(filename);      // odstranění levelu
+                            loadLevelList();                      // aktualizace seznamu
+                        }
+                    });
 
-            rowLayout->addWidget(nameLabel);
-            rowLayout->addWidget(record);
-            rowLayout->addStretch();
-            rowLayout->addWidget(playBtn);
-            rowLayout->addWidget(editBtn);
-            rowLayout->addWidget(renameBtn);
-            rowLayout->addWidget(deleteBtn);
+            rowLayout->addWidget(nameLabel);              // název levelu
+            rowLayout->addWidget(record);                 // rekord levelu
+            rowLayout->addStretch();                      // odsazení ovládacích prvků
+            rowLayout->addWidget(playBtn);                // tlačítko hrát
+            rowLayout->addWidget(editBtn);                // tlačítko editovat
+            rowLayout->addWidget(renameBtn);              // tlačítko přejmenovat
+            rowLayout->addWidget(deleteBtn);              // tlačítko odstranit
 
-            ui->levelListLayout->addWidget(rowWidget);
+            ui->levelListLayout->addWidget(rowWidget);    // přidání řádku do seznamu
 
-            QFrame *line = new QFrame();
+            QFrame *line = new QFrame();                  // oddělovací čára
             line->setFrameShape(QFrame::HLine);
             line->setFrameShadow(QFrame::Sunken);
             ui->levelListLayout->addWidget(line);
@@ -1057,7 +1088,7 @@ void Zarovka::on_englishButton_clicked()
  */
 void Zarovka::on_buttonEasyLevel1_clicked()
 {
-    openGameFile(":/mainlevels/_E01.zvaz");
+    openGameFile(":/resources/resources/mainlevels/_E01.zvaz");
     //previousPage = 10;
 }
 
@@ -1067,7 +1098,7 @@ void Zarovka::on_buttonEasyLevel1_clicked()
  */
 void Zarovka::on_buttonEasyLevel2_clicked()
 {
-    openGameFile(":/mainlevels/_E02.zvaz");
+    openGameFile(":/resources/resources/mainlevels/_E02.zvaz");
     //previousPage = 10;
 }
 
@@ -1077,7 +1108,7 @@ void Zarovka::on_buttonEasyLevel2_clicked()
  */
 void Zarovka::on_buttonEasyLevel3_clicked()
 {
-    openGameFile(":/mainlevels/_E03.zvaz");
+    openGameFile(":/resources/resources/mainlevels/_E03.zvaz");
     //previousPage = 10;
 }
 
@@ -1087,7 +1118,7 @@ void Zarovka::on_buttonEasyLevel3_clicked()
  */
 void Zarovka::on_buttonEasyLevel4_clicked()
 {
-    openGameFile(":/mainlevels/_E04.zvaz");
+    openGameFile(":/resources/resources/mainlevels/_E04.zvaz");
     //previousPage = 10;
 }
 
@@ -1097,7 +1128,7 @@ void Zarovka::on_buttonEasyLevel4_clicked()
  */
 void Zarovka::on_buttonEasyLevel5_clicked()
 {
-    openGameFile(":/mainlevels/_E05.zvaz");
+    openGameFile(":/resources/resources/mainlevels/_E05.zvaz");
     //previousPage = 10;
 }
 
@@ -1107,7 +1138,7 @@ void Zarovka::on_buttonEasyLevel5_clicked()
  */
 void Zarovka::on_buttonMediumLevel1_clicked()
 {
-    openGameFile(":/mainlevels/_M01.zvaz");
+    openGameFile(":/resources/resources/mainlevels/_M01.zvaz");
     //previousPage = 8;
 }
 
@@ -1117,7 +1148,7 @@ void Zarovka::on_buttonMediumLevel1_clicked()
  */
 void Zarovka::on_buttonMediumLevel2_clicked()
 {
-    openGameFile(":/mainlevels/_M02.zvaz");
+    openGameFile(":/resources/resources/mainlevels/_M02.zvaz");
     //previousPage = 8;
 }
 
@@ -1127,7 +1158,7 @@ void Zarovka::on_buttonMediumLevel2_clicked()
  */
 void Zarovka::on_buttonMediumLevel3_clicked()
 {
-    openGameFile(":/mainlevels/_M03.zvaz");
+    openGameFile(":/resources/resources/mainlevels/_M03.zvaz");
     //previousPage = 8;
 }
 
@@ -1137,7 +1168,7 @@ void Zarovka::on_buttonMediumLevel3_clicked()
  */
 void Zarovka::on_buttonMediumLevel4_clicked()
 {
-    openGameFile("mainlevels/_M04.zvaz");
+    openGameFile(":/resources/resources/mainlevels/_M04.zvaz");
     //previousPage = 8;
 }
 
@@ -1147,7 +1178,7 @@ void Zarovka::on_buttonMediumLevel4_clicked()
  */
 void Zarovka::on_buttonMediumLevel5_clicked()
 {
-    openGameFile(":/mainlevels/_M05.zvaz");
+    openGameFile(":/resources/resources/mainlevels/_M05.zvaz");
     //previousPage = 8;
 }
 
@@ -1157,7 +1188,7 @@ void Zarovka::on_buttonMediumLevel5_clicked()
  */
 void Zarovka::on_buttonHardLevel1_clicked()
 {
-    openGameFile(":/mainlevels/_H01.zvaz");
+    openGameFile(":/resources/resources/mainlevels/_H01.zvaz");
     //previousPage = 9;
 }
 
@@ -1167,7 +1198,7 @@ void Zarovka::on_buttonHardLevel1_clicked()
  */
 void Zarovka::on_buttonHardLevel2_clicked()
 {
-    openGameFile(":/mainlevels/_H02.zvaz");
+    openGameFile(":/resources/resources/mainlevels/_H02.zvaz");
     //previousPage = 9;
 }
 
@@ -1177,7 +1208,7 @@ void Zarovka::on_buttonHardLevel2_clicked()
  */
 void Zarovka::on_buttonHardLevel3_clicked()
 {
-    openGameFile(":/mainlevels/_H03.zvaz");
+    openGameFile(":/resources/resources/mainlevels/_H03.zvaz");
     //previousPage = 9;
 }
 
@@ -1187,7 +1218,7 @@ void Zarovka::on_buttonHardLevel3_clicked()
  */
 void Zarovka::on_buttonHardLevel4_clicked()
 {
-    openGameFile(":/mainlevels/_H04.zvaz");
+    openGameFile(":/resources/resources/mainlevels/_H04.zvaz");
     //previousPage = 9;
 }
 
@@ -1197,7 +1228,7 @@ void Zarovka::on_buttonHardLevel4_clicked()
  */
 void Zarovka::on_buttonHardLevel5_clicked()
 {
-    openGameFile(":/mainlevels/_H05.zvaz");
+    openGameFile(":/resources/resources/mainlevels/_H05.zvaz");
     //previousPage = 9;
 }
 
@@ -1234,11 +1265,11 @@ void Zarovka::on_easyButton_clicked()
     previousPage = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(10);
 
-    updateLevelButton(ui->buttonEasyLevel1, ":/mainlevels/_E01", 1);
-    updateLevelButton(ui->buttonEasyLevel2, ":/mainlevels/_E02", 2);
-    updateLevelButton(ui->buttonEasyLevel3, ":/mainlevels/_E03", 3);
-    updateLevelButton(ui->buttonEasyLevel4, ":/mainlevels/_E04", 4);
-    updateLevelButton(ui->buttonEasyLevel5, ":/mainlevels/_E05", 5);
+    updateLevelButton(ui->buttonEasyLevel1, ":/resources/resources/mainlevels/_E01", 1);
+    updateLevelButton(ui->buttonEasyLevel2, ":/resources/resources/mainlevels/_E02", 2);
+    updateLevelButton(ui->buttonEasyLevel3, ":/resources/resources/mainlevels/_E03", 3);
+    updateLevelButton(ui->buttonEasyLevel4, ":/resources/resources/mainlevels/_E04", 4);
+    updateLevelButton(ui->buttonEasyLevel5, ":/resources/resources/mainlevels/_E05", 5);
 
     //previousPage = 0;
 }
@@ -1253,11 +1284,11 @@ void Zarovka::on_mediumButton_clicked()
     previousPage = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(8);
 
-    updateLevelButton(ui->buttonMediumLevel1, ":/mainlevels/_M01", 1);
-    updateLevelButton(ui->buttonMediumLevel2, ":/mainlevels/_M02", 2);
-    updateLevelButton(ui->buttonMediumLevel3, ":/mainlevels/_M03", 3);
-    updateLevelButton(ui->buttonMediumLevel4, ":/mainlevels/_M04", 4);
-    updateLevelButton(ui->buttonMediumLevel5, ":/mainlevels/_M05", 5);
+    updateLevelButton(ui->buttonMediumLevel1, ":/resources/resources/mainlevels/_M01", 1);
+    updateLevelButton(ui->buttonMediumLevel2, ":/resources/resources/mainlevels/_M02", 2);
+    updateLevelButton(ui->buttonMediumLevel3, ":/resources/resources/mainlevels/_M03", 3);
+    updateLevelButton(ui->buttonMediumLevel4, ":/resources/resources/mainlevels/_M04", 4);
+    updateLevelButton(ui->buttonMediumLevel5, ":/resources/resources/mainlevels/_M05", 5);
 
     //previousPage = 0;
 }
@@ -1271,11 +1302,11 @@ void Zarovka::on_hardButton_clicked()
     previousPage = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(9);
 
-    updateLevelButton(ui->buttonHardLevel1, ":/mainlevels/_H01", 1);
-    updateLevelButton(ui->buttonHardLevel2, ":/mainlevels/_H02", 2);
-    updateLevelButton(ui->buttonHardLevel3, ":/mainlevels/_H03", 3);
-    updateLevelButton(ui->buttonHardLevel4, ":/mainlevels/_H04", 4);
-    updateLevelButton(ui->buttonHardLevel5, ":/mainlevels/_H05", 5);
+    updateLevelButton(ui->buttonHardLevel1, ":/resources/resources/mainlevels/_H01", 1);
+    updateLevelButton(ui->buttonHardLevel2, ":/resources/resources/mainlevels/_H02", 2);
+    updateLevelButton(ui->buttonHardLevel3, ":/resources/resources/mainlevels/_H03", 3);
+    updateLevelButton(ui->buttonHardLevel4, ":/resources/resources/mainlevels/_H04", 4);
+    updateLevelButton(ui->buttonHardLevel5, ":/resources/resources/mainlevels/_H05", 5);
 
     //previousPage = 0;
 }
@@ -1310,6 +1341,10 @@ void Zarovka::on_pushButton_13_clicked()
     ui->stackedWidget->setCurrentIndex(0);
 }
 
+/**
+ * @brief  Zpět
+ * @author Matyáš Hebert
+ */
 void Zarovka::onBackFromGame()
 {
     if (activegame.editing){
@@ -1326,18 +1361,18 @@ void Zarovka::onBackFromGame()
  */
 void Zarovka::createStatsDisplay()
 {
-    // Mimo herní mód se statistiky nezobrazují
+    // mimo herní mód nebo při již existujících statistikách se widget znovu nevytváří
     if (statsWidget != nullptr || activegame.editing) {
         return;
     }
 
-    statsWidget = new QWidget();
+    statsWidget = new QWidget();                    // hlavní widget statistik
     QVBoxLayout *statsLayout = new QVBoxLayout(statsWidget);
-    statsLayout->setSpacing(20);
-    statsLayout->setContentsMargins(10, 10, 10, 10);
-    statsLayout->setAlignment(Qt::AlignTop);
+    statsLayout->setSpacing(20);                    // mezery mezi jednotlivými částmi
+    statsLayout->setContentsMargins(10, 10, 10, 10);// okraje widgetu
+    statsLayout->setAlignment(Qt::AlignTop);        // zarovnání obsahu nahoru
 
-    // Tahy
+    // část zobrazující počet tahů
     QWidget *movesWidget = new QWidget();
     QVBoxLayout *movesLayout = new QVBoxLayout(movesWidget);
     movesLayout->setSpacing(5);
@@ -1345,13 +1380,13 @@ void Zarovka::createStatsDisplay()
 
     QLabel *movesTitle = new QLabel(language == language::czech ? "Tahy:" : "Moves:");
     movesTitle->setStyleSheet("font-size: 16px; font-weight: bold;");
-    movesLabel = new QLabel("0");
+    movesLabel = new QLabel("0");                   // výchozí hodnota počtu tahů
     movesLabel->setStyleSheet("font-size: 24px; font-weight: bold; color: #007DFF;");
 
     movesLayout->addWidget(movesTitle);
     movesLayout->addWidget(movesLabel);
 
-    // Čas
+    // část zobrazující čas hry
     QWidget *timeWidget = new QWidget();
     QVBoxLayout *timeLayout = new QVBoxLayout(timeWidget);
     timeLayout->setSpacing(5);
@@ -1359,24 +1394,24 @@ void Zarovka::createStatsDisplay()
 
     QLabel *timeTitle = new QLabel(language == language::czech ? "Čas:" : "Time:");
     timeTitle->setStyleSheet("font-size: 16px; font-weight: bold;");
-    timeLabel = new QLabel("0:00");
+    timeLabel = new QLabel("0:00");                 // výchozí hodnota času
     timeLabel->setStyleSheet("font-size: 24px; font-weight: bold; color: #007DFF;");
 
     timeLayout->addWidget(timeTitle);
     timeLayout->addWidget(timeLabel);
 
-    statsLayout->addWidget(movesWidget);
-    statsLayout->addWidget(timeWidget);
-    statsLayout->addStretch();
-    statsWidget->setMinimumWidth(120);
-    statsWidget->setMaximumWidth(180);
+    statsLayout->addWidget(movesWidget);            // přidání části tahů
+    statsLayout->addWidget(timeWidget);             // přidání části času
+    statsLayout->addStretch();                      // odsazení obsahu nahoru
+    statsWidget->setMinimumWidth(120);              // minimální šířka statistik
+    statsWidget->setMaximumWidth(180);              // maximální šířka statistik
 
     int cols = activegame.board.cols;
     int rows = activegame.board.rows;
-    ui->gameboard->addWidget(statsWidget, 0, cols, rows, 1);
+    ui->gameboard->addWidget(statsWidget, 0, cols, rows, 1); // umístění statistik vedle herního pole
 
-    sec = 0;
-    gameTimer->start(100); // spustí časovač
+    sec = 0;                                        // vynulování času hry
+    gameTimer->start(100);                          // spuštění časovače (krok 100 ms)
 }
 
 /**

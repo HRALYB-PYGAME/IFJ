@@ -256,7 +256,7 @@ void game::savegame(QString filename){
  * @author Matyáš Hebert
  */
 void game::rebuildCache() {
-    std::array<std::string, 14> imagenames = {":/Empty.png", ":/linkD.png", ":/linkDpowered.png", ":/linkI.png", ":/linkIpowered.png", ":/linkL.png", ":/linkLpowered.png", ":/linkT.png", ":/linkTpowered.png", ":/linkX.png", ":/linkXpowered.png", ":/bulb.png", ":/bulbpowered.png", ":/power.png"};
+    std::array<std::string, 14> imagenames = {":/resources/resources/textures/Empty.png", ":/resources/resources/textures/linkD.png", ":/resources/resources/textures/linkDpowered.png", ":/resources/resources/textures/linkI.png", ":/resources/resources/textures/linkIpowered.png", ":/resources/resources/textures/linkL.png", ":/resources/resources/textures/linkLpowered.png", ":/resources/resources/textures/linkT.png", ":/resources/resources/textures/linkTpowered.png", ":/resources/resources/textures/linkX.png", ":/resources/resources/textures/linkXpowered.png", ":/resources/resources/textures/bulb.png", ":/resources/resources/textures/bulbpowered.png", ":/resources/resources/textures/power.png"};
     for (int image = 0; image < 14; image++) {
         QPixmap baseimage(imagenames[image].c_str());
         for (int rot = 0; rot < 4; ++rot) {
