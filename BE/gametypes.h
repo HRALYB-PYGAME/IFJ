@@ -4,6 +4,10 @@
 #include <vector>
 #include <array>
 
+/**
+ * @brief Typ herního pole (žárovka, zdroj, drát a nebo prázdný)
+ * @author Matyáš Hebert
+ */
 enum nodetype {
     empty,
     bulb,
@@ -11,6 +15,10 @@ enum nodetype {
     power
 };
 
+/**
+ * @brief Strana
+ * @author Matyáš Hebert
+ */
 enum side {
     up,
     right,
@@ -19,11 +27,19 @@ enum side {
     none
 };
 
+/**
+ * @brief Jazyk
+ * @author Matyáš Hebert
+ */
 enum language {
     czech,
     english
 };
 
+/**
+ * @brief Tvar
+ * @author Matyáš Hebert
+ */
 enum nodeshape {
     o, // bez zadnych dratu
     d, // s jednim dratem nahoru
@@ -33,6 +49,10 @@ enum nodeshape {
     x  // vsude
 };
 
+/**
+ * @brief Názvy obrázků
+ * @author Matyáš Hebert
+ */
 enum imagename {
     Empty,
     LinkD,
@@ -50,11 +70,19 @@ enum imagename {
     Source
 };
 
+/**
+ * @brief Pozice
+ * @author Matyáš Hebert
+ */
 struct position {
     int row;
     int col;
 };
 
+/**
+ * @brief Herní pole
+ * @author Matyáš Hebert
+ */
 struct node {
     nodetype type;
     std::array<bool, 4> sides;
@@ -63,6 +91,10 @@ struct node {
     bool powered;
 };
 
+/**
+ * @brief Herní plán
+ * @author Matyáš Hebert
+ */
 struct gameboard {
     int rows;
     int cols;
