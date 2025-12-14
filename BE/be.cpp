@@ -1,1 +1,0 @@
-void be_fun() {}
