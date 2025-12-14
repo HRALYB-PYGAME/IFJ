@@ -351,7 +351,8 @@ void Zarovka::resizeEvent(QResizeEvent *event)
         qDebug("ag.empty");                       // ladicí výpis – prázdné editační menu
 
         std::vector<std::string> icons
-            = {":linkI.png", ":linkL.png", ":linkT.png", ":linkX.png", ":bulb.png", ":power.png"};
+            = {":/resources/resources/textures/linkI.png", ":/resources/resources/textures/linkL.png", ":/resources/resources/textures/linkT.png",
+               ":/resources/resources/textures/linkX.png", ":/resources/resources/textures/bulb.png", ":/resources/resources/textures/power.png"};
         // seznam ikon jednotlivých prvků
         std::vector<nodetype> nodetypes = {nodetype::link,
                                            nodetype::link,
@@ -570,6 +571,9 @@ void Zarovka::applySettings()
     ui->mediumButton->setText(language == language::czech ? "Střední" : "Medium");           // volba obtížnosti – střední
     ui->easyButton->setText(language == language::czech ? "Lehké" : "Easy");                 // volba obtížnosti – lehká
     ui->randomButton->setText(language == language::czech ? "Náhodné" : "Random");           // volba náhodné hry
+
+    ui->createNewButton->setText(language == language::czech ? "Vytvořit nový" : "Create new");
+    ui->myLevelsButton->setText(language == language::czech ? "Moje levely" : "My levels");
 
     updateColorButtons();                               // aktualizace vzhledu tlačítek
 }
