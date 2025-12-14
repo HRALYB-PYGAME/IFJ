@@ -17,6 +17,11 @@
 #include "squarebutton.h"
 #include <iostream>
 
+/**
+ * @brief Konstruktor třídy
+ *        nastaví výchozí nastavení, případně vytvoří složku save a aktivuje okno
+ * @author Matyáš Hebert
+ */
 Zarovka::Zarovka(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::Zarovka)
@@ -48,6 +53,10 @@ Zarovka::Zarovka(QWidget *parent)
     activateWindow();
 }
 
+/**
+ * @brief Vytvoří tlačítka herního pole
+ * @author Matyáš Hebert
+ */
 void Zarovka::createButtons()
 {
     int rows = activegame.board.rows;
@@ -76,6 +85,10 @@ void Zarovka::createButtons()
     }
 }
 
+/**
+ * @brief Destruktor třídy
+ * @author Matyáš Hebert
+ */
 Zarovka::~Zarovka()
 {
     delete ui;
@@ -100,31 +113,19 @@ void Zarovka::on_settingsButton_clicked()
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(4);
 }
 
+/**
+ * @brief Přesune uživatele do menu
+ * @author Matyáš Hebert
+ */
 void Zarovka::on_backButton_clicked()
 {
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(3);
 }
 
-void Zarovka::updateUI(int mode)
-{
-    ui->playButton->setVisible(true);
-    //QBitmap* bitmap = new QBitmap(ui->playButton->width(), ui->playButton->height());
-    //this->setMask(*bitmap);
-    switch (mode) {
-    case 0:
-        this->activateWindow();
-        //ui->gameMenu->widget()->setVisible(true);
-        previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(0);
-        break;
-    case 1:
-        //ui->gameMenu->widget()->setVisible(false);
-        //ui->gameMenuWidget->setVisible(false);
-        //ui->widgetTest->setVisible(false);
-        //this->close();
-        break;
-    }
-}
-
+/**
+ * @brief Vytvoří a spustí náhodnou hru
+ * @author Matyáš Hebert
+ */
 void Zarovka::on_randomButton_clicked()
 {
     createGame(5, 5);
@@ -139,6 +140,10 @@ void Zarovka::on_randomButton_clicked()
     QCoreApplication::sendEvent(this, &event);
 }
 
+/**
+ * @brief Vytvoří novou hru se zadanými rozměry
+ * @author Matyáš Hebert
+ */
 void Zarovka::createGame(int w, int h, bool empty)
 {
     activegame = game(w, h);
@@ -155,6 +160,10 @@ void Zarovka::resetLayout()
     createButtons();
 }
 
+/**
+ * @brief Odstraní všechny child widgety z layoutu
+ * @author Matyáš Hebert
+ */
 void Zarovka::clearLayour(QLayout *layout)
 {
     QLayoutItem *item;
@@ -166,6 +175,12 @@ void Zarovka::clearLayour(QLayout *layout)
     }
 }
 
+/**
+ * @brief Při hraní otočí tlačítko, aktualizuje herní pole
+ *            a zkontroluje zda jsou žárovky rosvíceny (v tomto případě přesunu uživatele na výherní obrazovku)
+ *        Při editaci se dle vybraného typu (zdroj, žárovka, drát) rozhodne zda otáčet či vložit vybraný typ na pole
+ * @author Matyáš Hebert, Jan Ostatnický
+ */
 void Zarovka::turn(QPushButton *btn, int row, int col)
 {
     if (activegame.editing){
@@ -253,6 +268,10 @@ void Zarovka::keyReleaseEvent(QKeyEvent *event)
     QWidget::keyReleaseEvent(event);
 }
 
+/**
+ * @brief Aktualizuje herní pole a jejich rozměry a ikony
+ * @author Matyáš Hebert
+ */
 void Zarovka::updateboard(int sidesize, int cols)
 {
     for (int i = 0; i < buttons.size(); i++) {
@@ -268,6 +287,11 @@ void Zarovka::updateboard(int sidesize, int cols)
     }
 }
 
+/**
+ * @brief Funkce zajišťující správnou velikost jednotlivých polí
+ *        při zvětšení okna
+ * @author Matyáš Hebert
+ */
 void Zarovka::resizeEvent(QResizeEvent *event)
 {
     ui->gameboard->setSpacing(0);
@@ -278,8 +302,6 @@ void Zarovka::resizeEvent(QResizeEvent *event)
 
     QWidget::resizeEvent(event);
     QSize newsize = event->size();
-
-    // 4x draty, 4x zdroje, 1x zarovka
 
     int sidesize = (qMin(newsize.height(), newsize.width()) / (rows + 1)) * 0.8;
 
@@ -404,8 +426,6 @@ void Zarovka::resizeEvent(QResizeEvent *event)
         if (activegame.board.powerrow >= 0) buttons[buttons.size()-1]->hide();
     }
 
-    //applySettings();
-
     updateboard(sidesize, cols);
 }
 
@@ -455,7 +475,6 @@ void Zarovka::loadSettings()
         selectedBoardColor = QColor(171, 205, 239);
         boardAlignment = Qt::AlignLeft;
     }
-    //language = obj[]
 
     updateColorButtons();
 }
@@ -681,6 +700,10 @@ void Zarovka::on_colorBlueButton_clicked()
     saveSettings();
 }
 
+/**
+ * @brief Přesune uživatele do menu
+ * @author Matyáš Hebert
+ */
 void Zarovka::on_pushButton_clicked()
 {
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(3);
@@ -1286,6 +1309,10 @@ void Zarovka::on_backFromDifficultySelect_clicked()
 }
 
 
+/**
+ * @brief Spustí znovu level
+ * @author Matyáš Hebert
+ */
 void Zarovka::on_playAgainButton_clicked()
 {
     openGameFile(QString("%1.zvaz").arg(currentgamename));
