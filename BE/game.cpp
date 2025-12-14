@@ -11,6 +11,10 @@
 #include <QJsonValue>
 #include <QDataStream>
 
+/**
+ * @brief Konstruktor třídy, vytvoří novou hru
+ * @author Matyáš Hebert
+ */
 game::game(int rows, int cols, bool editing) {
     this->board = this->gamecreateempty(rows, cols);
     this->editing = editing;
@@ -18,6 +22,10 @@ game::game(int rows, int cols, bool editing) {
     rebuildCache();
 }
 
+/**
+ * @brief Načte hru ze souboru a zresetuje počet kroků
+ * @author Matyáš Hebert, Jan Ostatnický, Klára Čoupková
+ */
 void game::loadgame(QString filename){
     QFile file(filename);
     if (file.open(QIODevice::ReadOnly)) {
@@ -63,12 +71,20 @@ void game::loadgame(QString filename){
     this->moveCount = 0;
 }
 
+/**
+ * @brief Smaže hru a odstraní statistiky z json souboru
+ * @author Matyáš Hebert, Klára Čoupková
+ */
 bool game::deletegame(QString filename){
     removerecord(filename.chopped(5));
     bool success = QFile::remove(QString("save/%1").arg(filename));
     return success;
 }
 
+/**
+ * @brief Vrátí rekordní čas pro daný level
+ * @author Matyáš Hebert, Klára Čoupková
+ */
 int game::getrecordtime(QString levelname){
     QString filename = "records.json";
     QJsonObject recordsObj;
@@ -90,6 +106,10 @@ int game::getrecordtime(QString levelname){
     return 0;
 }
 
+/**
+ * @brief Vrátí rekordní počet kroků pro daný level
+ * @author Matyáš Hebert, Klára Čoupková
+ */
 int game::getrecordsteps(QString levelname){
     QString filename = "records.json";
     QJsonObject recordsObj;
@@ -111,6 +131,10 @@ int game::getrecordsteps(QString levelname){
     return 0;
 }
 
+/**
+ * @brief Vrací zda byl level dokončen
+ * @author Matyáš Hebert, Klára Čoupková
+ */
 bool game::iscompleted(QString levelname){
     QString filename = "records.json";
     QJsonObject recordsObj;
@@ -131,6 +155,10 @@ bool game::iscompleted(QString levelname){
     return false;
 }
 
+/**
+ * @brief Vymaže rekord z jsonu
+ * @author Matyáš Hebert, Klára Čoupková
+ */
 void game::removerecord(QString levelname){
     QString filename = "records.json";
     QJsonObject recordsObj;
@@ -159,7 +187,10 @@ void game::removerecord(QString levelname){
 
 }
 
-
+/**
+ * @brief Zapíše nový rekord do jsonu
+ * @author Matyáš Hebert, Klára Čoupková
+ */
 void game::addrecord(QString levelname, int time, int steps){
     QString filename = "records.json";
     QJsonObject recordsObj;
@@ -198,6 +229,10 @@ void game::addrecord(QString levelname, int time, int steps){
     }
 }
 
+/**
+ * @brief Uloží aktuálně otevřený level do souboru
+ * @author Matyáš Hebert, Jan Ostatnický
+ */
 void game::savegame(QString filename){
     QFile file(QString("save/%1.zvaz").arg(filename));
     if (file.open(QIODevice::WriteOnly)) {
@@ -216,6 +251,10 @@ void game::savegame(QString filename){
     }
 }
 
+/**
+ * @brief Vytvoří textury předem
+ * @author Matyáš Hebert
+ */
 void game::rebuildCache() {
     std::array<std::string, 14> imagenames = {":/Empty.png", ":/linkD.png", ":/linkDpowered.png", ":/linkI.png", ":/linkIpowered.png", ":/linkL.png", ":/linkLpowered.png", ":/linkT.png", ":/linkTpowered.png", ":/linkX.png", ":/linkXpowered.png", ":/bulb.png", ":/bulbpowered.png", ":/power.png"};
     for (int image = 0; image < 14; image++) {
@@ -228,6 +267,10 @@ void game::rebuildCache() {
     }
 }
 
+/**
+ * @brief Vytvoří prázdnou hru
+ * @author Matyáš Hebert
+ */
 gameboard game::gamecreateempty(int rows, int cols){
     gameboard newgame;
 
@@ -240,7 +283,10 @@ gameboard game::gamecreateempty(int rows, int cols){
     return newgame;
 }
 
-// creates a new random level configuration
+/**
+ * @brief Vytvoří hru
+ * @author Matyáš Hebert
+ */
 void game::gamecreate(int difficulty){
     this->moveCount = 0;
     int powerrow = rand() % this->board.rows;
@@ -335,6 +381,10 @@ void game::gamecreate(int difficulty){
     update();
 }
 
+/**
+ * @brief Vytiskne údaje o herním poli
+ * @author Matyáš Hebert
+ */
 void game::print(){
     for(int row=0; row<this->board.rows; row++){
         for(int col=0; col<this->board.cols; col++){
@@ -387,13 +437,20 @@ void game::createnode(nodetype type, int row, int col, std::array<bool,4> sides)
     currentnode->rotation = 0;
 }
 
+/**
+ * @brief Otočí pole o n*90 stupňů
+ * @author Matyáš Hebert
+ */
 void game::rotateby(int row, int col, int rotation){
     for(int i=0; i<rotation; i++){
         rotate(row, col);
     }
 }
 
-// randomly rotates every node on the game board
+/**
+ * @brief Náhodně otočí každé pole
+ * @author Matyáš Hebert
+ */
 void game::randomlyrotate(){
     for(int row=0; row<this->board.rows; row++){
         for(int col=0; col<this->board.cols; col++){
@@ -403,6 +460,10 @@ void game::randomlyrotate(){
     }
 }
 
+/**
+ * @brief Vrací pixmapu pole na souřadnicích (row, col)
+ * @author Matyáš Hebert
+ */
 QPixmap game::getimage(int row, int col){
     node* currentnode = getnodeat(row, col);
     nodetype buttontype = currentnode->type;
@@ -430,12 +491,19 @@ QPixmap game::getimage(int row, int col){
     return cachedImages[idx][buttonrotation];  // ← ALREADY ROTATED!
 }
 
-// updates the game board by powering only nodes connected to source
+/**
+ * @brief Aktualizace stavu jednotlivých polí
+ * @author Matyáš Hebert
+ */
 void game::update(){
     unpowernodes();
     recursiveupdate(this->board.powerrow, this->board.powercol, none);
 }
 
+/**
+ * @brief Otočí pole o 90 stupňů
+ * @author Matyáš Hebert
+ */
 void game::rotate(int row, int col){
     node* activenode = getnodeat(row, col);
     activenode->rotation = (activenode->rotation + 1)%4;
@@ -449,6 +517,10 @@ void game::rotate(int row, int col){
     }
 }
 
+/**
+ * @brief Rekurzivní aktualizace herního pole
+ * @author Matyáš Hebert
+ */
 void game::recursiveupdate(int row, int col, side mustbe){
     if (row < 0 || col < 0 || row >= this->board.rows || col >= this->board.cols){
         return;
@@ -477,6 +549,10 @@ void game::recursiveupdate(int row, int col, side mustbe){
     }
 }
 
+/**
+ * @brief Nastaví všechna pole na nenapájená
+ * @author Matyáš Hebert
+ */
 void game::unpowernodes(){
     for(int row=0; row<this->board.rows; row++){
         for(int col=0; col<this->board.cols; col++){
@@ -486,8 +562,10 @@ void game::unpowernodes(){
     }
 }
 
-// checks if all bulbs are lit
-// returns true when all bulbs are lit, false otherwise
+/**
+ * @brief Vrací zda jsou všechny žárovky rozsvíceny
+ * @author Matyáš Hebert
+ */
 bool game::arebulbslit(){
     if (editing) return false;
     bool lit = true;
@@ -500,10 +578,18 @@ bool game::arebulbslit(){
     return lit;
 }
 
+/**
+ * @brief Vrací pole na souřadnicích
+ * @author Matyáš Hebert
+ */
 node* game::getnodeat(int row, int col){
     return &this->board.nodes[row*this->board.cols + col];
 }
 
+/**
+ * @brief Zresetuje počet tahů
+ * @author Klára Čoupková
+ */
 void game::resetMoveCount() {
     this->moveCount = 0;
 }
