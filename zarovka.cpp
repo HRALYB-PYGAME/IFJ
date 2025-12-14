@@ -252,6 +252,10 @@ void Zarovka::turn(QPushButton *btn, int row, int col)
     }
 }
 
+/**
+ * @brief Reakce na zmáčknutí klávesy Shift (pokládání více polí stejného typu v editoru)
+ * @author Jan Ostatnický
+ */
 void Zarovka::keyPressEvent(QKeyEvent *event)
 {
     shiftheld = (event->modifiers() & Qt::ShiftModifier);
@@ -259,6 +263,10 @@ void Zarovka::keyPressEvent(QKeyEvent *event)
     QWidget::keyPressEvent(event);
 }
 
+/**
+ * @brief Reakce na puštění klávesy Shift (pokládání více polí stejného typu v editoru)
+ * @author Jan Ostatnický
+ */
 void Zarovka::keyReleaseEvent(QKeyEvent *event)
 {
     if (!(event->modifiers() & Qt::ShiftModifier)) {
@@ -718,6 +726,10 @@ void Zarovka::on_pushButton_3_clicked()
     previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(6);
 }
 
+/**
+ * @brief Inkrement šířky nového levelu
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_widthplus_clicked()
 {
     auto current = ui->widthlabel->text().toInt();
@@ -727,6 +739,10 @@ void Zarovka::on_widthplus_clicked()
     ui->widthlabel->setText(QString::number(current));
 }
 
+/**
+ * @brief Dekrement šířky nového levelu
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_widthminus_clicked()
 {
     auto current = ui->widthlabel->text().toInt();
@@ -738,6 +754,10 @@ void Zarovka::on_widthminus_clicked()
     ui->widthlabel->setText(QString::number(current));
 }
 
+/**
+ * @brief Inkrement výšky nového levelu
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_heightplus_clicked()
 {
     auto current = ui->heightlabel->text().toInt();
@@ -749,6 +769,10 @@ void Zarovka::on_heightplus_clicked()
     ui->heightlabel->setText(QString::number(current));
 }
 
+/**
+ * @brief Dekrement výšky nového levelu
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_heightminus_clicked()
 {
     auto current = ui->heightlabel->text().toInt();
@@ -758,6 +782,10 @@ void Zarovka::on_heightminus_clicked()
     ui->heightlabel->setText(QString::number(current));
 }
 
+/**
+ * @brief Přesun ze zadání parametrů pro vytvoření nového levelu na obrazovku editoru a uložení zadaných parametrů nového levelu
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_pushButton_4_clicked()
 {
     createGame(ui->widthlabel->text().toInt(), ui->heightlabel->text().toInt(), true);
@@ -821,6 +849,10 @@ QStringList Zarovka::getLevelFiles()
     return files;
 }
 
+/**
+ * @brief Načte hru uloženou v souboru a spustí jí
+ * @author Jan Ostatnický
+ */
 void Zarovka::openGameFile(QString filename, bool editing)
 {
     activegame.loadgame(filename);
@@ -986,9 +1018,14 @@ void Zarovka::loadLevelList()
     }
 }
 
+/**
+ * @brief Přesun z listu uživatelských levelů na obrazovku zadání parametrů nového levelu k vytvoření
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_createLevelButton_clicked()
 {
-    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(5);
+    previousPage = ui->stackedWidget->currentIndex();
+    ui->stackedWidget->setCurrentIndex(5);
 }
 
 
@@ -1014,97 +1051,160 @@ void Zarovka::on_englishButton_clicked()
     saveSettings();
 }
 
-// TODO: dát main levely do nějaké složky a upravit cesty k nim
+/**
+ * @brief Spuštění prvního levelu lehké obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_buttonEasyLevel1_clicked()
 {
     openGameFile(":/mainlevels/_E01.zvaz");
     //previousPage = 10;
 }
 
+/**
+ * @brief Spuštění druhého levelu lehké obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_buttonEasyLevel2_clicked()
 {
     openGameFile(":/mainlevels/_E02.zvaz");
     //previousPage = 10;
 }
 
+/**
+ * @brief Spuštění třetího levelu lehké obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_buttonEasyLevel3_clicked()
 {
     openGameFile(":/mainlevels/_E03.zvaz");
     //previousPage = 10;
 }
 
+/**
+ * @brief Spuštění čtvrtého levelu lehké obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_buttonEasyLevel4_clicked()
 {
     openGameFile(":/mainlevels/_E04.zvaz");
     //previousPage = 10;
 }
 
+/**
+ * @brief Spuštění pátého levelu lehké obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_buttonEasyLevel5_clicked()
 {
     openGameFile(":/mainlevels/_E05.zvaz");
     //previousPage = 10;
 }
 
+/**
+ * @brief Spuštění prvního levelu střední obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_buttonMediumLevel1_clicked()
 {
     openGameFile(":/mainlevels/_M01.zvaz");
     //previousPage = 8;
 }
 
+/**
+ * @brief Spuštění druhého levelu střední obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_buttonMediumLevel2_clicked()
 {
     openGameFile(":/mainlevels/_M02.zvaz");
     //previousPage = 8;
 }
 
+/**
+ * @brief Spuštění třetího levelu střední obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_buttonMediumLevel3_clicked()
 {
     openGameFile(":/mainlevels/_M03.zvaz");
     //previousPage = 8;
 }
 
+/**
+ * @brief Spuštění čtvrtého levelu střední obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_buttonMediumLevel4_clicked()
 {
     openGameFile("mainlevels/_M04.zvaz");
     //previousPage = 8;
 }
 
+/**
+ * @brief Spuštění pátého levelu střední obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_buttonMediumLevel5_clicked()
 {
     openGameFile(":/mainlevels/_M05.zvaz");
     //previousPage = 8;
 }
 
+/**
+ * @brief Spuštění prvního levelu těžké obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_buttonHardLevel1_clicked()
 {
     openGameFile(":/mainlevels/_H01.zvaz");
     //previousPage = 9;
 }
 
+/**
+ * @brief Spuštění druhého levelu těžké obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_buttonHardLevel2_clicked()
 {
     openGameFile(":/mainlevels/_H02.zvaz");
     //previousPage = 9;
 }
 
+/**
+ * @brief Spuštění třetího levelu těžké obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_buttonHardLevel3_clicked()
 {
     openGameFile(":/mainlevels/_H03.zvaz");
     //previousPage = 9;
 }
 
+/**
+ * @brief Spuštění čtvrtého levelu těžké obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_buttonHardLevel4_clicked()
 {
     openGameFile(":/mainlevels/_H04.zvaz");
     //previousPage = 9;
 }
 
+/**
+ * @brief Spuštění pátého levelu těžké obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_buttonHardLevel5_clicked()
 {
     openGameFile(":/mainlevels/_H05.zvaz");
     //previousPage = 9;
 }
 
+/**
+ * @brief Aktualizace zobrazení tlačítek pro spuštění levelů (primárně z důvodu zobrazení statistik)
+ * @author Jan Ostatnický
+ */
 void Zarovka::updateLevelButton(QPushButton* button, QString name, int level){
     if (activegame.iscompleted(name)){
         int sec = activegame.getrecordtime(name);
@@ -1120,15 +1220,19 @@ void Zarovka::updateLevelButton(QPushButton* button, QString name, int level){
                             .arg(minutes).arg(seconds, 2, 10, QChar('0'))
                             .arg(deciseconds));
     }
-    else{
+    else {
         button->setText(QString("Level %1").arg(level));
     }
-
 }
 
+/**
+ * @brief Posun na stránku s levely lehké obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_easyButton_clicked()
 {
-    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(10);
+    previousPage = ui->stackedWidget->currentIndex();
+    ui->stackedWidget->setCurrentIndex(10);
 
     updateLevelButton(ui->buttonEasyLevel1, ":/mainlevels/_E01", 1);
     updateLevelButton(ui->buttonEasyLevel2, ":/mainlevels/_E02", 2);
@@ -1139,10 +1243,15 @@ void Zarovka::on_easyButton_clicked()
     //previousPage = 0;
 }
 
+/**
+ * @brief Posun na stránku s levely střední obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_mediumButton_clicked()
 {
 
-    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(8);
+    previousPage = ui->stackedWidget->currentIndex();
+    ui->stackedWidget->setCurrentIndex(8);
 
     updateLevelButton(ui->buttonMediumLevel1, ":/mainlevels/_M01", 1);
     updateLevelButton(ui->buttonMediumLevel2, ":/mainlevels/_M02", 2);
@@ -1153,9 +1262,14 @@ void Zarovka::on_mediumButton_clicked()
     //previousPage = 0;
 }
 
+/**
+ * @brief Posun na stránku s levely těžké obtížnosti
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_hardButton_clicked()
 {
-    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(9);
+    previousPage = ui->stackedWidget->currentIndex();
+    ui->stackedWidget->setCurrentIndex(9);
 
     updateLevelButton(ui->buttonHardLevel1, ":/mainlevels/_H01", 1);
     updateLevelButton(ui->buttonHardLevel2, ":/mainlevels/_H02", 2);
@@ -1166,19 +1280,34 @@ void Zarovka::on_hardButton_clicked()
     //previousPage = 0;
 }
 
+/**
+ * @brief Návrat z výběru levelů lehké obtížnosti na výběr obtížností
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_pushButton_11_clicked()
 {
-    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(0);
+    previousPage = ui->stackedWidget->currentIndex();
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
+/**
+ * @brief Návrat z výběru levelů střední obtížnosti na výběr obtížností
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_pushButton_12_clicked()
 {
-    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(0);
+    previousPage = ui->stackedWidget->currentIndex();
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
+/**
+ * @brief Návrat z výběru levelů těžké obtížnosti na výběr obtížností
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_pushButton_13_clicked()
 {
-    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(0);
+    previousPage = ui->stackedWidget->currentIndex();
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
 void Zarovka::onBackFromGame()
@@ -1301,13 +1430,15 @@ void Zarovka::onTimerTick()
     }
 }
 
-
-
+/**
+ * @brief Vrácení z výběru obtížnosti na úvodní obrazovku
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_backFromDifficultySelect_clicked()
 {
-    previousPage = ui->stackedWidget->currentIndex();ui->stackedWidget->setCurrentIndex(3);
+    previousPage = ui->stackedWidget->currentIndex();
+    ui->stackedWidget->setCurrentIndex(3);
 }
-
 
 /**
  * @brief Spustí znovu level
@@ -1318,7 +1449,10 @@ void Zarovka::on_playAgainButton_clicked()
     openGameFile(QString("%1.zvaz").arg(currentgamename));
 }
 
-
+/**
+ * @brief Vrácení na úvodní obrazovku ze zadávání parametrů pro nový level
+ * @author Jan Ostatnický
+ */
 void Zarovka::on_menuButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(3);
